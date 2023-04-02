@@ -17,7 +17,7 @@ FireFly是一个开源的中文大语言对话模型，使用指令微调（Inst
 主要工作如下：
 - **数据集**：[FireFly-train-1.1M]()， 一份高质量的包含1.1M中文多任务指令微调数据集，包含23种常见的中文NLP任务的指令数据。对于每个任务，由人工书写若干指令模板，保证数据的高质量与丰富度。
 - **模型裁剪**：[LLMPruner：大语言模型裁剪工具]()，使用词表裁剪技术对多语种大语言模型进行权重裁剪，保留预训练知识的前提下，有效减少模型参数量，提高训练效率，并分享裁剪后的多种参数规模的Bloom模型权重。
-- **权重分享**：在[YeungNLP/bloom-1b4-zh](https://huggingface.co/YeungNLP/bloom-1b4-zh) 和[YeungNLP/bloom-2b6-zh](https://huggingface.co/YeungNLP/bloom-2b6-zh) 的基础上，进行指令微调，获得两种参数规模的中文模型：[FireFly-1b4](https://huggingface.co/YeungNLP/FireFly-1b4) 和[FireFly-2b6（待训练结束后分享）](https://huggingface.co/YeungNLP/FireFly-2b6)
+- **权重分享**：在[bloom-1b4-zh](https://huggingface.co/YeungNLP/bloom-1b4-zh) 和[bloom-2b6-zh](https://huggingface.co/YeungNLP/bloom-2b6-zh) 的基础上，进行指令微调，获得两种参数规模的中文模型：[FireFly-1b4](https://huggingface.co/YeungNLP/FireFly-1b4) 和[FireFly-2b6（待训练结束后分享）](https://huggingface.co/YeungNLP/FireFly-2b6)
 - **训练代码**：开源训练代码，支持张量并行、ZeRO、Gemini异构内存空间管理等大模型训练策略。可实现仅使用一张显卡，训练1B-2B参数量的模型（待整理后开源）。
 
 ## 模型使用
@@ -50,9 +50,9 @@ Bloom是个多语言模型，由于需要兼容多语言，所以词表有25w之
 我们通过删减冗余的词表，从多语言模型中提取常用的中英文词表，最终词表从25w减少到46145，缩减为原来的18.39%，在保留预训练知识的同时，有效减少参数量，提高训练效率。
 
 我们在
-[YeungNLP/bloom-1b4-zh](https://huggingface.co/YeungNLP/bloom-1b4-zh) 
+[bloom-1b4-zh](https://huggingface.co/YeungNLP/bloom-1b4-zh) 
 与
-[YeungNLP/bloom-2b6-zh](https://huggingface.co/YeungNLP/bloom-2b6-zh) 
+[bloom-2b6-zh](https://huggingface.co/YeungNLP/bloom-2b6-zh) 
 的基础上，进行指令微调，获得两种参数规模的中文模型：：[FireFly-1b4](https://huggingface.co/YeungNLP/FireFly-1b4) 和[FireFly-2b6（待训练结束后分享）](https://huggingface.co/YeungNLP/FireFly-2b6)
 
 ## 数据集
