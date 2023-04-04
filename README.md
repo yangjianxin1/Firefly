@@ -1,4 +1,4 @@
-# <img src="pics/firefly_logo.png" width="35">  Firefly（流萤）：中文大语言对话模型
+# <img src="pics/firefly_logo.png" width="40">  Firefly(流萤): 中文大语言对话模型
 
 
 ## 项目简介
@@ -99,7 +99,7 @@ Bloom是个多语言模型，由于需要兼容多语言，所以词表有25w之
 经过词表裁剪后，我们的模型参数量仅为1.4B和2.6B，参数量远远小于ChatGPT和LLaMA等上百亿上千亿的模型，甚至远远小于当前主流如Belle、ChatGLM等7B左右的模型。所以在效果上仍存在以下问题：
 - 对于事实性知识，容易产生错误的回复。
 - 由于未经过无害化微调，可能会产生歧视、危害、违背伦理道德的言论。
-- 在代码、推理能力上的能力仍有欠缺。
+- 在代码、推理上的能力仍有欠缺。
 
 基于以上模型的局限性，我们要求本项目的代码、数据、模型等仅用于学术研究，不得用于商业用途，且不得用于对社会造成危害的用途。
 
@@ -108,7 +108,7 @@ Bloom是个多语言模型，由于需要兼容多语言，所以词表有25w之
 ```text
 @misc{Firefly,
   author = {Jianxin Yang},
-  title = {Firefly（流萤）：中文大语言对话模型},
+  title = {Firefly(流萤): 中文大语言对话模型},
   year = {2023},
   publisher = {GitHub},
   journal = {GitHub repository},
