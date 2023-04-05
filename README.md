@@ -1,8 +1,8 @@
-# <img src="pics/firefly_logo.png" width="40">  Firefly(流萤): 中文大语言对话模型
+# <img src="pics/firefly_logo.png" width="40">  Firefly(流萤): 中文对话式大语言模型
 
 
 ## 项目简介
-**Firefly（流萤）** 是一个开源的中文大语言对话模型，使用指令微调（Instruction Tuning）在中文数据集上进行调优。同时使用了词表裁剪、ZeRO、张量并行等技术，有效降低显存消耗和提高训练效率。
+**Firefly（流萤）** 是一个开源的中文对话式大语言模型，使用指令微调（Instruction Tuning）在中文数据集上进行调优。同时使用了词表裁剪、ZeRO、张量并行等技术，有效降低显存消耗和提高训练效率。
 在训练中，我们使用了更小的模型参数量，以及更少的计算资源。
 
 我们构造了许多与中华文化相关的数据，以提升模型这方面的表现，如对联、作诗、文言文翻译、散文、金庸小说等。
@@ -110,7 +110,7 @@ Bloom是个多语言模型，由于需要兼容多语言，所以词表有25w之
 ```text
 @misc{Firefly,
   author = {Jianxin Yang},
-  title = {Firefly(流萤): 中文大语言对话模型},
+  title = {Firefly(流萤): 中文对话式大语言模型},
   year = {2023},
   publisher = {GitHub},
   journal = {GitHub repository},
