@@ -29,7 +29,7 @@
 ```python
 from transformers import BloomTokenizerFast, BloomForCausalLM
 device = 'cuda'
-path = 'YenugNLP/firefly-1b4'
+path = 'YeungNLP/firefly-1b4'
 
 tokenizer = BloomTokenizerFast.from_pretrained(path)
 model = BloomForCausalLM.from_pretrained(path)
