@@ -68,7 +68,7 @@ Bloom是个多语言模型，由于需要兼容多语言，所以词表有25w之
 
 <img src="pics/task_distribution.png" width="480"> 
 
-在此基础上，我们添加了[Belle-train_0.5M_CN](https://huggingface.co/datasets/BelleGroup/train_0.5M_CN) ，最终得到165万的训练数据。每条数据的格式如下，包含任务类型、输入、目标输出：
+在此基础上，我们添加了Belle-train_0.5M_CN ，最终得到165万的训练数据。每条数据的格式如下，包含任务类型、输入、目标输出：
 ```json
 {
   "kind": "ClassicalChinese", 
