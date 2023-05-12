@@ -134,7 +134,7 @@ Bloom是个多语言模型，由于需要兼容多语言，所以词表有25w之
 | Lr schedule    | cosine      | cosine      | cosine       |
 | Max_seq_length | 512         | 512         | 512          |
 
-firefly-2b6-v2以bloom-2b6-zh进行初始化，其训练损失如下：
+firefly-2b6-v2以bloom-2b6-zh进行初始化，训练一个epoch，其训练损失如下：
 
 <img src="pics/train-loss-2b6-v2.png" width="450"> 
 
