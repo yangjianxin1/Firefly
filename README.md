@@ -134,6 +134,9 @@ Bloom是个多语言模型，由于需要兼容多语言，所以词表有25w之
 | Lr schedule    | cosine      | cosine      | cosine       |
 | Max_seq_length | 512         | 512         | 512          |
 
+firefly-2b6-v2以bloom-2b6-zh进行初始化，其训练损失如下：
+
+<img src="pics/train-loss-2b6-v2.png" width="450"> 
 
 ## 局限性和使用限制
 经过词表裁剪后，我们的模型参数量仅为1.4B和2.6B，参数量远远小于ChatGPT和LLaMA等上百亿上千亿的模型，甚至远远小于当前主流如Belle、ChatGLM等7B左右的模型。所以在效果上仍存在以下问题：
