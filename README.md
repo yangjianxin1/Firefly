@@ -1,6 +1,7 @@
 # Firefly(流萤): 中文对话式大语言模型
 
 ## News
+- 开源训练代码，基于deepspeed+zero3+transformers。
 - 开源[firefly-2b6-v2模型](https://huggingface.co/YeungNLP/firefly-2b6-v2) ，模型参数量为2.6B，优化训练策略，训练数据为376万，加入了大量的医疗问答、多轮对话、数学推理等训练数据。提升模型的多轮对话、医疗问答、数学逻辑推理的能力。
 - 开源[firefly-2b6模型](https://huggingface.co/YeungNLP/firefly-2b6) ，模型参数量为2.6B，训练数据为210万。提升模型的编程能力，古诗词、文言文翻译、对联等方面的能力也有所提升。
 
@@ -137,6 +138,56 @@ Bloom是个多语言模型，由于需要兼容多语言，所以词表有25w之
 firefly-2b6-v2以bloom-2b6-zh进行初始化，训练一个epoch，其训练损失如下：
 
 <img src="pics/train-loss-2b6-v2.png" width="450"> 
+
+## 模型训练
+1、准备训练数据
+
+数据为jsonl文件，每行为一个json对象的字符串。每条数据，包含input与target字段，格式可参考[YeungNLP/firefly-train-1.1M](https://huggingface.co/datasets/YeungNLP/firefly-train-1.1M) 。
+```json
+{
+  "input": "将下面句子翻译成现代文：\n石中央又生一树，高百余尺，条干偃阴为五色，翠叶如盘，花径尺余，色深碧，蕊深红，异香成烟，著物霏霏。",
+  "target": "大石的中央长着一棵树，一百多尺高，枝干是彩色的，树叶有盘子那样大，花的直径有一尺宽，花瓣深蓝色，花中飘出奇异的香气笼罩着周围，如烟似雾。"
+}
+```
+
+2、设置训练参数
+
+本项目通过json文件进行训练参数的配置，可参考train_args/finetune.json下的文件配置：
+```json
+{
+    "output_dir": "output/firefly-2b6",
+    "model_name_or_path": "YeungNLP/bloom-2b6-zh",
+    "deepspeed": "train_args/ds_z3_config.json",
+    "train_file": "path-to-train-data",
+    "num_train_epochs": 1,
+    "per_device_train_batch_size": 4,
+    "learning_rate": 1e-5,
+    "max_seq_length": 512,
+    "logging_steps": 300,
+    "save_steps": 500,
+    "save_total_limit": 1,
+    "lr_scheduler_type": "cosine",
+    "warmup_steps": 3000,
+
+    "gradient_accumulation_steps": 4,
+    "disable_tqdm": false,
+    "optim": "adamw_torch",
+    "seed": 42,
+    "fp16": true,
+    "report_to": "tensorboard",
+    "dataloader_num_workers": 5,
+    "save_strategy": "steps",
+    "weight_decay": 0,
+    "max_grad_norm": 1.0,
+    "remove_unused_columns": false
+}
+```
+
+3、启动训练脚本
+
+```bash
+deepspeed --num_gpus={num_gpus} train.py --train_args_file train_args/finetune.json
+```
 
 ## 局限性和使用限制
 经过词表裁剪后，我们的模型参数量仅为1.4B和2.6B，参数量远远小于ChatGPT和LLaMA等上百亿上千亿的模型，甚至远远小于当前主流如Belle、ChatGLM等7B左右的模型。所以在效果上仍存在以下问题：
