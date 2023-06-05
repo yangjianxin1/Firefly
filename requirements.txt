@@ -1,0 +1,9 @@
+git+https://github.com/huggingface/peft.git
+git+https://github.com/huggingface/accelerate.git
+git+https://github.com/huggingface/transformers.git
+bitsandbytes==0.39.0
+loguru==0.7.0
+numpy==1.21.4
+pandas==1.2.5
+torch==1.13.0
+tqdm==4.62.3

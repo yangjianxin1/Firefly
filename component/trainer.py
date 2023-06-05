@@ -12,6 +12,7 @@ from transformers.trainer_pt_utils import (
     reissue_pt_warnings
 
 )
+from typing import Optional
 import os
 import random
 import numpy as np
@@ -145,3 +146,23 @@ class Trainer(transformers.Trainer):
         if self.args.should_save:
             self._rotate_checkpoints(use_mtime=True, output_dir=run_dir)
 
+
+class LoRATrainer(Trainer):
+    """
+    修改checkkpoint的保存逻辑，只保存lora
+    """
+    def _save(self, output_dir: Optional[str] = None, state_dict=None):
+        # If we are executing this function, we are the process zero, so we don't check for that.
+        output_dir = output_dir if output_dir is not None else self.args.output_dir
+        os.makedirs(output_dir, exist_ok=True)
+        logger.info(f"Saving model checkpoint to {output_dir}")
+        # 保存lora权重和配置
+        self.model.save_pretrained(
+            output_dir, state_dict=state_dict, safe_serialization=self.args.save_safetensors
+        )
+
+        if self.tokenizer is not None:
+            self.tokenizer.save_pretrained(output_dir)
+
+        # Good practice: save your training arguments together with the trained model
+        torch.save(self.args, os.path.join(output_dir, TRAINING_ARGS_NAME))
