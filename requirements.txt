@@ -7,3 +7,4 @@ numpy==1.21.4
 pandas==1.2.5
 torch==1.13.0
 tqdm==4.62.3
+tensorboard
