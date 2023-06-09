@@ -240,8 +240,10 @@ deepspeed --num_gpus={num_gpus} train.py --train_args_file train_args/finetune.j
 
 QLoRA训练脚本：
 ```bash
-python train.py --train_args_file train_args/qlora.json
+CUDA_VISIBLE_DEVICES=0 python train_qlora.py --train_args_file train_args/qlora.json
 ```
+
+注意：由于accelerator库对量化模型多卡训练的支持存在问题，所以当前版本的qlora训练代码只支持单卡训练。后续有了解决方法，会持续更新代码。
 
 模型的训练损失的变化趋势如下图所示：
 
