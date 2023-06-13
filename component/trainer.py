@@ -147,7 +147,7 @@ class Trainer(transformers.Trainer):
             self._rotate_checkpoints(use_mtime=True, output_dir=run_dir)
 
 
-class LoRATrainer(Trainer):
+class LoRATrainer(transformers.Trainer):
     """
     修改checkkpoint的保存逻辑，只保存lora
     """
