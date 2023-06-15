@@ -11,6 +11,7 @@ class SFTDataset(Dataset):
         self.eos_token = tokenizer.eos_token
         self.bos_token = tokenizer.bos_token
         self.max_seq_length = max_seq_length
+        logger.info('Loading data: {}'.format(file))
         with open(file, 'r', encoding='utf8') as f:
             data_list = f.readlines()
         logger.info("there are {} data in dataset".format(len(data_list)))
@@ -23,24 +24,22 @@ class SFTDataset(Dataset):
         # 每条数据格式为: <s>input1</s>target1</s>input2</s>target2</s>...
         data = self.data_list[index]
         data = json.loads(data)
-        input_text = str(data['input']).strip().replace('<s>', self.bos_token).replace('</s>', self.eos_token)
-        target_text = str(data['target']).strip().replace('<s>', self.bos_token).replace('</s>', self.eos_token)
+        conversation = data['conversation']
 
-        # target中存在多轮对话
-        utterances = [input_text] + target_text.split(self.eos_token)
-        utterances = [x.strip() for x in utterances]
-        # 奇数个utterance，舍弃最后一个utterance
-        if len(utterances) % 2 == 1:
-            utterances = utterances[:-1]
+        # 收集多轮对话
+        utterances = []
+        for x in conversation:
+            utterances.append(x['human'])
+            utterances.append(x['assistant'])
         utterances_ids = self.tokenizer(utterances).input_ids
 
         # 模型的输入格式为：<s>input1</s>target1</s>input2</s>target2</s>...
         input_ids = [self.bos_token_id]
-        target_mask = [0]   # 用于对input进行mask，只计算target部分的loss
+        target_mask = [0]  # 用于对input进行mask，只计算target部分的loss
         for i, utterances_id in enumerate(utterances_ids):
             input_ids += (utterances_id + [self.eos_token_id])
             if i % 2 == 0:
-                target_mask += [0]*(len(utterances_id)+1)
+                target_mask += [0] * (len(utterances_id) + 1)
             else:
                 target_mask += [1] * (len(utterances_id) + 1)
         assert len(input_ids) == len(target_mask)

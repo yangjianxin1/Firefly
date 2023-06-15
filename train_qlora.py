@@ -4,6 +4,7 @@ from transformers import (
     set_seed,
     HfArgumentParser,
     TrainingArguments,
+    AutoModelForCausalLM
 )
 import argparse
 from loguru import logger
@@ -13,11 +14,11 @@ import torch
 import bitsandbytes as bnb
 from collections import defaultdict
 
-from component.model import BloomForCausalLM
 from component.collator import SFTDataCollator
 from component.dataset import SFTDataset
 from component.argument import CustomizedArguments
 from component.trainer import LoRATrainer
+from component.loss import TargetLMLoss
 
 
 def verify_model_dtype(model):
@@ -102,7 +103,7 @@ def init_components(args, training_args):
     # 加载tokenzier
     tokenizer = AutoTokenizer.from_pretrained(args.model_name_or_path)
     # 加载模型
-    model = BloomForCausalLM.from_pretrained(
+    model = AutoModelForCausalLM.from_pretrained(
         args.model_name_or_path,
         device_map="auto",
         load_in_4bit=True,
@@ -137,6 +138,9 @@ def init_components(args, training_args):
     # 查看模型种各种类型的参数的情况
     verify_model_dtype(model)
 
+    # 初始化损失函数
+    loss_func = TargetLMLoss(ignore_index=tokenizer.pad_token_id)
+
     # 加载训练集
     train_dataset = SFTDataset(args.train_file, tokenizer, args.max_seq_length)
     data_collator = SFTDataCollator(tokenizer, args.max_seq_length)
@@ -147,7 +151,8 @@ def init_components(args, training_args):
         args=training_args,
         train_dataset=train_dataset,
         tokenizer=tokenizer,
-        data_collator=data_collator
+        data_collator=data_collator,
+        compute_loss=loss_func
     )
     return trainer
 

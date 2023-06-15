@@ -42,8 +42,7 @@ class SFTDataCollator(object):
         inputs = {
             'input_ids': input_ids_batch,
             'attention_mask': attention_mask_batch,
-            'target_mask': target_mask_batch,
-            'return_loss': True
+            'target_mask': target_mask_batch
         }
         return inputs
 
