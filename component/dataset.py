@@ -1,9 +1,9 @@
 import json
 from loguru import logger
-import torch
+from torch.utils.data import Dataset
 
 
-class Dataset(torch.utils.data.Dataset):
+class SFTDataset(Dataset):
     def __init__(self, file, tokenizer, max_seq_length):
         self.tokenizer = tokenizer
         self.bos_token_id = tokenizer.bos_token_id

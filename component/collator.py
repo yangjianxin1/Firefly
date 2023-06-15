@@ -2,7 +2,7 @@ from typing import Any, Dict, List
 import torch
 
 
-class DataCollator(object):
+class SFTDataCollator(object):
     def __init__(self, tokenizer, max_seq_length):
         self.tokenizer = tokenizer
         self.max_seq_length = max_seq_length

@@ -1,5 +1,5 @@
 from transformers import AutoTokenizer, BitsAndBytesConfig
-from peft import LoraConfig, get_peft_model, prepare_model_for_int8_training
+from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training
 from transformers import (
     set_seed,
     HfArgumentParser,
@@ -14,8 +14,8 @@ import bitsandbytes as bnb
 from collections import defaultdict
 
 from component.model import BloomForCausalLM
-from component.collator import DataCollator
-from component.dataset import Dataset
+from component.collator import SFTDataCollator
+from component.dataset import SFTDataset
 from component.argument import CustomizedArguments
 from component.trainer import LoRATrainer
 
@@ -117,7 +117,7 @@ def init_components(args, training_args):
         ),
     )
     # casts all the non int8 modules to full precision (fp32) for stability
-    model = prepare_model_for_int8_training(model, use_gradient_checkpointing=training_args.gradient_checkpointing)
+    model = prepare_model_for_kbit_training(model, use_gradient_checkpointing=training_args.gradient_checkpointing)
     print(f'memory footprint of model: {model.get_memory_footprint()/(1024*1024*1024)} GB')
     # 找到所有需要插入adapter的全连接层
     target_modules = find_all_linear_names(model)
@@ -138,8 +138,8 @@ def init_components(args, training_args):
     verify_model_dtype(model)
 
     # 加载训练集
-    train_dataset = Dataset(args.train_file, tokenizer, args.max_seq_length)
-    data_collator = DataCollator(tokenizer, args.max_seq_length)
+    train_dataset = SFTDataset(args.train_file, tokenizer, args.max_seq_length)
+    data_collator = SFTDataCollator(tokenizer, args.max_seq_length)
 
     # 初始化Trainer
     trainer = LoRATrainer(

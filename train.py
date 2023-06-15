@@ -11,8 +11,8 @@ from os.path import join
 import torch
 from transformers import AutoTokenizer
 from component.model import BloomForCausalLM
-from component.collator import DataCollator
-from component.dataset import Dataset
+from component.collator import SFTDataCollator
+from component.dataset import SFTDataset
 from component.argument import CustomizedArguments
 from component.trainer import Trainer
 
@@ -55,8 +55,8 @@ def init_components(args, training_args):
         torch_dtype=torch.float16
     )
     # 加载训练集
-    train_dataset = Dataset(args.train_file, tokenizer, args.max_seq_length)
-    data_collator = DataCollator(tokenizer, args.max_seq_length)
+    train_dataset = SFTDataset(args.train_file, tokenizer, args.max_seq_length)
+    data_collator = SFTDataCollator(tokenizer, args.max_seq_length)
 
     # 初始化Trainer
     trainer = Trainer(
