@@ -104,7 +104,8 @@
 
 
 ## 模型使用
-使用firefly-bloom-7b1-qlora-sft进行单轮对话：
+<details><summary><b>单轮对话脚本</b></summary>
+
 ```python
 from peft import PeftModel
 from transformers import AutoModelForCausalLM, AutoTokenizer
@@ -142,8 +143,11 @@ while True:
     print("Firefly：{}".format(output))
     text = input('User：')
 ```
+</details>
 
-使用firefly-bloom-7b1-qlora-sft进行多轮对话：
+
+<details><summary><b>多轮对话脚本</b></summary>
+
 ```python
 from transformers import AutoModelForCausalLM, AutoTokenizer
 from peft import PeftModel
@@ -186,6 +190,8 @@ while True:
     print("Firefly：" + response[0].strip().replace('</s>', ""))
     user_input = input('User：')
 ```
+
+</details>
 
 ## 模型训练
 目前支持全量参数指令微调、QLoRA指令微调，后续会添加对LoRA的支持（经过实测，QLoRA的效率与效果优于LoRA）。
