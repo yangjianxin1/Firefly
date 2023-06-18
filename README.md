@@ -23,7 +23,7 @@
 
 🔔 下图是firefly-bloom-7b1-qlora-v0.1的多轮对话的生成效果。
 
-<img src="pics/demo.png" width="600"> 
+<img src="pics/demo.jpeg" width="600"> 
 
 [//]: # (相关资料：)
 
