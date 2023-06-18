@@ -1,21 +1,10 @@
 # Firefly(流萤): 中文对话式大语言模型
-
-## News
-- 开源QLoRA的训练代码，使用一张显卡对bloom-7b1进行微调，开源[firefly-7b1-qlora-v0.1模型](https://huggingface.co/YeungNLP/firefly-7b1-qlora-v0.1) 。
-- 开源全量参数微调的代码，基于deepspeed+zero3+transformers。
-- 开源[firefly-2b6-v2模型](https://huggingface.co/YeungNLP/firefly-2b6-v2) ，模型参数量为2.6B，优化训练策略，训练数据为376万，加入了大量的医疗问答、多轮对话、数学推理等训练数据。提升模型的多轮对话、医疗问答、数学逻辑推理的能力。
-- 开源[firefly-2b6模型](https://huggingface.co/YeungNLP/firefly-2b6) ，模型参数量为2.6B，训练数据为210万。提升模型的编程能力，古诗词、文言文翻译、对联等方面的能力也有所提升。
-
-## 项目简介
-**Firefly（流萤）** 是一个开源的中文对话式大语言模型，使用指令微调（Instruction Tuning）在中文数据集上进行调优。使用了词表裁剪、ZeRO等技术，有效降低显存消耗和提高训练效率。
-在训练中，我们使用了更小的模型参数量，以及更少的计算资源。
-
-我们构造了许多与中华文化相关的数据，以提升模型这方面的表现，如对联、作诗、文言文翻译、散文、金庸小说等。
-
 <img src="pics/firefly_logo.png" width="250">
 
+## 项目简介
+**Firefly(流萤)** 是一个开源的中文大语言模型项目，正如我们的项目名称一样，希望本项目能够像流萤一般发出淡淡微光，为中文大语言模型社区尽绵薄之力，促进中文大语言模型社区的发展。
+
 **流萤**（萤火虫的别称）是中华传统文化的一个符号，虽说腐草为萤，带有悲悯意味，但萤火虽小，也能凭借其淡淡荧光，照亮夜空。本项目的名称取自杜牧的《秋夕》：**银烛秋光冷画屏，轻罗小扇扑流萤**。
-也希望本项目能够像流萤一般发出淡淡微光，为中文NLP开源社区尽绵薄之力，添砖加瓦。
 ```text
 《咏萤火》 
  唐.李白
@@ -25,90 +14,109 @@
 定作月边星。
 ```
 
-主要工作如下：
-- **数据集**：[firefly-train-1.1M](https://huggingface.co/datasets/YeungNLP/firefly-train-1.1M) ， 一份高质量的包含1.1M中文多任务指令微调数据集，包含23种常见的中文NLP任务的指令数据。对于每个任务，由人工书写若干指令模板，保证数据的高质量与丰富度。
-- **模型裁剪**：[LLMPruner：大语言模型裁剪工具](https://github.com/yangjianxin1/LLMPruner) ，使用词表裁剪技术对多语种大语言模型进行权重裁剪，保留预训练知识的前提下，有效减少模型参数量，提高训练效率，并分享裁剪后的多种参数规模的Bloom模型权重。
-- **权重分享**：在[bloom-1b4-zh](https://huggingface.co/YeungNLP/bloom-1b4-zh) 和[bloom-2b6-zh](https://huggingface.co/YeungNLP/bloom-2b6-zh) 的基础上，进行指令微调，获得如下中文模型：[firefly-1b4](https://huggingface.co/YeungNLP/firefly-1b4) 、[firefly-2b6](https://huggingface.co/YeungNLP/firefly-2b6) 、[firefly-2b6-v2](https://huggingface.co/YeungNLP/firefly-2b6-v2) 
-- **训练代码**：开源训练代码，基于DeepSpeed+transformers
-- **QLoRA训练代码**：开源QLoRA训练流程和模型权重[firefly-7b1-qlora-v0.1](https://huggingface.co/YeungNLP/firefly-7b1-qlora-v0.1)
+🔔 本项目主要内容如下：
+- 📗 支持全量参数指令微调、QLoRA低成本高效指令微调、LoRA指令微调(后续将会提供支持)。
+- 📗 支持HuggingFace上绝大部分主流的开源大模型（如Bloom、LLaMA、baichuan、MPT、RedPajama等）。
+- 📗️ 模型裁剪：通过[LLMPruner：大语言模型裁剪工具](https://github.com/yangjianxin1/LLMPruner) ，开源[裁剪后的Bloom模型权重](https://huggingface.co/YeungNLP) 。在保留预训练中文知识的前提下，有效减少模型参数量，降低训练成本，提高训练效率。
+- 📗 开源和整理指令微调数据集：[firefly-train-1.1M](https://huggingface.co/datasets/YeungNLP/firefly-train-1.1M) 、[moss-003-sft-data](https://huggingface.co/datasets/YeungNLP/moss-003-sft-data) 、[ultrachat](https://huggingface.co/datasets/YeungNLP/ultrachat) 。
+- 📗 开源[Firefly系列指令微调模型权重](https://huggingface.co/YeungNLP) 。
+
+🔔 下图是firefly-bloom-7b1-qlora-v0.1的多轮对话的生成效果。
+
+<img src="pics/demo.png" width="600"> 
+
+[//]: # (相关资料：)
+
+[//]: # (- [【QLoRA实战】使用单卡高效微调bloom-7b1，效果惊艳]&#40;https://mp.weixin.qq.com/s/DED7yeiE0DibsVzTmMeDOw&#41;)
+
+[//]: # (- [中文对话式大语言模型Firefly-2b6开源，使用210万训练数据]&#40;https://mp.weixin.qq.com/s/FeMyvQ4EHmseY3H7gY03hw&#41;)
+
+[//]: # (- [Firefly&#40;流萤&#41;: 中文对话式大语言模型]&#40;https://mp.weixin.qq.com/s/TX7wj8IzD_EaMTvk0bjRtA&#41;)
+
+[//]: # (- [LLMPruner：大语言模型裁剪工具]&#40;https://mp.weixin.qq.com/s/leVtrwZc1zLput51Nr99lw&#41;)
+
+## 模型下载
+本项目开源的模型命名规范如下：**firefly-{BaseModel}-{ModelSize}-{TrainMethod}-{Stage}-(Version)**:
+- BaseModel：基座模型。
+- ModelSize：模型参数量。
+- TrainMethod：训练方法。一般为lora、qlora或者空，若为空表示全量参数微调。
+- Stage：sft、rlhf或者空。若为空，表示预训练模型。
+- Version：模型版本。若为空，表示第一版。
+
+🔔 使用本项目的训练代码，以及上述训练数据，我们训练并开源了以下模型。
+
+| 模型                                                                                                 | 基座模型                  | 训练数据               | Batch Size | Max Length | LR   | Train Step |
+|----------------------------------------------------------------------------------------------------|-----------------------|--------------------|------------|------------|---------|------------|
+| [firefly-bloom-1b4-sft](https://huggingface.co/YeungNLP/firefly-bloom-7b1-sft)                     | YeungNLP/bloom-1b4-zh | 160万               | 16         | 512        | 3e-5 | 90k        |
+| [firefly-bloom-2b6-sft](https://huggingface.co/YeungNLP/firefly-bloom-2b6-sft)                     | YeungNLP/bloom-2b6-zh | 210万               | 8          |    512        |  3e-5    | 260k       |
+| [firefly-bloom-2b6-sft-v2](https://huggingface.co/YeungNLP/firefly-bloom-2b6-sft-v2) ⭐             | YeungNLP/bloom-2b6-zh | 376万               | 60         |   512         | 2e-5     | 62k        |
+| [firefly-bloom-7b1-qlora-sft-v0.1](https://huggingface.co/YeungNLP/firefly-bloom-7b1-qlora-sft-v0.1) | bigscience/bloom-7b1  | 29万（moss） | 16         |   1024         |  2e-4    | 18k        |
+| [firefly-bloom-7b1-qlora-sft](https://huggingface.co/YeungNLP/firefly-bloom-7b1-qlora-sft) ⭐       | bigscience/bloom-7b1  | 100万（moss+ultrachat） | 64         |   1024         |  2e-4    | 16k        |
+
+[//]: # (| [firefly-baichuan-7b1-qlora-sft]&#40;https://huggingface.co/YeungNLP/firefly-baichuan-7b1-qlora-sft&#41; ⭐ | baichuan-inc/baichuan-7B      | 100万（moss）         | 64         |1024     |    2e-4        | -          |           )
+
+
+
+## 训练数据
+🔔 目前本项目主要整理了如下指令数据集，并将其整理成统一的数据格式：
+
+| 数据集                                                                  | 介绍                                                                                                                  |
+|----------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------|
+| [firefly-train-1.1M](https://huggingface.co/datasets/YeungNLP/firefly-train-1.1M) | 我们收集了23种常见的中文NLP任务的数据，并且构造了许多与中华文化相关的数据，如对联、作诗、文言文翻译、散文、金庸小说等。对于每个任务，由人工书写若干种指令模板，保证数据的高质量与丰富度，数据量为115万 |
+| [moss-003-sft-data](https://huggingface.co/datasets/YeungNLP/moss-003-sft-data) | 由复旦大学MOSS团队开源的中英文多轮对话数据，包含100万+数据                                                                                   |
+| [ultrachat](https://huggingface.co/datasets/YeungNLP/ultrachat)           | 由清华大学开源的英文多轮对话数据，包含140万+数据                                                                                          |
+
+
+训练数据为jsonl格式，每一行的数据格式如下，其中conversation字段是必需的，可以根据实际需求添加或删除其他字段。
+可以参考项目中的data/dummy_data.jsonl文件。
+```json
+{
+    "conversation_id":44,
+    "category":"Brainstorming",
+    "conversation":[
+        {
+            "human":"怎么能够有效地提升个人能力？",
+            "assistant":"提升个人能力可以通过以下几个方面实现：\n\n1. 学习新知识和技能：阅读相关书籍、参加课程和工作坊、观看教育视频等学习方式，可以帮助你掌握新的知识和技能，从而提升个人能力。\n\n2. 持续练习和实践：不断地练习和实践所学的知识和技能，可以帮助你更好地掌握和应用这些技能，提高你的表现和效率。\n\n3. 寻求反馈和改进：寻求他人的反馈和建议可以帮助你发现自己的不足之处，进一步完善和改进自己的能力。\n\n4. 建立良好的工作和生活习惯：建立良好的工作和生活习惯，如合理安排时间、注意健康、保持积极态度等，可以提高你的工作效率和生活品质，从而提升个人能力。\n\n5. 社交和交流：与他人交流和合作，可以帮助你更好地了解他人的观点和经验，从而提升自己的能力和见识。"
+        },
+        {
+            "human":"对于初学者来说，如何快速掌握编程技能？",
+            "assistant":"以下是几个建议，可以帮助初学者快速掌握编程技能：\n\n1. 学习基础知识：建议先学习编程语言的基础知识和语法，例如变量、数据类型、控制结构、函数等。可以通过在线课程、编程书籍、视频教程等方式学习。\n\n2. 实践编程：进行实际的编程练习是非常重要的，可以通过参加编程挑战、编写小项目等方式来进行实践。\n\n3. 寻求反馈：可以寻求他人的反馈和建议，例如在线编程社区、编程导师等，他们可以帮助你发现问题并及时纠正。\n\n4. 阅读优秀代码：阅读和分析优秀的代码可以帮助你学习其他程序员的编程思路和技巧，从而提高自己的编程能力。\n\n5. 不断学习和更新：编程技术和工具在不断更新和发展，因此需要不断学习新的知识和技能，例如学习新的编程语言、框架、工具等，以跟上技术的发展和变化。\n\n总之，学习编程需要耐心和坚持，并且需要不断地实践和学习。通过以上建议，可以帮助初学者快速掌握编程技能。"
+        },
+        {
+            "human":"除了参加编程挑战和阅读代码，还有哪些方式可以提升自己的编程能力呢？",
+            "assistant":"除了参加编程挑战和阅读代码，还有以下几种方式可以提升自己的编程能力：\n\n1. 参与开源项目：加入一个开源项目，可以让你了解到实际的软件开发流程和团队合作方式，并且可以与其他开发人员合作，学习和分享编程技巧和经验。\n\n2. 进行代码重构：对已经编写的代码进行重构，可以帮助你了解更好的编程实践和设计模式，从而提高代码的可读性和可维护性。\n\n3. 练习算法和数据结构：算法和数据结构是编程中的重要基础，练习算法和数据结构可以帮助你了解不同的数据结构和算法，从而更好地解决实际问题。\n\n4. 学习软件工程和架构：学习软件工程和架构的知识，可以帮助你了解如何设计和构建可靠、可扩展和可维护的软件系统。\n\n5. 参加编程社区和论坛：参加编程社区和论坛可以让你与其他开发人员分享和讨论编程经验和技巧，了解最新的技术趋势和解决方案。\n\n总之，提升编程能力需要不断地学习和实践，并与其他开发人员和编程专家进行交流和合作，以获取更多的经验和知识。"
+        },
+        {
+            "human":"你有没有推荐的编程挑战网站？",
+            "assistant":"当然，以下是一些值得推荐的编程挑战网站：\n\n1. HackerRank：HackerRank 是一个全球领先的技术招聘平台，提供数百种编程挑战和比赛，包括算法、数据结构、数学、SQL、AI 等多个技术领域。\n\n2. LeetCode：LeetCode 是一个在线编程学习和实践平台，提供数千道编程题目，主要涵盖算法和数据结构。\n\n3. Codeforces：Codeforces 是一个全球知名的编程竞赛网站，提供数百个比赛和练习题目，主要涵盖算法和数据结构。\n\n4. Codewars：Codewars 是一个在线编程学习和实践平台，提供数千道编程题目，主要涵盖算法、数据结构、面向对象编程等多个技术领域。\n\n5. Project Euler：Project Euler 是一个非营利性的在线编程挑战平台，提供一系列数学和计算机科学问题，需要用编程语言进行解答。\n\n以上这些编程挑战网站可以帮助你提高编程能力，并且可以与其他编程爱好者进行交流和竞争。"
+        },
+        {
+            "human":"在学习编程的过程中，如何避免陷入困境和放弃呢？",
+            "assistant":"学习编程是一个需要长期坚持和不断学习的过程，以下是一些避免陷入困境和放弃的方法：\n\n1. 制定合理的学习计划：制定合理的学习计划，包括学习时间、学习内容、目标等，可以帮助你更好地管理时间和精力，避免学习过程中的松懈和分心。\n\n2. 寻找合适的学习资源：选择适合自己的学习资源，例如在线课程、编程书籍、视频教程等，可以让你更好地了解和掌握编程知识和技能。\n\n3. 寻求帮助和支持：在学习过程中，遇到问题和困难是很正常的，可以寻求他人的帮助和支持，例如参加编程社区、找到编程导师等。\n\n4. 进行实践和项目：实践和项目是学习编程的重要组成部分，可以帮助你更好地了解和掌握编程技能，同时也可以提高学习的兴趣和动力。\n\n5. 坚持并保持兴趣：坚持学习和保持兴趣是学习编程的关键。可以通过参加编程社区、参加编程竞赛、与其他编程爱好者交流等方式来保持兴趣和动力。\n\n总之，学习编程需要耐心和坚持，并需要不断学习和实践。通过以上方法可以帮助你避免陷入困境和放弃。"
+        }
+    ],
+}
+```
+
+其中firefly-train-1.1M的数据分布如下图所示：
+
+<img src="pics/task_distribution.png" width="380"> 
+
 
 ## 模型使用
-单轮对话：
-```python
-from transformers import BloomTokenizerFast, BloomForCausalLM
-device = 'cuda'
-path = 'YeungNLP/firefly-2b6-v2'
-
-tokenizer = BloomTokenizerFast.from_pretrained(path)
-model = BloomForCausalLM.from_pretrained(path)
-model.eval()
-model = model.to(device)
-# 训练firefly-2b6-v2模型时，输入格式为：<s>input</s>target</s>
-if path == 'YeungNLP/firefly-2b6-v2':
-    input_pattern = '<s>{}</s>'
-# 训练firefly-1b4和firefly-2b6模型时，输入格式为：<s>input</s></s>target</s>
-else:
-    input_pattern = '<s>{}</s></s>'
-    
-text = input('User：')
-while True:
-    text = input_pattern.format(text)
-    input_ids = tokenizer(text, return_tensors="pt").input_ids
-    input_ids = input_ids.to(device)
-    outputs = model.generate(input_ids, max_new_tokens=250, do_sample=True, top_p=0.75, temperature=0.35,
-                             repetition_penalty=1.2, eos_token_id=tokenizer.eos_token_id)
-    rets = tokenizer.batch_decode(outputs)
-    output = rets[0].strip().replace(text, "").replace('</s>', "")
-    print("Firefly：{}".format(output))
-    text = input('User：')
-```
-
-多轮对话：
-```python
-from transformers import BloomTokenizerFast, BloomForCausalLM
-import torch
-
-device = 'cuda'
-path = 'YeungNLP/firefly-2b6-v2'
-tokenizer = BloomTokenizerFast.from_pretrained(path)
-model = BloomForCausalLM.from_pretrained(path)
-model.eval()
-model = model.to(device)
-# 记录所有历史记录
-history_token_ids = tokenizer('<s>', return_tensors="pt").input_ids
-# 输入模型的最大长度
-history_max_len = 1000
-
-user_input = input('User：')
-while True:
-    user_input = '{}</s>'.format(user_input)
-    user_input_ids = tokenizer(user_input, return_tensors="pt").input_ids
-    history_token_ids = torch.concat((history_token_ids, user_input_ids), dim=1)
-
-    model_input_ids = history_token_ids[:, -history_max_len:].to(device)
-    outputs = model.generate(model_input_ids, max_new_tokens=300, do_sample=True, top_p=0.7, temperature=0.35,
-                             repetition_penalty=1.2, eos_token_id=tokenizer.eos_token_id)
-
-    model_input_ids_len = model_input_ids.size(1)
-    response_ids = outputs[:, model_input_ids_len:]
-    history_token_ids = torch.concat((history_token_ids, response_ids.cpu()), dim=1)
-
-    response = tokenizer.batch_decode(response_ids)
-    print("Firefly：" + response[0].strip().replace('</s>', ""))
-    user_input = input('User：')
-```
-
-firefly-7b1-qlora-v0.1进行单轮对话：
+使用firefly-bloom-7b1-qlora-sft进行单轮对话：
 ```python
 from peft import PeftModel
-from transformers import AutoModelForCausalLM, AutoTokenizer, LlamaTokenizer, BitsAndBytesConfig
+from transformers import AutoModelForCausalLM, AutoTokenizer
 import torch
-
 model_name = 'bigscience/bloom-7b1'
-adapter_name = 'YeungNLP/firefly-7b1-qlora-v0.1'
+adapter_name = 'YeungNLP/firefly-bloom-7b1-qlora-sft'
+max_new_tokens = 500
+top_p = 0.9
+temperature = 0.35
+repetition_penalty = 1.0
 device = 'cuda'
 input_pattern = '<s>{}</s>'
-
 model = AutoModelForCausalLM.from_pretrained(
     model_name,
     low_cpu_mem_usage=True,
@@ -119,143 +127,143 @@ model = PeftModel.from_pretrained(model, adapter_name)
 model.eval()
 model = model.to(device)
 tokenizer = AutoTokenizer.from_pretrained(model_name)
-
 text = input('User：')
 while True:
     text = input_pattern.format(text)
     input_ids = tokenizer(text, return_tensors="pt").input_ids
     input_ids = input_ids.to(device)
-    outputs = model.generate(input_ids=input_ids, max_new_tokens=250, do_sample=True, top_p=0.75, temperature=0.35,
-                             repetition_penalty=1.2, eos_token_id=tokenizer.eos_token_id)
+    outputs = model.generate(
+        input_ids=input_ids, max_new_tokens=max_new_tokens, do_sample=True, 
+        top_p=top_p, temperature=temperature, repetition_penalty=repetition_penalty, 
+        eos_token_id=tokenizer.eos_token_id
+    )
     rets = tokenizer.batch_decode(outputs)
     output = rets[0].strip().replace(text, "").replace('</s>', "")
     print("Firefly：{}".format(output))
     text = input('User：')
 ```
 
-## 模型裁剪
-本项目首先使用[LLMPruner项目](https://github.com/yangjianxin1/LLMPruner) 对原始的Bloom模型进行词表裁剪，仅取出常用的中英文词表，大大降低了模型参数量，然后再对其进行指令微调。
-
-Bloom是个多语言模型，由于需要兼容多语言，所以词表有25w之多，在中文领域中，大部分词表并不会被用到。
-我们通过删减冗余的词表，从多语言模型中提取常用的中英文词表，最终词表从25w减少到46145，缩减为原来的18.39%，在保留预训练知识的同时，有效减少参数量，提高训练效率。
-
-我们在
-[bloom-1b4-zh](https://huggingface.co/YeungNLP/bloom-1b4-zh) 
-与
-[bloom-2b6-zh](https://huggingface.co/YeungNLP/bloom-2b6-zh) 
-的基础上，进行指令微调，获得如下中文模型：[firefly-1b4](https://huggingface.co/YeungNLP/firefly-1b4) 、[firefly-2b6](https://huggingface.co/YeungNLP/firefly-2b6) 、[firefly-2b6-v2](https://huggingface.co/YeungNLP/firefly-2b6-v2) 
-
-## 数据集
-我们收集了23个常见的中文数据集，对于每个任务，由人工书写若干种指令模板，保证数据的高质量与丰富度，数据量为115万，形成训练集[firefly-train-1.1M](https://huggingface.co/datasets/YeungNLP/firefly-train-1.1M) 。数据分布如下图所示：
-
-<img src="pics/task_distribution.png" width="380"> 
-
-在此基础上，我们也收集了一些开源的指令数据集，每条数据的格式如下，包含任务类型、输入、目标输出：
-```json
-{
-  "kind": "ClassicalChinese", 
-  "input": "将下面句子翻译成现代文：\n石中央又生一树，高百余尺，条干偃阴为五色，翠叶如盘，花径尺余，色深碧，蕊深红，异香成烟，著物霏霏。",
-  "target": "大石的中央长着一棵树，一百多尺高，枝干是彩色的，树叶有盘子那样大，花的直径有一尺宽，花瓣深蓝色，花中飘出奇异的香气笼罩着周围，如烟似雾。"
-}
+使用firefly-bloom-7b1-qlora-sft进行多轮对话：
+```python
+from transformers import AutoModelForCausalLM, AutoTokenizer
+from peft import PeftModel
+import torch
+device = 'cuda'
+model_name = 'bigscience/bloom-7b1'
+adapter_name = 'YeungNLP/firefly-bloom-7b1-qlora-sft'
+max_new_tokens = 500
+top_p = 0.9
+temperature = 0.35
+repetition_penalty = 1.0
+tokenizer = AutoTokenizer.from_pretrained(model_name)
+model = AutoModelForCausalLM.from_pretrained(
+    model_name,
+    low_cpu_mem_usage=True,
+    torch_dtype=torch.float16,
+    device_map='auto'
+)
+model = PeftModel.from_pretrained(model, adapter_name)
+model.eval()
+model = model.to(device)
+# 记录所有历史记录
+history_token_ids = tokenizer('<s>', return_tensors="pt").input_ids
+# 输入模型的最大长度
+history_max_len = 1000
+user_input = input('User：')
+while True:
+    user_input = '{}</s>'.format(user_input)
+    user_input_ids = tokenizer(user_input, return_tensors="pt").input_ids
+    history_token_ids = torch.concat((history_token_ids, user_input_ids), dim=1)
+    model_input_ids = history_token_ids[:, -history_max_len:].to(device)
+    outputs = model.generate(
+        input_ids=model_input_ids, max_new_tokens=max_new_tokens, do_sample=True, top_p=top_p,
+        temperature=temperature, repetition_penalty=repetition_penalty, eos_token_id=tokenizer.eos_token_id
+    )
+    model_input_ids_len = model_input_ids.size(1)
+    response_ids = outputs[:, model_input_ids_len:]
+    history_token_ids = torch.concat((history_token_ids, response_ids.cpu()), dim=1)
+    response = tokenizer.batch_decode(response_ids)
+    print("Firefly：" + response[0].strip().replace('</s>', ""))
+    user_input = input('User：')
 ```
-
-## 训练细节
-我们将模型的最大输入设置为512，input部分不参与计算loss，只计算target部分的损失函数。训练的超参数设置如下表所示。
-
-| 参数             | firefly-1b4 | firefly-2b6 | firefly-2b6-v2 |
-|----------------|-------------|-------------|--------------|
-| 训练数据量          | 165万        | 210万        | 376万         |
-| Training step  | 90k         | 260k        | 62k          |
-| Batch size     | 16          | 8           | 60           |
-| Learning rate  | 3e-5        | 3e-5        | 2e-5         |
-| Warmup step    | 3000        | 3000        | 5000         |
-| Lr schedule    | cosine      | cosine      | cosine       |
-| Max_seq_length | 512         | 512         | 512          |
-
-firefly-2b6-v2以bloom-2b6-zh进行初始化，训练一个epoch，其训练损失如下：
-
-<img src="pics/train-loss-2b6-v2.png" width="450"> 
 
 ## 模型训练
-1、准备训练数据
+目前支持全量参数指令微调、QLoRA指令微调，后续会添加对LoRA的支持（经过实测，QLoRA的效率与效果优于LoRA）。
 
-数据为jsonl文件，每行为一个json对象的字符串。每条数据，包含input与target字段，格式可参考[YeungNLP/firefly-train-1.1M](https://huggingface.co/datasets/YeungNLP/firefly-train-1.1M) 。
-```json
-{
-  "input": "将下面句子翻译成现代文：\n石中央又生一树，高百余尺，条干偃阴为五色，翠叶如盘，花径尺余，色深碧，蕊深红，异香成烟，著物霏霏。",
-  "target": "大石的中央长着一棵树，一百多尺高，枝干是彩色的，树叶有盘子那样大，花的直径有一尺宽，花瓣深蓝色，花中飘出奇异的香气笼罩着周围，如烟似雾。"
-}
-```
+我们将训练中使用的各种组件抽取出来，以便后续的扩展和优化，详见component目录下的实现。训练时的参数配置存储在train_args目录下，方便统一管理和更改。
 
-2、设置训练参数
+🔔 一些优秀的中文预训练模型权重，理论上，HuggingFace上开源的模型，均可使用本项目进行训练：
+- [词表裁剪后的bloom系列模型](https://github.com/yangjianxin1/LLMPruner) ：下游任务以中文为主，且训练资源紧缺时，建议使用，比原生的bloom权重更节省显存。
+- [原生bloom系列模型](https://huggingface.co/bigscience) ：适用于多语言任务，也适用中文任务。进行指令微调时，建议使用bloom模型，不要使用bloomz，该模型可商用。
+- [baichuan-7B](https://huggingface.co-inc/baichuan-7B) ：百川智能的中文预训练模型，相比bloom，预训练更充分，且可商用。
 
-本项目通过json文件进行训练参数的配置，可参考train_args/finetune.json下的文件配置：
-```json
-{
-    "output_dir": "output/firefly-2b6",
-    "model_name_or_path": "YeungNLP/bloom-2b6-zh",
-    "deepspeed": "train_args/ds_z3_config.json",
-    "train_file": "path-to-train-data",
-    "num_train_epochs": 1,
-    "per_device_train_batch_size": 4,
-    "learning_rate": 1e-5,
-    "max_seq_length": 512,
-    "logging_steps": 300,
-    "save_steps": 500,
-    "save_total_limit": 1,
-    "lr_scheduler_type": "cosine",
-    "warmup_steps": 3000,
-
-    "gradient_accumulation_steps": 4,
-    "disable_tqdm": false,
-    "optim": "adamw_torch",
-    "seed": 42,
-    "fp16": true,
-    "report_to": "tensorboard",
-    "dataloader_num_workers": 5,
-    "save_strategy": "steps",
-    "weight_decay": 0,
-    "max_grad_norm": 1.0,
-    "remove_unused_columns": false
-}
-```
-
-3、启动训练脚本
-
-```bash
-deepspeed --num_gpus={num_gpus} train.py --train_args_file train_args/finetune.json
-```
-
-## QLoRA训练
-我们新增了使用QLoRA进行指令微调，该方法可以在一张V100上对33B的模型进行微调，并且性能逼近全量参数微调。
-
-我们以bloom-7b1作为基座模型。数据集为moss-003-sft-no-tools，这是由MOSS项目开源的中文指令微调数据集，我们随机抽取了29万条作为训练数据，训练得到firefly-7b1-qlora-v0.1。
-在一张32G显卡上使用QLoRA进行训练，在所有全连接层处都插入adapter，最终参与训练的参数量超过1亿。
-模型的最大输入为1024，lr_scheduler_type=cosine，batch size=16，lr=2e-5，warmup_steps=3000，optimizer=paged_adamw_32bit。一共训练18万步，只计算target部分的损失函数。
-
-训练时，我们将多轮对话拼接成如下格式，然后进行tokenize：
+### 数据格式
+训练时，我们将多轮对话拼接成如下格式，然后进行tokenize。其中<s\>表示bos_token，</s\> 表示eos_token。
 ```
 <s>input1</s>target1</s>input2</s>target2</s>...
 ```
 
-QLoRA训练脚本：
+### 全量参数微调
+💻 执行如下命令即可进行全量参数微调：
 ```bash
-CUDA_VISIBLE_DEVICES=0 python train_qlora.py --train_args_file train_args/qlora.json
+deepspeed --num_gpus={num_gpus} train.py --train_args_file train_args/sft.json
 ```
 
-注意：由于accelerator库对量化模型多卡训练的支持存在问题，所以当前版本的qlora训练代码只支持单卡训练。后续有了解决方法，会持续更新代码。
+📝 train_args/sft.json中的主要参数说明如下，以下参数可以根据需求进行修改，其他参数建议不做修改：
+- output_dir：训练输出目录，存储checkpoint、tokenizer、tensorboard等
+- model_name_or_path：预训练模型的本地目录，或者在huggingface上的模型名称。
+- train_file：训练数据集路径。可以使用data/dummy_data.jsonl进行debug。
+- num_train_epochs：训练的轮次。如果数据量足够大，一般建议只训一个epoch。
+- per_device_train_batch_size：每张显卡的batch size。
+- gradient_accumulation_steps：梯度累计步数。global step=num_gpus * per_device_train_batch_size * gradient_accumulation_steps。
+- gradient_checkpointing：如果显存捉襟见肘，可以开启。以时间换空间，模型不缓存激活状态，会进行两次forward计算，以节省显存。
+- learning_rate：学习率。全量参数微调的时候，建议小一些，1e-5或5e-6。
+- max_seq_length：训练时的最大长度。按照自己的设备进行设置，越长需要占用越多显存。
+- logging_steps：每隔多少步统计一次train loss。
+- save_steps：每隔多少步保存一个模型。
+- save_total_limit：output_dir目录中最多保存多少个checkpoint，超出则会将最旧的删除。
+- lr_scheduler_type：学习率变化策略。
+- warmup_steps：warm up步数。学习率经过多少步，增长到指定的数值。
+- optim：优化器。如果是全量参数微调，建议使用adamw_hf。
+- seed：随机种子，用于复现实验结果。
+- fp16：使用使用fp16混合精度。V100建议开启。
+- bf16：使用使用fp16混合精度。A100建议开启。
 
-模型的训练损失的变化趋势如下图所示：
+firefly-bloom-2b6-sft-v2的训练损失的变化趋势如下图所示：
+
+<img src="pics/train-loss-2b6-v2.png" width="400"> 
+
+### QLoRA微调
+关于QLoRA的详细介绍可参考文章：[【QLoRA实战】使用单卡高效微调bloom-7b1，效果惊艳](https://mp.weixin.qq.com/s/DED7yeiE0DibsVzTmMeDOw)
+
+QLoRA通过4-bit的nf4量化，且加入更多adapter，在大幅减少显存消耗的同时，尽可能逼近全量参数微调的效果。
+QLoRA论文指出，该方法可以在一张V100上对33B的模型进行微调，并且性能逼近全量参数微调。
+
+我们在bloom-7b1上使用qlora，adapter的参数量约1.2亿，超过bert-base模型参数量，可以在V100上使用1024的长度进行训练。
+
+💻 执行如下命令即可进行QLoRA微调：
+```bash
+torchrun --nproc_per_node={num_gpus} train.py --train_args_file train_args/sft-qlora.json
+```
+
+📝 train_args/sft-qlora.json中的主要参数说明如下，基本与全量微调的参数一致，几个较为特殊：
+- lora_rank：qlora矩阵的秩。一般设置为8、16、32、64等，在qlora论文中作者设为64。越大则参与训练的参数量越大，一般来说效果会更好，但需要更多显存，。
+- lora_alpha: qlora中的缩放参数。一般设为16、32即可。
+- lora_dropout: lora权重的dropout rate。
+- learning_rate：qlora中的学习率设置更大一些，一般为1e-4、2e-4。
+
+
+firefly-bloom-7b1-qlora-sft-v0.1的训练损失的变化趋势如下图所示：
 
 <img src="pics/train-loss-qlora.png" width="400"> 
 
 ## 局限性和使用限制
-经过词表裁剪后，我们的模型参数量仅为1.4B和2.6B，参数量远远小于ChatGPT和LLaMA等上百亿上千亿的模型，甚至远远小于当前主流如Belle、ChatGLM等7B左右的模型。所以在效果上仍存在以下问题：
+目前本项目开源的模型均为7B及7B以下，模型参数量较小。所以在效果上可能存在以下问题：
 - 对于事实性知识，容易产生错误的回复。
 - 由于未经过无害化微调，可能会产生歧视、危害、违背伦理道德的言论。
 - 在代码、推理上的能力仍有欠缺。
 
-基于以上模型的局限性，我们要求本项目的代码、数据、模型等仅用于学术研究，不得用于商业用途，且不得用于对社会造成危害的用途。
+基于以上模型的局限性，我们要求本项目的代码、数据、模型不得用于对社会造成危害的用途。
 
 ## 引用
 若使用本项目的数据、代码或模型，请引用本项目。
@@ -275,7 +283,7 @@ CUDA_VISIBLE_DEVICES=0 python train_qlora.py --train_args_file train_args/qlora.
 <img src="pics/gongzhonghao.jpeg" width="250"> 
 
 ## 生成效果
-下面的样例均为firefly-2b6-v2模型所生成，未经修改，部分生成内容可能存在事实性错误，仅供参考。
+下面的样例均为firefly-bloom-2b6-sft-v2模型所生成，未经修改，部分生成内容可能存在事实性错误，仅供参考。
 
 <details><summary><b>医疗问答</b></summary>
 
@@ -446,7 +454,7 @@ Firefly: k-means是一种无监督式的聚类算法，它可以自动地将数�
 |把这句话翻译成中文：Knowledge can be acquired from many sources. These include books, teachers and practical experience, and each has its own advantages. The knowledge we gain from books and formal education enables us to learn about things that we have no opportunity to experience in daily life. We can also develop our analytical skills and learn how to view and interpret the world around us in different ways. Furthermore, we can learn from the past by reading books. In this way, we won't repeat the mistakes of others and can build on their achievements.|知识可以从许多来源获得，包括书籍、老师和实践经验。每种来源都有其优点。从书本和正式教育中获得的知识使我们能够学习我们无法在日常生活中体验到的东西。我们可以发展我们的分析技能并学会如何看待和分析周围的世界以不同的方式。此外，通过阅读其他人的作品，我们可以借鉴他们的成就。这样我们就不会重复别人的错误，可以基于他们取得的成果来建立自己的成功之路|
 </details>
 
-下面的样例均为firefly-7b1-qlora-v0.1模型所生成，未经修改，部分生成内容可能存在事实性错误，仅供参考。
+下面的样例均为firefly-bloom-7b1-qlora-sft-v0.1模型所生成，未经修改，部分生成内容可能存在事实性错误，仅供参考。
 
 <details><summary><b>多轮对话</b></summary>
 
