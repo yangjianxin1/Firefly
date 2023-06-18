@@ -16,7 +16,7 @@ from collections import defaultdict
 
 from component.collator import SFTDataCollator
 from component.dataset import SFTDataset
-from component.argument import CustomizedArguments
+from component.argument import QLoRAArguments
 from component.trainer import LoRATrainer
 from component.loss import TargetLMLoss
 
@@ -80,7 +80,7 @@ def setup_everything():
     args = parser.parse_args()
     train_args_file = args.train_args_file
     # 读取训练的参数配置
-    parser = HfArgumentParser((CustomizedArguments, TrainingArguments))
+    parser = HfArgumentParser((QLoRAArguments, TrainingArguments))
     # 解析得到自定义参数，以及自带参数
     args, training_args = parser.parse_json_file(json_file=train_args_file)
     # 创建输出目录
@@ -97,17 +97,34 @@ def init_components(args, training_args):
     """
     初始化各个组件
     """
-    # world_size = int(os.environ.get("WORLD_SIZE", 1))
-    # ddp = world_size != 1
-    # training_args.ddp_find_unused_parameters = False if ddp else None
+    logger.info('Initializing components...')
+    # 下面的设置至关重要，否则无法多卡训练
+    world_size = int(os.environ.get("WORLD_SIZE", 1))
+    ddp = world_size != 1
+    training_args.ddp_find_unused_parameters = False if ddp else None
+    device_map = "auto"
+    # if we are in a distributed setting, we need to set the device map and max memory per device
+    if os.environ.get('LOCAL_RANK') is not None:
+        local_rank = int(os.environ.get('LOCAL_RANK', '0'))
+        device_map = {'': local_rank}
     # 加载tokenzier
-    tokenizer = AutoTokenizer.from_pretrained(args.model_name_or_path)
+    tokenizer = AutoTokenizer.from_pretrained(
+        args.model_name_or_path,
+        trust_remote_code=True,
+    )
+    # 部分tokenizer没有pad_token_id
+    if tokenizer.pad_token_id is None:
+        tokenizer.pad_token_id = tokenizer.unk_token_id
+    # 如果两者相同，模型训练时不会计算eos_token_id的loss
+    if tokenizer.pad_token_id == tokenizer.eos_token_id:
+        raise Exception('pad_token_id should not be equal to eos_token_id')
     # 加载模型
     model = AutoModelForCausalLM.from_pretrained(
         args.model_name_or_path,
-        device_map="auto",
+        device_map=device_map,
         load_in_4bit=True,
         torch_dtype=torch.float16,
+        trust_remote_code=True,
         quantization_config=BitsAndBytesConfig(
             load_in_4bit=True,
             bnb_4bit_compute_dtype=torch.float16,
@@ -124,10 +141,10 @@ def init_components(args, training_args):
     target_modules = find_all_linear_names(model)
     # 初始化lora配置
     config = LoraConfig(
-        r=64,
-        lora_alpha=16,
+        r=args.lora_rank,
+        lora_alpha=args.lora_alpha,
         target_modules=target_modules,
-        lora_dropout=0.05,
+        lora_dropout=args.lora_dropout,
         bias="none",
         task_type="CAUSAL_LM",
     )

@@ -6,7 +6,6 @@ from transformers import (
     PreTrainedTokenizerBase,
     EvalPrediction,
     TrainerCallback,
-    Trainer,
 )
 from typing import Callable, Dict, List, Optional, Tuple, Union, Any
 from torch import nn
