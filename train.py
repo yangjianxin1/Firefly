@@ -49,11 +49,15 @@ def init_components(args, training_args):
     training_args.ddp_find_unused_parameters = False if ddp else None
 
     # 加载tokenzier
-    tokenizer = AutoTokenizer.from_pretrained(args.model_name_or_path)
+    tokenizer = AutoTokenizer.from_pretrained(
+        args.model_name_or_path,
+        trust_remote_code=True
+    )
     # 初始化model
     model = AutoModelForCausalLM.from_pretrained(
         args.model_name_or_path,
-        torch_dtype=torch.float16
+        torch_dtype=torch.float16,
+        trust_remote_code=True
     )
     # 计算模型参数量
     total = sum(p.numel() for p in model.parameters())
