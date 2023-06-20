@@ -250,7 +250,7 @@ QLoRA论文指出，该方法可以在一张V100上对33B的模型进行微调�
 
 💻 执行如下命令即可进行QLoRA微调：
 ```bash
-torchrun --nproc_per_node={num_gpus} train.py --train_args_file train_args/sft-qlora.json
+torchrun --nproc_per_node={num_gpus} train_qlora.py --train_args_file train_args/sft-qlora.json
 ```
 
 📝 train_args/sft-qlora.json中的主要参数说明如下，基本与全量微调的参数一致，几个较为特殊：
