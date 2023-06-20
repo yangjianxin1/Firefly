@@ -109,8 +109,8 @@
 from peft import PeftModel
 from transformers import AutoModelForCausalLM, AutoTokenizer
 import torch
-model_name = 'bigscience/bloom-7b1'
-adapter_name = 'YeungNLP/firefly-bloom-7b1-qlora-sft'
+model_name = 'baichuan-inc/baichuan-7B'
+adapter_name = 'YeungNLP/firefly-baichuan-7b-qlora-sft'
 max_new_tokens = 500
 top_p = 0.9
 temperature = 0.35
@@ -119,6 +119,7 @@ device = 'cuda'
 input_pattern = '<s>{}</s>'
 model = AutoModelForCausalLM.from_pretrained(
     model_name,
+    trust_remote_code=True,
     low_cpu_mem_usage=True,
     torch_dtype=torch.float16,
     device_map='auto'
@@ -126,7 +127,7 @@ model = AutoModelForCausalLM.from_pretrained(
 model = PeftModel.from_pretrained(model, adapter_name)
 model.eval()
 model = model.to(device)
-tokenizer = AutoTokenizer.from_pretrained(model_name)
+tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
 text = input('User：')
 while True:
     text = input_pattern.format(text)
@@ -152,15 +153,16 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 from peft import PeftModel
 import torch
 device = 'cuda'
-model_name = 'bigscience/bloom-7b1'
-adapter_name = 'YeungNLP/firefly-bloom-7b1-qlora-sft'
+model_name = 'baichuan-inc/baichuan-7B'
+adapter_name = 'YeungNLP/firefly-baichuan-7b1-qlora-sft'
 max_new_tokens = 500
 top_p = 0.9
 temperature = 0.35
 repetition_penalty = 1.0
-tokenizer = AutoTokenizer.from_pretrained(model_name)
+tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
 model = AutoModelForCausalLM.from_pretrained(
     model_name,
+    trust_remote_code=True,
     low_cpu_mem_usage=True,
     torch_dtype=torch.float16,
     device_map='auto'
