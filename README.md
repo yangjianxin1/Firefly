@@ -45,14 +45,14 @@
 
 🔔 使用本项目的训练代码，以及上述训练数据，我们训练并开源了以下模型。
 
-| 模型                                                                                                 | 基座模型                  | 训练数据               | Batch Size | Max Length | LR   | Train Step |
-|----------------------------------------------------------------------------------------------------|-----------------------|--------------------|------------|------------|---------|------------|
-| [firefly-bloom-1b4-sft](https://huggingface.co/YeungNLP/firefly-bloom-7b1-sft)                     | YeungNLP/bloom-1b4-zh | 160万               | 16         | 512        | 3e-5 | 90k        |
-| [firefly-bloom-2b6-sft](https://huggingface.co/YeungNLP/firefly-bloom-2b6-sft)                     | YeungNLP/bloom-2b6-zh | 210万               | 8          |    512        |  3e-5    | 260k       |
-| [firefly-bloom-2b6-sft-v2](https://huggingface.co/YeungNLP/firefly-bloom-2b6-sft-v2) ⭐             | YeungNLP/bloom-2b6-zh | 376万               | 60         |   512         | 2e-5     | 62k        |
+| 模型                                                                                               | 基座模型                  | 训练数据               | Batch Size | Max Length | LR   | Train Step |
+|--------------------------------------------------------------------------------------------------|-----------------------|--------------------|------------|------------|---------|------------|
+| [firefly-bloom-1b4-sft](https://huggingface.co/YeungNLP/firefly-bloom-7b1-sft)                   | YeungNLP/bloom-1b4-zh | 160万               | 16         | 512        | 3e-5 | 90k        |
+| [firefly-bloom-2b6-sft](https://huggingface.co/YeungNLP/firefly-bloom-2b6-sft)                   | YeungNLP/bloom-2b6-zh | 210万               | 8          |    512        |  3e-5    | 260k       |
+| [firefly-bloom-2b6-sft-v2](https://huggingface.co/YeungNLP/firefly-bloom-2b6-sft-v2) ⭐           | YeungNLP/bloom-2b6-zh | 376万               | 60         |   512         | 2e-5     | 62k        |
 | [firefly-bloom-7b1-qlora-sft-v0.1](https://huggingface.co/YeungNLP/firefly-bloom-7b1-qlora-sft-v0.1) | bigscience/bloom-7b1  | 29万（moss） | 16         |   1024         |  2e-4    | 18k        |
-| [firefly-bloom-7b1-qlora-sft](https://huggingface.co/YeungNLP/firefly-bloom-7b1-qlora-sft) ⭐       | bigscience/bloom-7b1  | 100万（moss+ultrachat） | 64         |   1024         |  2e-4    | 16k        |
-| [firefly-baichuan-7b1-qlora-sft](https://huggingface.co/YeungNLP/firefly-baichuan-7b1-qlora-sft) ⭐ | baichuan-inc/baichuan-7B      | 100万（moss）         | 64         |1024     |    2e-4        | 16k        |           
+| [firefly-bloom-7b1-qlora-sft](https://huggingface.co/YeungNLP/firefly-bloom-7b1-qlora-sft) ⭐     | bigscience/bloom-7b1  | 100万（moss+ultrachat） | 64         |   1024         |  2e-4    | 16k        |
+| [firefly-baichuan-7b-qlora-sft](https://huggingface.co/YeungNLP/firefly-baichuan-7b-qlora-sft) ⭐ | baichuan-inc/baichuan-7B      | 100万（moss）         | 64         |1024     |    2e-4        | 16k        |           
 
 
 
