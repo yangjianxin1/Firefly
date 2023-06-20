@@ -52,8 +52,7 @@
 | [firefly-bloom-2b6-sft-v2](https://huggingface.co/YeungNLP/firefly-bloom-2b6-sft-v2) ⭐             | YeungNLP/bloom-2b6-zh | 376万               | 60         |   512         | 2e-5     | 62k        |
 | [firefly-bloom-7b1-qlora-sft-v0.1](https://huggingface.co/YeungNLP/firefly-bloom-7b1-qlora-sft-v0.1) | bigscience/bloom-7b1  | 29万（moss） | 16         |   1024         |  2e-4    | 18k        |
 | [firefly-bloom-7b1-qlora-sft](https://huggingface.co/YeungNLP/firefly-bloom-7b1-qlora-sft) ⭐       | bigscience/bloom-7b1  | 100万（moss+ultrachat） | 64         |   1024         |  2e-4    | 16k        |
-
-[//]: # (| [firefly-baichuan-7b1-qlora-sft]&#40;https://huggingface.co/YeungNLP/firefly-baichuan-7b1-qlora-sft&#41; ⭐ | baichuan-inc/baichuan-7B      | 100万（moss）         | 64         |1024     |    2e-4        | -          |           )
+| [firefly-baichuan-7b1-qlora-sft](https://huggingface.co/YeungNLP/firefly-baichuan-7b1-qlora-sft) ⭐ | baichuan-inc/baichuan-7B      | 100万（moss）         | 64         |1024     |    2e-4        | -          |           
 
 
 
