@@ -53,6 +53,12 @@ def init_components(args, training_args):
         args.model_name_or_path,
         trust_remote_code=True
     )
+    # 部分tokenizer没有pad_token_id
+    if tokenizer.pad_token_id is None:
+        tokenizer.pad_token_id = tokenizer.unk_token_id
+    # 如果两者相同，模型训练时不会计算eos_token_id的loss
+    if tokenizer.pad_token_id == tokenizer.eos_token_id:
+        raise Exception('pad_token_id should not be equal to eos_token_id')
     # 初始化model
     model = AutoModelForCausalLM.from_pretrained(
         args.model_name_or_path,
