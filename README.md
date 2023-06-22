@@ -241,6 +241,15 @@ firefly-bloom-2b6-sft-v2的训练损失的变化趋势如下图所示：
 <img src="pics/train-loss-2b6-v2.png" width="400"> 
 
 ### QLoRA微调
+**NOTE: 下面四个python包，建议使用源码安装，后续待其稳定版本了，我们将会在requirements.txt更新版本号**
+
+```bash
+pip install git+https://github.com/huggingface/peft.git
+pip install git+https://github.com/huggingface/accelerate.git
+pip install git+https://github.com/huggingface/transformers.git
+pip install git+https://github.com/TimDettmers/bitsandbytes.git
+```
+
 关于QLoRA的详细介绍可参考文章：[【QLoRA实战】使用单卡高效微调bloom-7b1，效果惊艳](https://mp.weixin.qq.com/s/DED7yeiE0DibsVzTmMeDOw)
 
 QLoRA通过4-bit的nf4量化，且加入更多adapter，在大幅减少显存消耗的同时，尽可能逼近全量参数微调的效果。
