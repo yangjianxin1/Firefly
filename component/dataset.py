@@ -31,7 +31,7 @@ class SFTDataset(Dataset):
         for x in conversation:
             utterances.append(x['human'])
             utterances.append(x['assistant'])
-        utterances_ids = self.tokenizer(utterances).input_ids
+        utterances_ids = self.tokenizer(utterances, add_special_tokens=False).input_ids
 
         # 模型的输入格式为：<s>input1</s>target1</s>input2</s>target2</s>...
         input_ids = [self.bos_token_id]
