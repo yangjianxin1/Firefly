@@ -16,7 +16,7 @@
 
 🔔 本项目主要内容如下：
 - 📗 支持全量参数指令微调、QLoRA低成本高效指令微调、LoRA指令微调(后续将会提供支持)。
-- 📗 支持HuggingFace上绝大部分主流的开源大模型（如Bloom、LLaMA、baichuan、MPT、RedPajama等）。
+- 📗 支持绝大部分主流的开源大模型，如百川baichuan、Ziya、Bloom、LLaMA等。
 - 📗️ 模型裁剪：通过[LLMPruner：大语言模型裁剪工具](https://github.com/yangjianxin1/LLMPruner) ，开源[裁剪后的Bloom模型权重](https://huggingface.co/YeungNLP) 。在保留预训练中文知识的前提下，有效减少模型参数量，降低训练成本，提高训练效率。
 - 📗 开源和整理指令微调数据集：[firefly-train-1.1M](https://huggingface.co/datasets/YeungNLP/firefly-train-1.1M) 、[moss-003-sft-data](https://huggingface.co/datasets/YeungNLP/moss-003-sft-data) 、[ultrachat](https://huggingface.co/datasets/YeungNLP/ultrachat) 。
 - 📗 开源[Firefly系列指令微调模型权重](https://huggingface.co/YeungNLP) 。
