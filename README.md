@@ -1,6 +1,11 @@
 # Firefly(流萤): 中文对话式大语言模型
 <img src="pics/firefly_logo.png" width="250">
 
+## News
+- 支持lora与base model进行权重合并，并且发布合并后的模型权重。
+- 发布经过QLoRA微调的百川baichuan-7b模型。
+- 发布经过QLoRA微调的bloom-7b1模型。
+
 ## 项目简介
 **Firefly(流萤)** 是一个开源的中文大语言模型项目，正如我们的项目名称一样，希望本项目能够像流萤一般发出淡淡微光，为中文大语言模型社区尽绵薄之力，促进中文大语言模型社区的发展。
 
@@ -17,6 +22,7 @@
 🔔 本项目主要内容如下：
 - 📗 支持全量参数指令微调、QLoRA低成本高效指令微调、LoRA指令微调(后续将会提供支持)。
 - 📗 支持绝大部分主流的开源大模型，如百川baichuan、Ziya、Bloom、LLaMA等。
+- 📗 支持lora与base model进行权重合并，推理更便捷。
 - 📗️ 模型裁剪：通过[LLMPruner：大语言模型裁剪工具](https://github.com/yangjianxin1/LLMPruner) ，开源[裁剪后的Bloom模型权重](https://huggingface.co/YeungNLP) 。在保留预训练中文知识的前提下，有效减少模型参数量，降低训练成本，提高训练效率。
 - 📗 开源和整理指令微调数据集：[firefly-train-1.1M](https://huggingface.co/datasets/YeungNLP/firefly-train-1.1M) 、[moss-003-sft-data](https://huggingface.co/datasets/YeungNLP/moss-003-sft-data) 、[ultrachat](https://huggingface.co/datasets/YeungNLP/ultrachat) 。
 - 📗 开源[Firefly系列指令微调模型权重](https://huggingface.co/YeungNLP) 。
@@ -45,14 +51,16 @@
 
 🔔 使用本项目的训练代码，以及上述训练数据，我们训练并开源了以下模型。
 
-| 模型                                                                                               | 基座模型                  | 训练数据               | Batch Size | Max Length | LR   | Train Step |
-|--------------------------------------------------------------------------------------------------|-----------------------|--------------------|------------|------------|---------|------------|
-| [firefly-bloom-1b4-sft](https://huggingface.co/YeungNLP/firefly-bloom-7b1-sft)                   | YeungNLP/bloom-1b4-zh | 160万               | 16         | 512        | 3e-5 | 90k        |
-| [firefly-bloom-2b6-sft](https://huggingface.co/YeungNLP/firefly-bloom-2b6-sft)                   | YeungNLP/bloom-2b6-zh | 210万               | 8          |    512        |  3e-5    | 260k       |
-| [firefly-bloom-2b6-sft-v2](https://huggingface.co/YeungNLP/firefly-bloom-2b6-sft-v2) ⭐           | YeungNLP/bloom-2b6-zh | 376万               | 60         |   512         | 2e-5     | 62k        |
-| [firefly-bloom-7b1-qlora-sft-v0.1](https://huggingface.co/YeungNLP/firefly-bloom-7b1-qlora-sft-v0.1) | bigscience/bloom-7b1  | 29万（moss） | 16         |   1024         |  2e-4    | 18k        |
-| [firefly-bloom-7b1-qlora-sft](https://huggingface.co/YeungNLP/firefly-bloom-7b1-qlora-sft) ⭐     | bigscience/bloom-7b1  | 100万（moss+ultrachat） | 64         |   1024         |  2e-4    | 16k        |
-| [firefly-baichuan-7b-qlora-sft](https://huggingface.co/YeungNLP/firefly-baichuan-7b-qlora-sft) ⭐ | baichuan-inc/baichuan-7B      | 100万（moss）         | 64         |1024     |    2e-4        | 16k        |           
+| 模型                                                                                                           | 基座模型                  | 训练数据               | Batch Size | Max Length | LR   | Train Step |
+|--------------------------------------------------------------------------------------------------------------|-----------------------|--------------------|------------|------------|---------|------------|
+| [firefly-bloom-1b4-sft](https://huggingface.co/YeungNLP/firefly-bloom-7b1-sft)                               | YeungNLP/bloom-1b4-zh | 160万               | 16         | 512        | 3e-5 | 90k        |
+| [firefly-bloom-2b6-sft](https://huggingface.co/YeungNLP/firefly-bloom-2b6-sft)                               | YeungNLP/bloom-2b6-zh | 210万               | 8          |    512        |  3e-5    | 260k       |
+| [firefly-bloom-2b6-sft-v2](https://huggingface.co/YeungNLP/firefly-bloom-2b6-sft-v2) ⭐                       | YeungNLP/bloom-2b6-zh | 376万               | 60         |   512         | 2e-5     | 62k        |
+| [firefly-bloom-7b1-qlora-sft-v0.1](https://huggingface.co/YeungNLP/firefly-bloom-7b1-qlora-sft-v0.1)         | bigscience/bloom-7b1  | 29万（moss） | 16         |   1024         |  2e-4    | 18k        |
+| [firefly-bloom-7b1-qlora-sft](https://huggingface.co/YeungNLP/firefly-bloom-7b1-qlora-sft) ⭐                 | bigscience/bloom-7b1  | 100万（moss+ultrachat） | 64         |   1024         |  2e-4    | 16k        |
+| [firefly-baichuan-7b-qlora-sft](https://huggingface.co/YeungNLP/firefly-baichuan-7b-qlora-sft) ⭐             | baichuan-inc/baichuan-7B      | 100万（moss）         | 64         |1024     |    2e-4        | 16k        |           
+| [firefly-bloom-7b1-qlora-sft-merge](https://huggingface.co/YeungNLP/firefly-bloom-7b1-qlora-sft-merge) ⭐     | bigscience/bloom-7b1  | 100万（moss+ultrachat） | 64         |   1024         |  2e-4    | 16k        |
+| [firefly-baichuan-7b-qlora-sft-merge](https://huggingface.co/YeungNLP/firefly-baichuan-7b-qlora-sft-merge) ⭐ | baichuan-inc/baichuan-7B      | 100万（moss）         | 64         |1024     |    2e-4        | 16k        |           
 
 
 
@@ -103,6 +111,95 @@
 
 
 ## 模型使用
+
+### 权重合并
+<details><summary><b>单轮对话脚本</b></summary>
+
+```python
+from transformers import AutoModelForCausalLM, AutoTokenizer
+import torch
+model_name = 'YeungNLP/firefly-baichuan-7b-qlora-sft-merge'
+max_new_tokens = 500
+top_p = 0.9
+temperature = 0.35
+repetition_penalty = 1.0
+device = 'cuda'
+input_pattern = '<s>{}</s>'
+model = AutoModelForCausalLM.from_pretrained(
+    model_name,
+    trust_remote_code=True,
+    low_cpu_mem_usage=True,
+    torch_dtype=torch.float16,
+    device_map='auto'
+)
+model.eval()
+model = model.to(device)
+tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
+text = input('User：')
+while True:
+    text = input_pattern.format(text)
+    input_ids = tokenizer(text, return_tensors="pt").input_ids
+    input_ids = input_ids.to(device)
+    outputs = model.generate(
+        input_ids=input_ids, max_new_tokens=max_new_tokens, do_sample=True, 
+        top_p=top_p, temperature=temperature, repetition_penalty=repetition_penalty, 
+        eos_token_id=tokenizer.eos_token_id
+    )
+    rets = tokenizer.batch_decode(outputs)
+    output = rets[0].strip().replace(text, "").replace('</s>', "")
+    print("Firefly：{}".format(output))
+    text = input('User：')
+```
+</details>
+
+
+<details><summary><b>多轮对话脚本</b></summary>
+
+```python
+from transformers import AutoModelForCausalLM, AutoTokenizer
+import torch
+device = 'cuda'
+model_name = 'YeungNLP/firefly-baichuan-7b1-qlora-sft-merge'
+max_new_tokens = 500
+top_p = 0.9
+temperature = 0.35
+repetition_penalty = 1.0
+tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
+model = AutoModelForCausalLM.from_pretrained(
+    model_name,
+    trust_remote_code=True,
+    low_cpu_mem_usage=True,
+    torch_dtype=torch.float16,
+    device_map='auto'
+)
+model.eval()
+model = model.to(device)
+# 记录所有历史记录
+history_token_ids = tokenizer('<s>', return_tensors="pt").input_ids
+# 输入模型的最大长度
+history_max_len = 1000
+user_input = input('User：')
+while True:
+    user_input = '{}</s>'.format(user_input)
+    user_input_ids = tokenizer(user_input, return_tensors="pt").input_ids
+    history_token_ids = torch.concat((history_token_ids, user_input_ids), dim=1)
+    model_input_ids = history_token_ids[:, -history_max_len:].to(device)
+    outputs = model.generate(
+        input_ids=model_input_ids, max_new_tokens=max_new_tokens, do_sample=True, top_p=top_p,
+        temperature=temperature, repetition_penalty=repetition_penalty, eos_token_id=tokenizer.eos_token_id
+    )
+    model_input_ids_len = model_input_ids.size(1)
+    response_ids = outputs[:, model_input_ids_len:]
+    history_token_ids = torch.concat((history_token_ids, response_ids.cpu()), dim=1)
+    response = tokenizer.batch_decode(response_ids)
+    print("Firefly：" + response[0].strip().replace('</s>', ""))
+    user_input = input('User：')
+```
+
+</details>
+
+
+### 未进行权重合并
 <details><summary><b>单轮对话脚本</b></summary>
 
 ```python
