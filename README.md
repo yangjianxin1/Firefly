@@ -1,5 +1,20 @@
 # Firefly(流萤): 中文对话式大语言模型
+
+<div align="left">
+
+![GitHub Repo stars](https://img.shields.io/github/stars/yangjianxin1/Firefly?style=social)
+[![Generic badge](https://img.shields.io/badge/微信交流群-Firefly-brightgreen?logo=wechat)](./pics/wechat-group.png)
+[![Generic badge](https://img.shields.io/badge/微信-Firefly-brightgreen?logo=wechat)](./pics/wechat.png)
+[![Generic badge](https://img.shields.io/badge/🤗-Huggingface%20Repo-green.svg)](https://huggingface.co/YeungNLP)
+</div>
+
 <img src="pics/firefly_logo.png" width="250">
+
+由于较多同学希望加入Firefly技术交流群，我们组织了微信群。关注我们的公众号，并发送“加群”，添加小助手为好友即可。
+
+<img src="pics/gongzhonghao.png" width="300">
+
+
 
 ## News
 - 支持lora与base model进行权重合并，并且发布合并后的模型权重。
