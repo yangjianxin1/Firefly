@@ -421,9 +421,10 @@ CUDA_VISIBLE_DEVICES=0,1 torchrun --nproc_per_node={num_gpus} train_qlora.py --t
 }
 ```
 
-## 关注我们
+[//]: # (## 关注我们)
 
-<img src="pics/gongzhonghao.jpeg" width="250"> 
+[//]: # ()
+[//]: # (<img src="pics/gongzhonghao.jpeg" width="250"> )
 
 ## 生成效果
 下面的样例均为firefly-bloom-2b6-sft-v2模型所生成，未经修改，部分生成内容可能存在事实性错误，仅供参考。
