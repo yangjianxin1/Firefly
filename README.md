@@ -82,11 +82,13 @@
 ## 训练数据
 🔔 目前本项目主要整理了如下指令数据集，并将其整理成统一的数据格式：
 
-| 数据集                                                                  | 介绍                                                                                                                  |
-|----------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------|
-| [firefly-train-1.1M](https://huggingface.co/datasets/YeungNLP/firefly-train-1.1M) | 我们收集了23种常见的中文NLP任务的数据，并且构造了许多与中华文化相关的数据，如对联、作诗、文言文翻译、散文、金庸小说等。对于每个任务，由人工书写若干种指令模板，保证数据的高质量与丰富度，数据量为115万 |
-| [moss-003-sft-data](https://huggingface.co/datasets/YeungNLP/moss-003-sft-data) | 由复旦大学MOSS团队开源的中英文多轮对话数据，包含100万+数据                                                                                   |
-| [ultrachat](https://huggingface.co/datasets/YeungNLP/ultrachat)           | 由清华大学开源的英文多轮对话数据，包含140万+数据                                                                                          |
+| 数据集                                                                                                           | 介绍                                                                                                      |
+|---------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------|
+| [firefly-train-1.1M](https://huggingface.co/datasets/YeungNLP/firefly-train-1.1M)                             | 我们收集了23种常见的中文NLP任务的数据，并且构造了许多与中华文化相关的数据，如对联、作诗、文言文翻译、散文、金庸小说等。对于每个任务，由人工书写若干种指令模板，保证数据的高质量与丰富度，数据量为115万 |
+| [moss-003-sft-data](https://huggingface.co/datasets/YeungNLP/moss-003-sft-data)                               | 由复旦大学MOSS团队开源的中英文多轮对话数据，包含100万+数据                                                                       |
+| [ultrachat](https://huggingface.co/datasets/YeungNLP/ultrachat)                                               | 由清华大学开源的英文多轮对话数据，包含140万+数据                                                                              |
+| [WizardLM_evol_instruct_V2_143k](https://huggingface.co/datasets/YeungNLP/WizardLM_evol_instruct_V2_143k) | 由WizardLM项目开源的英文指令微调数据集，通过Evol-Instruct方法让指令进化，加强指令的复杂度，以提升模型对复杂指令的遵循能力。包含143k条数据。                      |
+| [school_math_0.25M](https://huggingface.co/datasets/YeungNLP/school_math_0.25M)      | 由BELLE项目组开源的数学运算指令数据，包含25万条数据。                                                                          |
 
 
 训练数据为jsonl格式，每一行的数据格式如下，其中conversation字段是必需的，可以根据实际需求添加或删除其他字段。
