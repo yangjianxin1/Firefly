@@ -6,6 +6,7 @@ loguru==0.7.0
 numpy==1.21.4
 pandas==1.2.5
 tqdm==4.62.3
+deepspeed==0.9.5
 tensorboard
 sentencepiece
 torch==1.13.0
