@@ -4,8 +4,9 @@
 
 ![GitHub Repo stars](https://img.shields.io/github/stars/yangjianxin1/Firefly?style=social)
 [![Generic badge](https://img.shields.io/badge/微信交流群-Firefly-brightgreen?logo=wechat)](./pics/wechat-group.jpeg)
-[![Generic badge](https://img.shields.io/badge/微信-Firefly-brightgreen?logo=wechat)](./pics/wechat.jpeg)
 [![Generic badge](https://img.shields.io/badge/🤗-Huggingface%20Repo-green.svg)](https://huggingface.co/YeungNLP)
+
+[//]: # ([![Generic badge]&#40;https://img.shields.io/badge/微信-Firefly-brightgreen?logo=wechat&#41;]&#40;./pics/wechat.jpeg&#41;)
 </div>
 
 <img src="pics/firefly_logo.png" width="250">
