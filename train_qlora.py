@@ -76,7 +76,7 @@ def find_all_linear_names(model):
 
 def setup_everything():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--train_args_file", type=str, default='train_args/qlora.json', help="")
+    parser.add_argument("--train_args_file", type=str, default='train_args/baichuan-sft-qlora.json', help="")
     args = parser.parse_args()
     train_args_file = args.train_args_file
     # 读取训练的参数配置
@@ -107,17 +107,6 @@ def init_components(args, training_args):
     if os.environ.get('LOCAL_RANK') is not None:
         local_rank = int(os.environ.get('LOCAL_RANK', '0'))
         device_map = {'': local_rank}
-    # 加载tokenzier
-    tokenizer = AutoTokenizer.from_pretrained(
-        args.model_name_or_path,
-        trust_remote_code=True,
-    )
-    # 部分tokenizer没有pad_token_id
-    if tokenizer.pad_token_id is None:
-        tokenizer.pad_token_id = tokenizer.unk_token_id
-    # 如果两者相同，模型训练时不会计算eos_token_id的loss
-    if tokenizer.pad_token_id == tokenizer.eos_token_id:
-        raise Exception('pad_token_id should not be equal to eos_token_id')
     # 加载模型
     model = AutoModelForCausalLM.from_pretrained(
         args.model_name_or_path,
@@ -134,6 +123,20 @@ def init_components(args, training_args):
             llm_int8_has_fp16_weight=False,
         ),
     )
+    # 加载tokenzier
+    tokenizer = AutoTokenizer.from_pretrained(
+        args.model_name_or_path,
+        trust_remote_code=True,
+        # llama不支持fast
+        use_fast=False if model.config.model_type == 'llama' else True
+    )
+    # 部分tokenizer没有pad_token_id
+    if tokenizer.pad_token_id is None:
+        tokenizer.pad_token_id = tokenizer.unk_token_id
+    # 如果两者相同，模型训练时不会计算eos_token_id的loss
+    if tokenizer.pad_token_id == tokenizer.eos_token_id:
+        raise Exception('pad_token_id should not be equal to eos_token_id')
+
     # casts all the non int8 modules to full precision (fp32) for stability
     model = prepare_model_for_kbit_training(model, use_gradient_checkpointing=training_args.gradient_checkpointing)
     print(f'memory footprint of model: {model.get_memory_footprint()/(1024*1024*1024)} GB')

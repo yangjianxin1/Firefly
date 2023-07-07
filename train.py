@@ -48,10 +48,18 @@ def init_components(args, training_args):
         device_map = {"": int(os.environ.get("LOCAL_RANK") or 0)}
     training_args.ddp_find_unused_parameters = False if ddp else None
 
+    # 初始化model
+    model = AutoModelForCausalLM.from_pretrained(
+        args.model_name_or_path,
+        torch_dtype=torch.float16,
+        trust_remote_code=True
+    )
     # 加载tokenzier
     tokenizer = AutoTokenizer.from_pretrained(
         args.model_name_or_path,
-        trust_remote_code=True
+        trust_remote_code=True,
+        # llama不支持fast
+        use_fast=False if model.config.model_type == 'llama' else True
     )
     # 部分tokenizer没有pad_token_id
     if tokenizer.pad_token_id is None:
@@ -59,12 +67,7 @@ def init_components(args, training_args):
     # 如果两者相同，模型训练时不会计算eos_token_id的loss
     if tokenizer.pad_token_id == tokenizer.eos_token_id:
         raise Exception('pad_token_id should not be equal to eos_token_id')
-    # 初始化model
-    model = AutoModelForCausalLM.from_pretrained(
-        args.model_name_or_path,
-        torch_dtype=torch.float16,
-        trust_remote_code=True
-    )
+
     # 计算模型参数量
     total = sum(p.numel() for p in model.parameters())
     logger.info("Total model params: %.2fM" % (total / 1e6))
