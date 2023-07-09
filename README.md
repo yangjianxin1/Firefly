@@ -11,13 +11,14 @@
 
 <img src="pics/firefly_logo.png" width="250">
 
-由于较多同学希望加入Firefly技术交流群，我们组织了微信群。关注我们的公众号，并发送“加群”，添加小助手为好友即可。
+欢迎加入Firefly大模型技术交流群，关注我们的公众号，点击加群按钮即可。
 
 <img src="pics/gongzhonghao.png" width="300">
 
 
 
 ## News
+- 支持对baichuan、bloom、ziya、llama等模型进行训练，添加训练参数配置。
 - 支持lora与base model进行权重合并，并且发布合并后的模型权重。
 - 发布经过QLoRA微调的百川baichuan-7b模型。
 - 发布经过QLoRA微调的bloom-7b1模型。
@@ -40,10 +41,10 @@
 - 📗 支持绝大部分主流的开源大模型，如百川baichuan、Ziya、Bloom、LLaMA等。
 - 📗 支持lora与base model进行权重合并，推理更便捷。
 - 📗️ 模型裁剪：通过[LLMPruner：大语言模型裁剪工具](https://github.com/yangjianxin1/LLMPruner) ，开源[裁剪后的Bloom模型权重](https://huggingface.co/YeungNLP) 。在保留预训练中文知识的前提下，有效减少模型参数量，降低训练成本，提高训练效率。
-- 📗 开源和整理指令微调数据集：[firefly-train-1.1M](https://huggingface.co/datasets/YeungNLP/firefly-train-1.1M) 、[moss-003-sft-data](https://huggingface.co/datasets/YeungNLP/moss-003-sft-data) 、[ultrachat](https://huggingface.co/datasets/YeungNLP/ultrachat) 。
+- 📗 整理并开源指令微调数据集：firefly-train-1.1M 、moss-003-sft-data、ultrachat、 WizardLM_evol_instruct_V2_143k、school_math_0.25M。
 - 📗 开源[Firefly系列指令微调模型权重](https://huggingface.co/YeungNLP) 。
 
-🔔 下图是firefly-bloom-7b1-qlora-v0.1的多轮对话的生成效果。
+🔔 下图是firefly-bloom-7b1的多轮对话的生成效果。
 
 <img src="pics/demo.jpeg" width="600"> 
 
@@ -58,25 +59,17 @@
 [//]: # (- [LLMPruner：大语言模型裁剪工具]&#40;https://mp.weixin.qq.com/s/leVtrwZc1zLput51Nr99lw&#41;)
 
 ## 模型下载
-本项目开源的模型命名规范如下：**firefly-{BaseModel}-{ModelSize}-{TrainMethod}-{Stage}-(Version)**:
-- BaseModel：基座模型。
-- ModelSize：模型参数量。
-- TrainMethod：训练方法。一般为lora、qlora或者空，若为空表示全量参数微调。
-- Stage：sft、rlhf或者空。若为空，表示预训练模型。
-- Version：模型版本。若为空，表示第一版。
 
 🔔 使用本项目的训练代码，以及上述训练数据，我们训练并开源了以下模型。
 
-| 模型                                                                                                           | 基座模型                  | 训练数据               | Batch Size | Max Length | LR   | Train Step |
-|--------------------------------------------------------------------------------------------------------------|-----------------------|--------------------|------------|------------|---------|------------|
-| [firefly-bloom-1b4-sft](https://huggingface.co/YeungNLP/firefly-bloom-7b1-sft)                               | YeungNLP/bloom-1b4-zh | 160万               | 16         | 512        | 3e-5 | 90k        |
-| [firefly-bloom-2b6-sft](https://huggingface.co/YeungNLP/firefly-bloom-2b6-sft)                               | YeungNLP/bloom-2b6-zh | 210万               | 8          |    512        |  3e-5    | 260k       |
-| [firefly-bloom-2b6-sft-v2](https://huggingface.co/YeungNLP/firefly-bloom-2b6-sft-v2) ⭐                       | YeungNLP/bloom-2b6-zh | 376万               | 60         |   512         | 2e-5     | 62k        |
-| [firefly-bloom-7b1-qlora-sft-v0.1](https://huggingface.co/YeungNLP/firefly-bloom-7b1-qlora-sft-v0.1)         | bigscience/bloom-7b1  | 29万（moss） | 16         |   1024         |  2e-4    | 18k        |
-| [firefly-bloom-7b1-qlora-sft](https://huggingface.co/YeungNLP/firefly-bloom-7b1-qlora-sft) ⭐                 | bigscience/bloom-7b1  | 100万（moss+ultrachat） | 64         |   1024         |  2e-4    | 16k        |
-| [firefly-baichuan-7b-qlora-sft](https://huggingface.co/YeungNLP/firefly-baichuan-7b-qlora-sft) ⭐             | baichuan-inc/baichuan-7B      | 100万（moss）         | 64         |1024     |    2e-4        | 16k        |           
-| [firefly-bloom-7b1-qlora-sft-merge](https://huggingface.co/YeungNLP/firefly-bloom-7b1-qlora-sft-merge) ⭐     | bigscience/bloom-7b1  | 100万（moss+ultrachat） | 64         |   1024         |  2e-4    | 16k        |
-| [firefly-baichuan-7b-qlora-sft-merge](https://huggingface.co/YeungNLP/firefly-baichuan-7b-qlora-sft-merge) ⭐ | baichuan-inc/baichuan-7B      | 100万（moss）         | 64         |1024     |    2e-4        | 16k        |           
+| 模型                                                                             | 基座模型  | 训练数据                 | Batch Size | Max Length | LR   | Train Step |
+|--------------------------------------------------------------------------------|-------|----------------------|------------|------------|---------|------------|
+| [firefly-bloom-1b4](https://huggingface.co/YeungNLP/firefly-bloom-1b4)         | YeungNLP/bloom-1b4-zh | 160万                 | 16         | 512        | 3e-5 | 90k        |
+| [firefly-bloom-2b6](https://huggingface.co/YeungNLP/firefly-bloom-2b6)         | YeungNLP/bloom-2b6-zh | 210万                 | 8          |    512        |  3e-5    | 260k       |
+| [firefly-bloom-2b6-v2](https://huggingface.co/YeungNLP/firefly-bloom-2b6-v2) ⭐ | YeungNLP/bloom-2b6-zh | 376万                 | 60         |   512         | 2e-5     | 62k        |
+| [firefly-bloom-7b1](https://huggingface.co/YeungNLP/firefly-bloom-7b1) ⭐       | bigscience/bloom-7b1 | 100万（moss+ultrachat） | 64         |   1024         |  2e-4    | 16k        |
+| [firefly-baichuan-7b](https://huggingface.co/YeungNLP/firefly-baichuan-7b) ⭐   | baichuan-inc/baichuan-7B | 100万（moss）           | 64         |1024     |    2e-4        | 16k        |           
+| [firefly-ziya-13b](https://huggingface.co/YeungNLP/firefly-ziya-13b) ⭐         | YeungNLP/Ziya-LLaMA-13B-Pretrain-v1      | 100万（moss）+ 5k math  | 64         |1024     |    2e-4        | 15k        |           
 
 
 
@@ -128,187 +121,6 @@
 <img src="pics/task_distribution.png" width="380"> 
 
 
-## 模型使用
-
-### 权重合并
-<details><summary><b>单轮对话脚本</b></summary>
-
-```python
-from transformers import AutoModelForCausalLM, AutoTokenizer
-import torch
-model_name = 'YeungNLP/firefly-baichuan-7b-qlora-sft-merge'
-max_new_tokens = 500
-top_p = 0.9
-temperature = 0.35
-repetition_penalty = 1.0
-device = 'cuda'
-input_pattern = '<s>{}</s>'
-model = AutoModelForCausalLM.from_pretrained(
-    model_name,
-    trust_remote_code=True,
-    low_cpu_mem_usage=True,
-    torch_dtype=torch.float16,
-    device_map='auto'
-)
-model.eval()
-model = model.to(device)
-tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
-text = input('User：')
-while True:
-    text = input_pattern.format(text)
-    input_ids = tokenizer(text, return_tensors="pt").input_ids
-    input_ids = input_ids.to(device)
-    outputs = model.generate(
-        input_ids=input_ids, max_new_tokens=max_new_tokens, do_sample=True, 
-        top_p=top_p, temperature=temperature, repetition_penalty=repetition_penalty, 
-        eos_token_id=tokenizer.eos_token_id
-    )
-    rets = tokenizer.batch_decode(outputs)
-    output = rets[0].strip().replace(text, "").replace('</s>', "")
-    print("Firefly：{}".format(output))
-    text = input('User：')
-```
-</details>
-
-
-<details><summary><b>多轮对话脚本</b></summary>
-
-```python
-from transformers import AutoModelForCausalLM, AutoTokenizer
-import torch
-device = 'cuda'
-model_name = 'YeungNLP/firefly-baichuan-7b1-qlora-sft-merge'
-max_new_tokens = 500
-top_p = 0.9
-temperature = 0.35
-repetition_penalty = 1.0
-tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
-model = AutoModelForCausalLM.from_pretrained(
-    model_name,
-    trust_remote_code=True,
-    low_cpu_mem_usage=True,
-    torch_dtype=torch.float16,
-    device_map='auto'
-)
-model.eval()
-model = model.to(device)
-# 记录所有历史记录
-history_token_ids = tokenizer('<s>', return_tensors="pt").input_ids
-# 输入模型的最大长度
-history_max_len = 1000
-user_input = input('User：')
-while True:
-    user_input = '{}</s>'.format(user_input)
-    user_input_ids = tokenizer(user_input, return_tensors="pt").input_ids
-    history_token_ids = torch.concat((history_token_ids, user_input_ids), dim=1)
-    model_input_ids = history_token_ids[:, -history_max_len:].to(device)
-    outputs = model.generate(
-        input_ids=model_input_ids, max_new_tokens=max_new_tokens, do_sample=True, top_p=top_p,
-        temperature=temperature, repetition_penalty=repetition_penalty, eos_token_id=tokenizer.eos_token_id
-    )
-    model_input_ids_len = model_input_ids.size(1)
-    response_ids = outputs[:, model_input_ids_len:]
-    history_token_ids = torch.concat((history_token_ids, response_ids.cpu()), dim=1)
-    response = tokenizer.batch_decode(response_ids)
-    print("Firefly：" + response[0].strip().replace('</s>', ""))
-    user_input = input('User：')
-```
-
-</details>
-
-
-### 未进行权重合并
-<details><summary><b>单轮对话脚本</b></summary>
-
-```python
-from peft import PeftModel
-from transformers import AutoModelForCausalLM, AutoTokenizer
-import torch
-model_name = 'baichuan-inc/baichuan-7B'
-adapter_name = 'YeungNLP/firefly-baichuan-7b-qlora-sft'
-max_new_tokens = 500
-top_p = 0.9
-temperature = 0.35
-repetition_penalty = 1.0
-device = 'cuda'
-input_pattern = '<s>{}</s>'
-model = AutoModelForCausalLM.from_pretrained(
-    model_name,
-    trust_remote_code=True,
-    low_cpu_mem_usage=True,
-    torch_dtype=torch.float16,
-    device_map='auto'
-)
-model = PeftModel.from_pretrained(model, adapter_name)
-model.eval()
-model = model.to(device)
-tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
-text = input('User：')
-while True:
-    text = input_pattern.format(text)
-    input_ids = tokenizer(text, return_tensors="pt").input_ids
-    input_ids = input_ids.to(device)
-    outputs = model.generate(
-        input_ids=input_ids, max_new_tokens=max_new_tokens, do_sample=True, 
-        top_p=top_p, temperature=temperature, repetition_penalty=repetition_penalty, 
-        eos_token_id=tokenizer.eos_token_id
-    )
-    rets = tokenizer.batch_decode(outputs)
-    output = rets[0].strip().replace(text, "").replace('</s>', "")
-    print("Firefly：{}".format(output))
-    text = input('User：')
-```
-</details>
-
-
-<details><summary><b>多轮对话脚本</b></summary>
-
-```python
-from transformers import AutoModelForCausalLM, AutoTokenizer
-from peft import PeftModel
-import torch
-device = 'cuda'
-model_name = 'baichuan-inc/baichuan-7B'
-adapter_name = 'YeungNLP/firefly-baichuan-7b1-qlora-sft'
-max_new_tokens = 500
-top_p = 0.9
-temperature = 0.35
-repetition_penalty = 1.0
-tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
-model = AutoModelForCausalLM.from_pretrained(
-    model_name,
-    trust_remote_code=True,
-    low_cpu_mem_usage=True,
-    torch_dtype=torch.float16,
-    device_map='auto'
-)
-model = PeftModel.from_pretrained(model, adapter_name)
-model.eval()
-model = model.to(device)
-# 记录所有历史记录
-history_token_ids = tokenizer('<s>', return_tensors="pt").input_ids
-# 输入模型的最大长度
-history_max_len = 1000
-user_input = input('User：')
-while True:
-    user_input = '{}</s>'.format(user_input)
-    user_input_ids = tokenizer(user_input, return_tensors="pt").input_ids
-    history_token_ids = torch.concat((history_token_ids, user_input_ids), dim=1)
-    model_input_ids = history_token_ids[:, -history_max_len:].to(device)
-    outputs = model.generate(
-        input_ids=model_input_ids, max_new_tokens=max_new_tokens, do_sample=True, top_p=top_p,
-        temperature=temperature, repetition_penalty=repetition_penalty, eos_token_id=tokenizer.eos_token_id
-    )
-    model_input_ids_len = model_input_ids.size(1)
-    response_ids = outputs[:, model_input_ids_len:]
-    history_token_ids = torch.concat((history_token_ids, response_ids.cpu()), dim=1)
-    response = tokenizer.batch_decode(response_ids)
-    print("Firefly：" + response[0].strip().replace('</s>', ""))
-    user_input = input('User：')
-```
-
-</details>
-
 ## 模型训练
 目前支持全量参数指令微调、QLoRA指令微调，后续会添加对LoRA的支持（经过实测，QLoRA的效率与效果优于LoRA）。
 
@@ -318,12 +130,16 @@ while True:
 - [词表裁剪后的bloom系列模型](https://github.com/yangjianxin1/LLMPruner) ：下游任务以中文为主，且训练资源紧缺时，建议使用，比原生的bloom权重更节省显存。
 - [原生bloom系列模型](https://huggingface.co/bigscience) ：适用于多语言任务，也适用中文任务。进行指令微调时，建议使用bloom模型，不要使用bloomz，该模型可商用。
 - [baichuan-7B](https://huggingface.co-inc/baichuan-7B) ：百川智能的中文预训练模型，相比bloom，预训练更充分，且可商用。
+- [Ziya-LLaMA-13B-Pretrain-v1](https://huggingface.co/YeungNLP/Ziya-LLaMA-13B-Pretrain-v1) : IDEA团队基于llama进行中文词表扩充，然后进行增量预训练的llama权重。由于IDEA只开源了delta权重，我们将其与原始llama权重合并，并分享最终的权重。该模型及其衍生模型，仅供学术交流，不可商业用途。
 
 ### 数据格式
 训练时，我们将多轮对话拼接成如下格式，然后进行tokenize。其中<s\>表示bos_token，</s\> 表示eos_token。
 ```
 <s>input1</s>target1</s>input2</s>target2</s>...
 ```
+在计算loss时，我们通过mask的方式，input部分的loss不参与参数更新，只有“target</s>”部分的loss参与参数更新。
+这种方式充分利用了模型并行计算的优势，训练更加高效，且多轮对话中的每个target部分都参与了训练，训练更充分。
+否则，就需要把一个n轮对话，拆分成n条数据，且只计算最后一个target的loss，大大降低了训练效率。
 
 ### 全量参数微调
 💻 执行如下命令即可进行全量参数微调：
@@ -351,7 +167,7 @@ deepspeed --num_gpus={num_gpus} train.py --train_args_file train_args/sft.json
 - fp16：使用使用fp16混合精度。V100建议开启。
 - bf16：使用使用fp16混合精度。A100建议开启。
 
-firefly-bloom-2b6-sft-v2的训练损失的变化趋势如下图所示：
+firefly-bloom-2b6-v2的训练损失的变化趋势如下图所示：
 
 <img src="pics/train-loss-2b6-v2.png" width="400"> 
 
@@ -376,10 +192,19 @@ torchrun --nproc_per_node={num_gpus} train_qlora.py --train_args_file train_args
 - learning_rate：qlora中的学习率设置更大一些，一般为1e-4、2e-4。
 
 
-firefly-bloom-7b1-qlora-sft-v0.1的训练损失的变化趋势如下图所示：
+firefly-ziya-13b的训练损失的变化趋势如下图所示：
 
-<img src="pics/train-loss-qlora.png" width="400"> 
+<img src="pics/train-loss-ziya-13b.png" width="400"> 
 
+## 模型使用
+
+### 权重合并
+如果使用LoRA或者QLoRA进行训练，本项目仅保存adapter的权重和配置文件，需要将adapter权重与base model进行合并。脚本见script/merge_lora.py
+
+### 模型推理
+我们提供了单轮对话和多轮对话的脚本，详见script/chat目录，该脚本可同时兼容firefly-bloom-1b4、firefly-bloom-2b46、firefly-bloom-7b1、firefly-baichuan-7b、firefly-ziya-13b。
+
+生成脚本中的top_p、temperature、repetition_penalty、do_sample等参数对模型的生成效果影响较大，可按照自己的使用场景进行调试修改。
 ## FAQ
 #### 问题1：OOM如何解决？
 如果发生OOM，可以缩小per_device_train_batch_size、max_seq_length等参数来缓解。也可以设gradient_checkpointing=true，可以大幅降低显存占用，但训练速度会变慢一些。
@@ -399,17 +224,17 @@ pip install git+https://github.com/TimDettmers/bitsandbytes.git
 #### 问题4：如何指定使用某些卡训练？
 通过如下方式，即可指定使用0和1号卡进行训练:
 ```bash
-CUDA_VISIBLE_DEVICES=0,1 torchrun --nproc_per_node={num_gpus} train_qlora.py --train_args_file train_args/baichuan-sft-qlora.json
+CUDA_VISIBLE_DEVICES=0,1 torchrun --nproc_per_node={num_gpus} train_qlora.py --train_args_file train_args/qlora/baichuan-sft-qlora.json
 ```
 
 
 ## 局限性和使用限制
-目前本项目开源的模型均为7B及7B以下，模型参数量较小。所以在效果上可能存在以下问题：
+由于模型参数量限制、训练数据的清洗程度等因素，本项目开源的模型可能存在以下局限性：
 - 对于事实性知识，容易产生错误的回复。
 - 由于未经过无害化微调，可能会产生歧视、危害、违背伦理道德的言论。
 - 在代码、推理上的能力仍有欠缺。
 
-基于以上模型的局限性，我们要求本项目的代码、数据、模型不得用于对社会造成危害的用途。
+基于以上模型的局限性，我们要求本项目的代码、数据、模型不得用于对社会造成危害的用途，且应当遵循基座模型的商业许可。
 
 ## 引用
 若使用本项目的数据、代码或模型，请引用本项目。
@@ -430,7 +255,7 @@ CUDA_VISIBLE_DEVICES=0,1 torchrun --nproc_per_node={num_gpus} train_qlora.py --t
 [//]: # (<img src="pics/gongzhonghao.jpeg" width="250"> )
 
 ## 生成效果
-下面的样例均为firefly-bloom-2b6-sft-v2模型所生成，未经修改，部分生成内容可能存在事实性错误，仅供参考。
+下面的样例均为firefly-bloom-2b6-v2模型所生成，未经修改，部分生成内容可能存在事实性错误，仅供参考。
 
 <details><summary><b>医疗问答</b></summary>
 
@@ -601,7 +426,7 @@ Firefly: k-means是一种无监督式的聚类算法，它可以自动地将数�
 |把这句话翻译成中文：Knowledge can be acquired from many sources. These include books, teachers and practical experience, and each has its own advantages. The knowledge we gain from books and formal education enables us to learn about things that we have no opportunity to experience in daily life. We can also develop our analytical skills and learn how to view and interpret the world around us in different ways. Furthermore, we can learn from the past by reading books. In this way, we won't repeat the mistakes of others and can build on their achievements.|知识可以从许多来源获得，包括书籍、老师和实践经验。每种来源都有其优点。从书本和正式教育中获得的知识使我们能够学习我们无法在日常生活中体验到的东西。我们可以发展我们的分析技能并学会如何看待和分析周围的世界以不同的方式。此外，通过阅读其他人的作品，我们可以借鉴他们的成就。这样我们就不会重复别人的错误，可以基于他们取得的成果来建立自己的成功之路|
 </details>
 
-下面的样例均为firefly-bloom-7b1-qlora-sft-v0.1模型所生成，未经修改，部分生成内容可能存在事实性错误，仅供参考。
+下面的样例均为firefly-bloom-7b1模型所生成，未经修改，部分生成内容可能存在事实性错误，仅供参考。
 
 <details><summary><b>多轮对话</b></summary>
 

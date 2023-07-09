@@ -1,5 +1,5 @@
 {
-    "output_dir": "output/firefly-bloom-7b1-qlora-sft",
+    "output_dir": "output/firefly-bloom-7b1",
     "model_name_or_path": "bigscience/bloom-7b1",
     "train_file": "./data/dummy_data.jsonl",
     "num_train_epochs": 1,
