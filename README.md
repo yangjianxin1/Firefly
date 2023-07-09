@@ -63,13 +63,13 @@
 🔔 使用本项目的训练代码，以及上述训练数据，我们训练并开源了以下模型。
 
 | 模型                                                                             | 基座模型  | 训练数据                 | Batch Size | Max Length | LR   | Train Step |
-|--------------------------------------------------------------------------------|-------|----------------------|------------|------------|---------|------------|
+|--------------------------------------------------------------------------------|-------|----------------------|------------|------------|------|------------|
 | [firefly-bloom-1b4](https://huggingface.co/YeungNLP/firefly-bloom-1b4)         | YeungNLP/bloom-1b4-zh | 160万                 | 16         | 512        | 3e-5 | 90k        |
-| [firefly-bloom-2b6](https://huggingface.co/YeungNLP/firefly-bloom-2b6)         | YeungNLP/bloom-2b6-zh | 210万                 | 8          |    512        |  3e-5    | 260k       |
-| [firefly-bloom-2b6-v2](https://huggingface.co/YeungNLP/firefly-bloom-2b6-v2) ⭐ | YeungNLP/bloom-2b6-zh | 376万                 | 60         |   512         | 2e-5     | 62k        |
-| [firefly-bloom-7b1](https://huggingface.co/YeungNLP/firefly-bloom-7b1) ⭐       | bigscience/bloom-7b1 | 100万（moss+ultrachat） | 64         |   1024         |  2e-4    | 16k        |
-| [firefly-baichuan-7b](https://huggingface.co/YeungNLP/firefly-baichuan-7b) ⭐   | baichuan-inc/baichuan-7B | 100万（moss）           | 64         |1024     |    2e-4        | 16k        |           
-| [firefly-ziya-13b](https://huggingface.co/YeungNLP/firefly-ziya-13b) ⭐         | YeungNLP/Ziya-LLaMA-13B-Pretrain-v1      | 100万（moss）+ 5k math  | 64         |1024     |    2e-4        | 15k        |           
+| [firefly-bloom-2b6](https://huggingface.co/YeungNLP/firefly-bloom-2b6)         | YeungNLP/bloom-2b6-zh | 210万                 | 8          |    512        | 3e-5 | 260k       |
+| [firefly-bloom-2b6-v2](https://huggingface.co/YeungNLP/firefly-bloom-2b6-v2) ⭐ | YeungNLP/bloom-2b6-zh | 376万                 | 60         |   512         | 2e-5 | 62k        |
+| [firefly-bloom-7b1](https://huggingface.co/YeungNLP/firefly-bloom-7b1) ⭐       | bigscience/bloom-7b1 | 100万（moss+ultrachat） | 64         |   1024         | 2e-4 | 16k        |
+| [firefly-baichuan-7b](https://huggingface.co/YeungNLP/firefly-baichuan-7b) ⭐   | baichuan-inc/baichuan-7B | 100万（moss）           | 64         |1024     | 2e-4 | 16k        |           
+| [firefly-ziya-13b](https://huggingface.co/YeungNLP/firefly-ziya-13b) ⭐         | YeungNLP/Ziya-LLaMA-13B-Pretrain-v1      | 100万（moss）+ 5k math  | 64         |1024     | 1e-4 | 15k        |           
 
 
 
