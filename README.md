@@ -18,6 +18,7 @@
 
 
 ## News
+- 🔥 发布项目首个百亿参数规模的模型：[firefly-ziya-13b](https://huggingface.co/YeungNLP/firefly-ziya-13b) ，该模型使用百万指令数据进行微调。
 - 支持对baichuan、bloom、ziya、llama等模型进行训练，添加训练参数配置。
 - 支持lora与base model进行权重合并，并且发布合并后的模型权重。
 - 发布经过QLoRA微调的百川baichuan-7b模型。
@@ -67,9 +68,9 @@
 | [firefly-bloom-1b4](https://huggingface.co/YeungNLP/firefly-bloom-1b4)         | YeungNLP/bloom-1b4-zh | 160万                 | 16         | 512        | 3e-5 | 90k        |
 | [firefly-bloom-2b6](https://huggingface.co/YeungNLP/firefly-bloom-2b6)         | YeungNLP/bloom-2b6-zh | 210万                 | 8          |    512        | 3e-5 | 260k       |
 | [firefly-bloom-2b6-v2](https://huggingface.co/YeungNLP/firefly-bloom-2b6-v2) ⭐ | YeungNLP/bloom-2b6-zh | 376万                 | 60         |   512         | 2e-5 | 62k        |
-| [firefly-bloom-7b1](https://huggingface.co/YeungNLP/firefly-bloom-7b1) ⭐       | bigscience/bloom-7b1 | 100万（moss+ultrachat） | 64         |   1024         | 2e-4 | 16k        |
-| [firefly-baichuan-7b](https://huggingface.co/YeungNLP/firefly-baichuan-7b) ⭐   | baichuan-inc/baichuan-7B | 100万（moss）           | 64         |1024     | 2e-4 | 16k        |           
-| [firefly-ziya-13b](https://huggingface.co/YeungNLP/firefly-ziya-13b) ⭐         | YeungNLP/Ziya-LLaMA-13B-Pretrain-v1      | 100万（moss）+ 5k math  | 64         |1024     | 1e-4 | 15k        |           
+| [firefly-bloom-7b1](https://huggingface.co/YeungNLP/firefly-bloom-7b1) ⭐       | bigscience/bloom-7b1 | 100万<br>（moss+ultrachat） | 64         |   1024         | 2e-4 | 16k        |
+| [firefly-baichuan-7b](https://huggingface.co/YeungNLP/firefly-baichuan-7b) ⭐   | baichuan-inc/baichuan-7B | 100万<br>（moss）           | 64         |1024     | 2e-4 | 16k        |           
+| [firefly-ziya-13b](https://huggingface.co/YeungNLP/firefly-ziya-13b) ⭐         | YeungNLP/Ziya-LLaMA-13B-Pretrain-v1      | 100万（moss）<br/>+ 5k math  | 64         |1024     | 1e-4 | 15k        |           
 
 
 
