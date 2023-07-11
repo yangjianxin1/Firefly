@@ -101,7 +101,7 @@ def init_components(args, training_args):
     # 下面的设置至关重要，否则无法多卡训练
     world_size = int(os.environ.get("WORLD_SIZE", 1))
     ddp = world_size != 1
-    training_args.ddp_find_unused_parameters = False if ddp else None
+    training_args.ddp_find_unused_parameters = False
     device_map = "auto"
     # if we are in a distributed setting, we need to set the device map and max memory per device
     if os.environ.get('LOCAL_RANK') is not None:

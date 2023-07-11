@@ -18,6 +18,7 @@
 
 
 ## News
+- 🔥 支持训练百川baichuan-13b。
 - 🔥 发布项目首个百亿参数规模的模型：[firefly-ziya-13b](https://huggingface.co/YeungNLP/firefly-ziya-13b) ，该模型使用百万指令数据进行微调。
 - 支持对baichuan、bloom、ziya、llama等模型进行训练，添加训练参数配置。
 - 支持lora与base model进行权重合并，并且发布合并后的模型权重。
@@ -154,7 +155,7 @@ deepspeed --num_gpus={num_gpus} train.py --train_args_file train_args/sft.json
 - train_file：训练数据集路径。可以使用data/dummy_data.jsonl进行debug。
 - num_train_epochs：训练的轮次。如果数据量足够大，一般建议只训一个epoch。
 - per_device_train_batch_size：每张显卡的batch size。
-- gradient_accumulation_steps：梯度累计步数。global step=num_gpus * per_device_train_batch_size * gradient_accumulation_steps。
+- gradient_accumulation_steps：梯度累计步数。global batch=num_gpus * per_device_train_batch_size * gradient_accumulation_steps。
 - gradient_checkpointing：如果显存捉襟见肘，可以开启。以时间换空间，模型不缓存激活状态，会进行两次forward计算，以节省显存。
 - learning_rate：学习率。全量参数微调的时候，建议小一些，1e-5或5e-6。
 - max_seq_length：训练时的最大长度。按照自己的设备进行设置，越长需要占用越多显存。
@@ -183,7 +184,7 @@ QLoRA论文指出，该方法可以在一张V100上对33B的模型进行微调�
 
 💻 执行如下命令即可进行QLoRA微调：
 ```bash
-torchrun --nproc_per_node={num_gpus} train_qlora.py --train_args_file train_args/qlora/baichuan-sft-qlora.json
+torchrun --nproc_per_node={num_gpus} train_qlora.py --train_args_file train_args/qlora/baichuan-7b-sft-qlora.json
 ```
 
 📝 train_args/sft-qlora.json中的主要参数说明如下，基本与全量微调的参数一致，几个较为特殊：
@@ -225,7 +226,7 @@ pip install git+https://github.com/TimDettmers/bitsandbytes.git
 #### 问题4：如何指定使用某些卡训练？
 通过如下方式，即可指定使用0和1号卡进行训练:
 ```bash
-CUDA_VISIBLE_DEVICES=0,1 torchrun --nproc_per_node={num_gpus} train_qlora.py --train_args_file train_args/qlora/baichuan-sft-qlora.json
+CUDA_VISIBLE_DEVICES=0,1 torchrun --nproc_per_node={num_gpus} train_qlora.py --train_args_file train_args/qlora/baichuan-7b-sft-qlora.json
 ```
 
 

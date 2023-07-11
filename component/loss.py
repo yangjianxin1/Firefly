@@ -32,8 +32,8 @@ class TargetLMLoss(Loss):
         attention_mask = inputs['attention_mask']
         target_mask = inputs['target_mask']
         # 模型前馈预测
-        outputs = model(input_ids=input_ids, attention_mask=attention_mask)
-        logits = outputs.logits
+        outputs = model(input_ids=input_ids, attention_mask=attention_mask, return_dict=True)
+        logits = outputs["logits"] if isinstance(outputs, dict) else outputs[1]
 
         # 将labels中不属于target的部分，设为ignore_index，只计算target部分的loss
         labels = torch.where(target_mask == 1, input_ids, self.ignore_index)
