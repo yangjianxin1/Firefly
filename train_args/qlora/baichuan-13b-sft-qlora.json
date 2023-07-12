@@ -12,6 +12,9 @@
     "save_total_limit": 1,
     "lr_scheduler_type": "constant_with_warmup",
     "warmup_steps": 3000,
+    "lora_rank": 64,
+    "lora_alpha": 16,
+    "lora_dropout": 0.05,
 
     "gradient_checkpointing": true,
     "disable_tqdm": false,
