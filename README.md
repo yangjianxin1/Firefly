@@ -18,6 +18,7 @@
 
 
 ## News
+- 🔥 发布Firefly项目教程：[微调百川Baichuan-13B保姆式教程，手把手教你训练百亿大模型](https://mp.weixin.qq.com/s/ZBY6kbogHjbCQvZBzNEqag)
 - 🔥 支持训练百川baichuan-13b。
 - 🔥 发布项目首个百亿参数规模的模型：[firefly-ziya-13b](https://huggingface.co/YeungNLP/firefly-ziya-13b) ，该模型使用百万指令数据进行微调。
 - 支持对baichuan、bloom、ziya、llama等模型进行训练，添加训练参数配置。
@@ -572,7 +573,8 @@ Firefly: 不用客气，我很高兴为您服务。如果您有任何其他的�
 
 </details>
 
-
+## Star History
+![Star History Chart](https://api.star-history.com/svg?repos=yangjianxin1/Firefly&type=Date)
 
 
 
