@@ -10,3 +10,4 @@ deepspeed==0.9.5
 tensorboard
 sentencepiece
 torch==1.13.0
+transformers_stream_generator
