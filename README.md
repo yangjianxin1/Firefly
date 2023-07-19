@@ -18,6 +18,8 @@
 
 
 ## News
+- 🔥 支持训练LLaMA-2模型。
+- 🔥 支持训练书生·浦语InternLM模型。
 - 🔥 发布Firefly项目教程：[微调百川Baichuan-13B保姆式教程，手把手教你训练百亿大模型](https://mp.weixin.qq.com/s/ZBY6kbogHjbCQvZBzNEqag)
 - 🔥 支持训练百川baichuan-13b。
 - 🔥 发布项目首个百亿参数规模的模型：[firefly-ziya-13b](https://huggingface.co/YeungNLP/firefly-ziya-13b) ，该模型使用百万指令数据进行微调。

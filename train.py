@@ -64,6 +64,9 @@ def init_components(args, training_args):
     # 部分tokenizer没有pad_token_id
     if tokenizer.pad_token_id is None:
         tokenizer.pad_token_id = tokenizer.unk_token_id
+    # 部分tokenizer的pad_token_id与eos_token_id相同，如InternLM，会导致无法计算eos_token_id的loss。将pad_token_id设为unk_token_id
+    if tokenizer.pad_token_id == tokenizer.eos_token_id and tokenizer.unk_token_id is not None:
+        tokenizer.pad_token_id = tokenizer.unk_token_id
     # 如果两者相同，模型训练时不会计算eos_token_id的loss
     if tokenizer.pad_token_id == tokenizer.eos_token_id:
         raise Exception('pad_token_id should not be equal to eos_token_id')
