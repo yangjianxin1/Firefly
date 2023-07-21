@@ -29,6 +29,16 @@
 - 发布经过QLoRA微调的百川baichuan-7b模型。
 - 发布经过QLoRA微调的bloom-7b1模型。
 
+## 文章链接
+- [Firefly单卡复刻Vicuna-13B，Open LLM榜单🤗略高0.2分](https://mp.weixin.qq.com/s/QG2YMo_QxaxS_Rr2yJrIeA)
+- [微调百川Baichuan-13B保姆式教程，手把手教你训练百亿大模型](https://mp.weixin.qq.com/s/ZBY6kbogHjbCQvZBzNEqag)
+- [Firefly-Ziya-13B开源，QLoRA+百万数据，单卡可训百亿大模型](https://mp.weixin.qq.com/s/vgNK6D-_0j4Chk2H1Ev-Ig)
+- [Firefly｜百川baichuan-7B实测，QLoRA+百万指令数据微调](https://mp.weixin.qq.com/s/_eTkDGG5DmxyWeiQ6DIxBw)
+- [Firefly | QLoRA+百万数据，多卡高效微调bloom-7b1模型](https://mp.weixin.qq.com/s/lA4YUJ9XGpKlUUUjz0Le-g)
+- [QLoRA文章解读 & 单卡高效微调bloom-7b1](https://mp.weixin.qq.com/s/DED7yeiE0DibsVzTmMeDOw)
+- [Firefly(流萤): 中文对话式大语言模型](https://mp.weixin.qq.com/s/TX7wj8IzD_EaMTvk0bjRtA)
+- [LLMPruner：大语言模型裁剪工具](https://mp.weixin.qq.com/s/leVtrwZc1zLput51Nr99lw)
+
 ## 项目简介
 **Firefly(流萤)** 是一个开源的中文大语言模型项目，正如我们的项目名称一样，希望本项目能够像流萤一般发出淡淡微光，为中文大语言模型社区尽绵薄之力，促进中文大语言模型社区的发展。
 
