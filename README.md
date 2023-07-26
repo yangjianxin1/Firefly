@@ -18,7 +18,7 @@
 
 
 ## News
-- 🔥 开源[firefly-llama2-13b](https://huggingface.co/YeungNLP/firefly-llama2-13b)，在[Open LLM排行榜](https://huggingface.co/spaces/HuggingFaceH4/open_llm_leaderboard)上以62分，同量级模型排名第三，比榜首略低0.5分。
+- 🔥 开源[firefly-llama2-13b](https://huggingface.co/YeungNLP/firefly-llama2-13b)，在[Open LLM排行榜](https://huggingface.co/spaces/HuggingFaceH4/open_llm_leaderboard)上以62分，同量级模型**排名第三**，比榜首略低0.5分。
 - 🔥 开源[firefly-baichuan-13b](https://huggingface.co/YeungNLP/firefly-baichuan-13b)，使用一百万多轮对话数据，提升baichuan-13b的多轮对话能力。 [Firefly-Baichuan-13B生成样例](https://docs.qq.com/sheet/DU0lXUEZISVVwc3FG?tab=c5vlid)
 - 🔥 开源[firefly-llama-13b](https://huggingface.co/YeungNLP/firefly-llama-13b)，在[Hugging Face的Open LLM排行榜](https://huggingface.co/spaces/HuggingFaceH4/open_llm_leaderboard)上复刻Vicuna-13B，比Vicuna-13b-1.1略高0.2分，比llams-2-13b-chat略低0.5分。
 - 🔥 支持训练LLaMA-2、Baichuan、书生·浦语InternLM、LLaMA、Ziya、Bloom等开源模型。
