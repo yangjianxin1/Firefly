@@ -18,14 +18,12 @@
 
 
 ## News
+- 🔥 开源[firefly-llama2-13b](https://huggingface.co/YeungNLP/firefly-llama2-13b)，在[Hugging Face的Open LLM排行榜](https://huggingface.co/spaces/HuggingFaceH4/open_llm_leaderboard)上，同量级模型，排名第三，比榜首略低0.5分。
+- 🔥 开源[firefly-baichuan-13b](https://huggingface.co/YeungNLP/firefly-baichuan-13b)，使用一百万多轮对话数据，提升baichuan-13b的多轮对话能力。 [Firefly-Baichuan-13B生成样例](https://docs.qq.com/sheet/DU0lXUEZISVVwc3FG?tab=c5vlid)
 - 🔥 开源[firefly-llama-13b](https://huggingface.co/YeungNLP/firefly-llama-13b)，在[Hugging Face的Open LLM排行榜](https://huggingface.co/spaces/HuggingFaceH4/open_llm_leaderboard)上复刻Vicuna-13B，比Vicuna-13b-1.1略高0.2分，比llams-2-13b-chat略低0.5分。
-- 🔥 支持训练LLaMA-2模型。
-- 🔥 支持训练书生·浦语InternLM模型。
+- 🔥 支持训练LLaMA-2、Baichuan、书生·浦语InternLM、LLaMA、Ziya、Bloom等开源模型。
 - 🔥 发布Firefly项目教程：[微调百川Baichuan-13B保姆式教程，手把手教你训练百亿大模型](https://mp.weixin.qq.com/s/ZBY6kbogHjbCQvZBzNEqag)
-- 🔥 支持训练百川baichuan-13b。
 - 🔥 发布项目首个百亿参数规模的模型：[firefly-ziya-13b](https://huggingface.co/YeungNLP/firefly-ziya-13b) ，该模型使用百万指令数据进行微调。
-- 支持对baichuan、bloom、ziya、llama等模型进行训练，添加训练参数配置。
-- 支持lora与base model进行权重合并，并且发布合并后的模型权重。
 - 发布经过QLoRA微调的百川baichuan-7b模型。
 - 发布经过QLoRA微调的bloom-7b1模型。
 
