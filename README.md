@@ -28,6 +28,8 @@
 - 发布经过QLoRA微调的bloom-7b1模型。
 
 ## 文章链接
+- [🤗Open LLM排行榜，firefly-llama2-13b在所有13B模型中排名第三，比榜首略低0.5分](https://mp.weixin.qq.com/s/w1V3QGvsRTQsQqAKp2z6Kg)
+- [百万数据增强Baichuan-13B的多轮对话能力](https://mp.weixin.qq.com/s/djO8Tg3emmy6wzw_rTUlcw)
 - [Firefly单卡复刻Vicuna-13B，Open LLM榜单🤗略高0.2分](https://mp.weixin.qq.com/s/QG2YMo_QxaxS_Rr2yJrIeA)
 - [微调百川Baichuan-13B保姆式教程，手把手教你训练百亿大模型](https://mp.weixin.qq.com/s/ZBY6kbogHjbCQvZBzNEqag)
 - [Firefly-Ziya-13B开源，QLoRA+百万数据，单卡可训百亿大模型](https://mp.weixin.qq.com/s/vgNK6D-_0j4Chk2H1Ev-Ig)
