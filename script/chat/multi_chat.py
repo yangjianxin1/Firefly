@@ -1,10 +1,27 @@
 from transformers import AutoModelForCausalLM, AutoTokenizer
+from peft import PeftModel
 import torch
+import argparse
 
+def load_model(args):
+    model = AutoModelForCausalLM.from_pretrained(
+        args.model_name,
+        trust_remote_code=True,
+        low_cpu_mem_usage=True,
+        torch_dtype=torch.float16,
+        device_map='cuda',
+        max_memory={0: args.max_memory_MB},
+        # offload_folder='./.tmp/'
+    )
+    if args.adapter_name:
+        model = PeftModel.from_pretrained(model, args.adapter_name)
+    return model
+    
+        
 
-def main():
+def main(args):
     # model_name = 'YeungNLP/firefly-baichuan-7b-qlora-sft-merge'
-    model_name = 'YeungNLP/firefly-ziya-13b-qlora-sft-merge'
+    # model_name = 'YeungNLP/firefly-ziya-13b-qlora-sft-merge'
     # model_name = 'YeungNLP/firefly-bloom-7b1-qlora-sft-merge'
 
     device = 'cuda'
@@ -15,15 +32,9 @@ def main():
     repetition_penalty = 1.0
 
     # 加载模型
-    model = AutoModelForCausalLM.from_pretrained(
-        model_name,
-        trust_remote_code=True,
-        low_cpu_mem_usage=True,
-        torch_dtype=torch.float16,
-        device_map='auto'
-    ).to(device).eval()
+    model = load_model(args).to(device).eval()
     tokenizer = AutoTokenizer.from_pretrained(
-        model_name,
+        args.model_name,
         trust_remote_code=True,
         # llama不支持fast
         use_fast=False if model.config.model_type == 'llama' else True
@@ -52,4 +63,11 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    parser = argparse.ArgumentParser(description='Firefly chatbot')
+    parser.add_argument('--model_name', type=str, help='Model name or path')
+    parser.add_argument('--adapter_name', type=str, default='', help='name it if you wanna use model+adapter')
+    parser.add_argument('--max_memory_MB', type=int, default=16000, help='max memory per GPU')
+
+    args = parser.parse_args()
+
+    main(args)
