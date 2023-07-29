@@ -4,7 +4,7 @@
 
 ![GitHub Repo stars](https://img.shields.io/github/stars/yangjianxin1/Firefly?style=social)
 [![Generic badge](https://img.shields.io/badge/微信交流群-Firefly-brightgreen?logo=wechat)](./pics/wechat-group.jpeg)
-[![Generic badge](https://img.shields.io/badge/🤗-Huggingface%20Repo-green.svg)](https://huggingface.co/YeungNLP)
+[![Generic badge](https://img.shields.io/badge/🤗-Hugging%20Face%20Repo-green.svg)](https://huggingface.co/YeungNLP)
 
 [//]: # ([![Generic badge]&#40;https://img.shields.io/badge/微信-Firefly-brightgreen?logo=wechat&#41;]&#40;./pics/wechat.jpeg&#41;)
 </div>
@@ -142,7 +142,7 @@
 
 我们将训练中使用的各种组件抽取出来，以便后续的扩展和优化，详见component目录下的实现。训练时的参数配置存储在train_args目录下，方便统一管理和更改。
 
-🔔 一些优秀的中文预训练模型权重，理论上，HuggingFace上开源的模型，均可使用本项目进行训练：
+🔔 一些优秀的中文预训练模型权重，理论上，Hugging Face上开源的模型，均可使用本项目进行训练：
 - [词表裁剪后的bloom系列模型](https://github.com/yangjianxin1/LLMPruner) ：下游任务以中文为主，且训练资源紧缺时，建议使用，比原生的bloom权重更节省显存。
 - [原生bloom系列模型](https://huggingface.co/bigscience) ：适用于多语言任务，也适用中文任务。进行指令微调时，建议使用bloom模型，不要使用bloomz，该模型可商用。
 - [baichuan-7B](https://huggingface.co-inc/baichuan-7B) ：百川智能的中文预训练模型，相比bloom，预训练更充分，且可商用。
@@ -165,7 +165,7 @@ deepspeed --num_gpus={num_gpus} train.py --train_args_file train_args/sft.json
 
 📝 train_args/sft.json中的主要参数说明如下，以下参数可以根据需求进行修改，其他参数建议不做修改：
 - output_dir：训练输出目录，存储checkpoint、tokenizer、tensorboard等
-- model_name_or_path：预训练模型的本地目录，或者在huggingface上的模型名称。
+- model_name_or_path：预训练模型的本地目录，或者在Hugging Face上的模型名称。
 - train_file：训练数据集路径。可以使用data/dummy_data.jsonl进行debug。
 - num_train_epochs：训练的轮次。如果数据量足够大，一般建议只训一个epoch。
 - per_device_train_batch_size：每张显卡的batch size。
