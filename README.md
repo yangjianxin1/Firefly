@@ -18,6 +18,7 @@
 
 
 ## News
+- 🔥 支持多轮对话微调ChatGLM2，**比官方的训练方法更加充分高效**（近期会进行源码分析）。当前微调了2500步的效果：[Firefly-ChatGLM2-6B生成样例](https://docs.qq.com/sheet/DU0NCbFp6UFpWb3pE?tab=d8ashk)
 - 🔥 开源[firefly-llama2-13b](https://huggingface.co/YeungNLP/firefly-llama2-13b)，在[Open LLM排行榜](https://huggingface.co/spaces/HuggingFaceH4/open_llm_leaderboard)上以62分，同量级模型**排名第三**，比榜首略低0.5分。
 - 🔥 开源[firefly-baichuan-13b](https://huggingface.co/YeungNLP/firefly-baichuan-13b)，使用一百万多轮对话数据，提升baichuan-13b的多轮对话能力。 [Firefly-Baichuan-13B生成样例](https://docs.qq.com/sheet/DU0lXUEZISVVwc3FG?tab=c5vlid)
 - 🔥 开源[firefly-llama-13b](https://huggingface.co/YeungNLP/firefly-llama-13b)，在[Hugging Face的Open LLM排行榜](https://huggingface.co/spaces/HuggingFaceH4/open_llm_leaderboard)上复刻Vicuna-13B，比Vicuna-13b-1.1略高0.2分，比llams-2-13b-chat略低0.5分。

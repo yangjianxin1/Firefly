@@ -6,16 +6,16 @@ import torch
 
 
 def main():
-    # model_name = 'YeungNLP/firefly-baichuan-7b-qlora-sft-merge'
-    model_name = 'YeungNLP/firefly-ziya-13b-qlora-sft-merge'
-    # model_name = 'YeungNLP/firefly-bloom-7b1-qlora-sft-merge'
+    model_name = 'YeungNLP/firefly-baichuan-13b'
+    # model_name = 'YeungNLP/firefly-baichuan-7b'
+    # model_name = 'YeungNLP/firefly-ziya-13b'
+    # model_name = 'YeungNLP/firefly-bloom-7b1'
 
     max_new_tokens = 500
     top_p = 0.9
     temperature = 0.35
     repetition_penalty = 1.0
     device = 'cuda'
-    input_pattern = '<s>{}</s>'
     model = AutoModelForCausalLM.from_pretrained(
         model_name,
         trust_remote_code=True,
@@ -29,6 +29,11 @@ def main():
         # llama不支持fast
         use_fast=False if model.config.model_type == 'llama' else True
     )
+    # chatglm使用官方的数据组织格式
+    if model.config.model_type == 'chatglm':
+        input_pattern = '[Round 1]\n\n问：{}\n\n答：'
+    else:
+        input_pattern = '<s>{}</s>'
     text = input('User：')
     while True:
         text = text.strip()

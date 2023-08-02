@@ -15,7 +15,7 @@ import bitsandbytes as bnb
 from collections import defaultdict
 
 from component.collator import SFTDataCollator
-from component.dataset import SFTDataset
+from component.dataset import SFTDataset, ChatGLM2SFTDataset
 from component.argument import QLoRAArguments
 from component.trainer import LoRATrainer
 from component.loss import TargetLMLoss
@@ -164,8 +164,11 @@ def init_components(args, training_args):
     # 初始化损失函数
     loss_func = TargetLMLoss(ignore_index=tokenizer.pad_token_id)
 
-    # 加载训练集
-    train_dataset = SFTDataset(args.train_file, tokenizer, args.max_seq_length)
+    # 指加载训练集
+    if model.config.model_type == 'chatglm':
+        train_dataset = ChatGLM2SFTDataset(args.train_file, tokenizer, args.max_seq_length)
+    else:
+        train_dataset = SFTDataset(args.train_file, tokenizer, args.max_seq_length)
     data_collator = SFTDataCollator(tokenizer, args.max_seq_length)
 
     # 初始化Trainer

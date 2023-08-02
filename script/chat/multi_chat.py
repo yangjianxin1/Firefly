@@ -3,9 +3,10 @@ import torch
 
 
 def main():
-    # model_name = 'YeungNLP/firefly-baichuan-7b-qlora-sft-merge'
-    model_name = 'YeungNLP/firefly-ziya-13b-qlora-sft-merge'
-    # model_name = 'YeungNLP/firefly-bloom-7b1-qlora-sft-merge'
+    model_name = 'YeungNLP/firefly-baichuan-13b'
+    # model_name = 'YeungNLP/firefly-baichuan-7b'
+    # model_name = 'YeungNLP/firefly-ziya-13b'
+    # model_name = 'YeungNLP/firefly-bloom-7b1'
 
     device = 'cuda'
     max_new_tokens = 500    # 每轮对话最多生成多少个token
@@ -32,9 +33,14 @@ def main():
     history_token_ids = tokenizer('<s>', return_tensors="pt").input_ids
 
     # 开始对话
+    utterance_id = 0    # 记录当前是第几轮对话，为了契合chatglm的数据组织格式
     user_input = input('User：')
     while True:
-        user_input = '{}</s>'.format(user_input)
+        utterance_id += 1
+        if model.config.model_type == 'chatglm':
+            user_input = '[Round {}]\n\n问：{}\n\n答：'.format(utterance_id, user_input)
+        else:
+            user_input = '{}</s>'.format(user_input)
         user_input_ids = tokenizer(user_input, return_tensors="pt", add_special_tokens=False).input_ids
         history_token_ids = torch.concat((history_token_ids, user_input_ids), dim=1)
         model_input_ids = history_token_ids[:, -history_max_len:].to(device)
