@@ -18,17 +18,20 @@
 
 
 ## News
+- 🔥 支持微调通义千问Qwen-7B，该模型在各个中英文榜单，表现非常优异。
 - 🔥 支持多轮对话微调ChatGLM2，**比官方的训练方法更加充分高效**（近期会进行源码分析）。当前微调了2500步的效果：[Firefly-ChatGLM2-6B生成样例](https://docs.qq.com/sheet/DU0NCbFp6UFpWb3pE?tab=d8ashk)
 - 🔥 开源[firefly-llama2-13b](https://huggingface.co/YeungNLP/firefly-llama2-13b)，在[Open LLM排行榜](https://huggingface.co/spaces/HuggingFaceH4/open_llm_leaderboard)上以62分，同量级模型**排名第三**，比榜首略低0.5分。
 - 🔥 开源[firefly-baichuan-13b](https://huggingface.co/YeungNLP/firefly-baichuan-13b)，使用一百万多轮对话数据，提升baichuan-13b的多轮对话能力。 [Firefly-Baichuan-13B生成样例](https://docs.qq.com/sheet/DU0lXUEZISVVwc3FG?tab=c5vlid)
 - 🔥 开源[firefly-llama-13b](https://huggingface.co/YeungNLP/firefly-llama-13b)，在[Hugging Face的Open LLM排行榜](https://huggingface.co/spaces/HuggingFaceH4/open_llm_leaderboard)上复刻Vicuna-13B，比Vicuna-13b-1.1略高0.2分，比llams-2-13b-chat略低0.5分。
-- 🔥 支持训练LLaMA-2、Baichuan、书生·浦语InternLM、LLaMA、Ziya、Bloom等开源模型。
+- 🔥 支持训练LLaMA-2、ChatGLM2、Baichuan、通义千问Qwen-7B、书生·浦语InternLM、LLaMA、Ziya、Bloom等开源模型。
 - 🔥 发布Firefly项目教程：[微调百川Baichuan-13B保姆式教程，手把手教你训练百亿大模型](https://mp.weixin.qq.com/s/ZBY6kbogHjbCQvZBzNEqag)
 - 🔥 发布项目首个百亿参数规模的模型：[firefly-ziya-13b](https://huggingface.co/YeungNLP/firefly-ziya-13b) ，该模型使用百万指令数据进行微调。
 - 发布经过QLoRA微调的百川baichuan-7b模型。
 - 发布经过QLoRA微调的bloom-7b1模型。
 
 ## 文章链接
+- [源码解析ChatGLM2多轮对话训练方法的不足，以及改进方法](https://mp.weixin.qq.com/s/nhogoWnzl3nrs_77r38_UA)
+- [Firefly增强Baichuan-13B的多轮对话能力](https://mp.weixin.qq.com/s/djO8Tg3emmy6wzw_rTUlcw)
 - [🤗Open LLM排行榜，firefly-llama2-13b在所有13B模型中排名第三，比榜首略低0.5分](https://mp.weixin.qq.com/s/w1V3QGvsRTQsQqAKp2z6Kg)
 - [百万数据增强Baichuan-13B的多轮对话能力](https://mp.weixin.qq.com/s/djO8Tg3emmy6wzw_rTUlcw)
 - [Firefly单卡复刻Vicuna-13B，Open LLM榜单🤗略高0.2分](https://mp.weixin.qq.com/s/QG2YMo_QxaxS_Rr2yJrIeA)

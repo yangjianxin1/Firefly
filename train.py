@@ -61,22 +61,26 @@ def init_components(args, training_args):
         # llama不支持fast
         use_fast=False if model.config.model_type == 'llama' else True
     )
-    # 部分tokenizer没有pad_token_id
-    if tokenizer.pad_token_id is None:
-        tokenizer.pad_token_id = tokenizer.unk_token_id
-    # 部分tokenizer的pad_token_id与eos_token_id相同，如InternLM，会导致无法计算eos_token_id的loss。将pad_token_id设为unk_token_id
-    if tokenizer.pad_token_id == tokenizer.eos_token_id and tokenizer.unk_token_id is not None:
-        tokenizer.pad_token_id = tokenizer.unk_token_id
-    # 如果两者相同，模型训练时不会计算eos_token_id的loss
-    if tokenizer.pad_token_id == tokenizer.eos_token_id:
-        raise Exception('pad_token_id should not be equal to eos_token_id')
+    # 部分tokenizer没有pad_token，例如qwen，将pad_token置为eos_token
+    if tokenizer.pad_token is None:
+        tokenizer.add_special_tokens({'pad_token': tokenizer.eos_token})
+
+    # # 部分tokenizer没有pad_token_id
+    # if tokenizer.pad_token_id is None:
+    #     tokenizer.pad_token_id = tokenizer.unk_token_id
+    # # 部分tokenizer的pad_token_id与eos_token_id相同，如InternLM，会导致无法计算eos_token_id的loss。将pad_token_id设为unk_token_id
+    # if tokenizer.pad_token_id == tokenizer.eos_token_id and tokenizer.unk_token_id is not None:
+    #     tokenizer.pad_token_id = tokenizer.unk_token_id
+    # # 如果两者相同，模型训练时不会计算eos_token_id的loss
+    # if tokenizer.pad_token_id == tokenizer.eos_token_id:
+    #     raise Exception('pad_token_id should not be equal to eos_token_id')
 
     # 计算模型参数量
     total = sum(p.numel() for p in model.parameters())
     logger.info("Total model params: %.2fM" % (total / 1e6))
 
     # 初始化损失函数
-    loss_func = TargetLMLoss(ignore_index=tokenizer.pad_token_id)
+    loss_func = TargetLMLoss(ignore_index=-100)
     # 加载训练集
     if model.config.model_type == 'chatglm':
         train_dataset = ChatGLM2SFTDataset(args.train_file, tokenizer, args.max_seq_length)
@@ -89,7 +93,7 @@ def init_components(args, training_args):
         model=model,
         args=training_args,
         train_dataset=train_dataset,
-        tokenizer=tokenizer,
+        # tokenizer=tokenizer,
         data_collator=data_collator,
         compute_loss=loss_func
     )

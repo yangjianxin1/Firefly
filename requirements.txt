@@ -11,3 +11,5 @@ tensorboard
 sentencepiece
 torch==1.13.0
 transformers_stream_generator
+tiktoken
+einops
