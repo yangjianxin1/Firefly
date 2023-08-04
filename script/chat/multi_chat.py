@@ -30,18 +30,26 @@ def main():
         use_fast=False if model.config.model_type == 'llama' else True
     )
     # 记录所有历史记录
-    history_token_ids = tokenizer('<s>', return_tensors="pt").input_ids
+    if model.config.model_type != 'chatglm':
+        history_token_ids = torch.tensor([[tokenizer.bos_token_id]], dtype=torch.long)
+    else:
+        history_token_ids = torch.tensor([[]], dtype=torch.long)
 
     # 开始对话
     utterance_id = 0    # 记录当前是第几轮对话，为了契合chatglm的数据组织格式
     user_input = input('User：')
     while True:
         utterance_id += 1
+        # chatglm使用官方的数据组织格式
         if model.config.model_type == 'chatglm':
             user_input = '[Round {}]\n\n问：{}\n\n答：'.format(utterance_id, user_input)
+            user_input_ids = tokenizer(user_input, return_tensors="pt", add_special_tokens=False).input_ids
+        # firefly的数据组织格式
+        # 为了兼容qwen-7b，因为其对eos_token进行tokenize，无法得到对应的eos_token_id
         else:
-            user_input = '{}</s>'.format(user_input)
-        user_input_ids = tokenizer(user_input, return_tensors="pt", add_special_tokens=False).input_ids
+            input_ids = tokenizer(user_input, return_tensors="pt", add_special_tokens=False).input_ids
+            eos_token_id = torch.tensor([[tokenizer.eos_token_id]], dtype=torch.long)
+            user_input_ids = torch.concat([input_ids, eos_token_id], dim=1)
         history_token_ids = torch.concat((history_token_ids, user_input_ids), dim=1)
         model_input_ids = history_token_ids[:, -history_max_len:].to(device)
         with torch.no_grad():
@@ -53,7 +61,7 @@ def main():
         response_ids = outputs[:, model_input_ids_len:]
         history_token_ids = torch.concat((history_token_ids, response_ids.cpu()), dim=1)
         response = tokenizer.batch_decode(response_ids)
-        print("Firefly：" + response[0].strip().replace('</s>', ""))
+        print("Firefly：" + response[0].strip().replace(tokenizer.eos_token, ""))
         user_input = input('User：')
 
 

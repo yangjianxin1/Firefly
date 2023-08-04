@@ -10,6 +10,10 @@ def main():
     # model_name = 'YeungNLP/firefly-baichuan-7b'
     # model_name = 'YeungNLP/firefly-ziya-13b'
     # model_name = 'YeungNLP/firefly-bloom-7b1'
+    # model_name = 'YeungNLP/firefly-baichuan-7b'
+    # model_name = 'YeungNLP/firefly-baichuan-13b'
+    # model_name = 'YeungNLP/firefly-bloom-7b1'
+    # model_name = 'YeungNLP/firefly-llama-30b'
 
     max_new_tokens = 500
     top_p = 0.9
@@ -29,16 +33,19 @@ def main():
         # llama不支持fast
         use_fast=False if model.config.model_type == 'llama' else True
     )
-    # chatglm使用官方的数据组织格式
-    if model.config.model_type == 'chatglm':
-        input_pattern = '[Round 1]\n\n问：{}\n\n答：'
-    else:
-        input_pattern = '<s>{}</s>'
     text = input('User：')
     while True:
         text = text.strip()
-        text = input_pattern.format(text)
-        input_ids = tokenizer(text, return_tensors="pt", add_special_tokens=False).input_ids.to(device)
+        # chatglm使用官方的数据组织格式
+        if model.config.model_type == 'chatglm':
+            text = '[Round 1]\n\n问：{}\n\n答：'.format(text)
+            input_ids = tokenizer(text, return_tensors="pt", add_special_tokens=False).input_ids.to(device)
+        # 为了兼容qwen-7b，因为其对eos_token进行tokenize，无法得到对应的eos_token_id
+        else:
+            input_ids = tokenizer(text, return_tensors="pt", add_special_tokens=False).input_ids.to(device)
+            bos_token_id = torch.tensor([[tokenizer.bos_token_id]], dtype=torch.long).to(device)
+            eos_token_id = torch.tensor([[tokenizer.eos_token_id]], dtype=torch.long).to(device)
+            input_ids = torch.concat([bos_token_id, input_ids, eos_token_id], dim=1)
         with torch.no_grad():
             outputs = model.generate(
                 input_ids=input_ids, max_new_tokens=max_new_tokens, do_sample=True,
@@ -47,7 +54,7 @@ def main():
             )
         outputs = outputs.tolist()[0][len(input_ids[0]):]
         response = tokenizer.decode(outputs)
-        response = response.strip().replace(text, "").replace('</s>', "").replace('<s>', "").strip()
+        response = response.strip().replace(tokenizer.eos_token, "").strip()
         print("Firefly：{}".format(response))
         text = input('User：')
 
