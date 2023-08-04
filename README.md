@@ -30,6 +30,7 @@
 - 发布经过QLoRA微调的bloom-7b1模型。
 
 ## 文章链接
+- [通义千问Qwen-7B效果如何？Firefly微调实践，效果出色](https://mp.weixin.qq.com/s/5OAx83j6Op299XAfa496ww)
 - [源码解析ChatGLM2多轮对话训练方法的不足，以及改进方法](https://mp.weixin.qq.com/s/nhogoWnzl3nrs_77r38_UA)
 - [Firefly增强Baichuan-13B的多轮对话能力](https://mp.weixin.qq.com/s/djO8Tg3emmy6wzw_rTUlcw)
 - [🤗Open LLM排行榜，firefly-llama2-13b在所有13B模型中排名第三，比榜首略低0.5分](https://mp.weixin.qq.com/s/w1V3QGvsRTQsQqAKp2z6Kg)
