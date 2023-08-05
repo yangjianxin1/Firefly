@@ -248,6 +248,9 @@ pip install git+https://github.com/TimDettmers/bitsandbytes.git
 CUDA_VISIBLE_DEVICES=0,1 torchrun --nproc_per_node={num_gpus} train_qlora.py --train_args_file train_args/qlora/baichuan-7b-sft-qlora.json
 ```
 
+#### 问题5：QLoRA微调ChatGLM2，显示找不到插入adapter的层
+将transformers替换成4.30.2即可。
+
 
 ## 局限性和使用限制
 由于模型参数量限制、训练数据的清洗程度等因素，本项目开源的模型可能存在以下局限性：
