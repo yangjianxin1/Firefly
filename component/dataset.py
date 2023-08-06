@@ -8,8 +8,6 @@ class SFTDataset(Dataset):
         self.tokenizer = tokenizer
         self.bos_token_id = tokenizer.bos_token_id
         self.eos_token_id = tokenizer.eos_token_id
-        self.eos_token = tokenizer.eos_token
-        self.bos_token = tokenizer.bos_token
         self.max_seq_length = max_seq_length
         logger.info('Loading data: {}'.format(file))
         with open(file, 'r', encoding='utf8') as f:

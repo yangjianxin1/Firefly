@@ -130,9 +130,16 @@ def init_components(args, training_args):
         # llama不支持fast
         use_fast=False if model.config.model_type == 'llama' else True
     )
-    # 部分tokenizer没有pad_token，例如qwen，将pad_token置为eos_token
-    if tokenizer.pad_token is None:
-        tokenizer.add_special_tokens({'pad_token': tokenizer.eos_token})
+    # QWenTokenizer比较特殊，pad_token_id、bos_token_id、eos_token_id均为None。eod_id对应的token为<|endoftext|>
+    if tokenizer.__class__.__name__ == 'QWenTokenizer':
+        tokenizer.pad_token_id = tokenizer.eod_id
+        tokenizer.bos_token_id = tokenizer.eod_id
+        tokenizer.eos_token_id = tokenizer.eod_id
+    # ChatGLMTokenizer不需要设置，仅设置其他tokenizer
+    elif tokenizer.__class__.__name__ != 'ChatGLMTokenizer':
+        assert tokenizer.eos_token_id is not None
+        assert tokenizer.bos_token_id is not None
+        tokenizer.pad_token_id = tokenizer.eos_token_id if tokenizer.pad_token_id is None else tokenizer.pad_token_id
 
     # # 部分tokenizer没有pad_token_id
     # if tokenizer.pad_token_id is None:

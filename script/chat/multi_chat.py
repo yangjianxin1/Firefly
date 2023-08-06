@@ -29,6 +29,12 @@ def main():
         # llama不支持fast
         use_fast=False if model.config.model_type == 'llama' else True
     )
+    # QWenTokenizer比较特殊，pad_token_id、bos_token_id、eos_token_id均为None。eod_id对应的token为<|endoftext|>
+    if tokenizer.__class__.__name__ == 'QWenTokenizer':
+        tokenizer.pad_token_id = tokenizer.eod_id
+        tokenizer.bos_token_id = tokenizer.eod_id
+        tokenizer.eos_token_id = tokenizer.eod_id
+
     # 记录所有历史记录
     if model.config.model_type != 'chatglm':
         history_token_ids = torch.tensor([[tokenizer.bos_token_id]], dtype=torch.long)
