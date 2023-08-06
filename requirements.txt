@@ -1,6 +1,6 @@
-git+https://github.com/huggingface/peft.git
-git+https://github.com/huggingface/accelerate.git
-git+https://github.com/huggingface/transformers.git
+accelerate==0.21.0
+transformers==4.30.2
+peft==0.4.0
 bitsandbytes==0.39.0
 loguru==0.7.0
 numpy==1.21.4
@@ -9,7 +9,7 @@ tqdm==4.62.3
 deepspeed==0.9.5
 tensorboard
 sentencepiece
-torch==1.13.0
 transformers_stream_generator
 tiktoken
 einops
+torch==1.13.0
