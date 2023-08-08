@@ -233,12 +233,9 @@ firefly-ziya-13b的训练损失的变化趋势如下图所示：
 如果发生OOM，可以缩小per_device_train_batch_size、max_seq_length等参数来缓解。也可以设gradient_checkpointing=true，可以大幅降低显存占用，但训练速度会变慢一些。
 
 #### 问题2：安装包错误
-下面四个python包，建议使用源码安装，后续待其稳定版本了，我们将会在requirements.txt更新版本号
+requirements.txt中有各python包的版本
 ```bash
-pip install git+https://github.com/huggingface/peft.git
-pip install git+https://github.com/huggingface/accelerate.git
-pip install git+https://github.com/huggingface/transformers.git
-pip install git+https://github.com/TimDettmers/bitsandbytes.git
+pip install -r requirements.txt
 ```
 
 #### 问题3：是否支持DeepSpeed+QLoRA？
