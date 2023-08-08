@@ -18,6 +18,7 @@
 
 
 ## News
+- 🔥 支持微调[XVERSE-13B](https://huggingface.co/xverse/XVERSE-13B)。
 - 🔥 开源Firefly项目多轮对话微调的[firefly-chatglm2-6b](https://huggingface.co/YeungNLP/firefly-chatglm2-6b)。
 - 🔥 支持微调通义千问Qwen-7B，该模型在各个中英文榜单，表现非常优异。
 - 🔥 支持多轮对话微调ChatGLM2，**比官方的训练方法更加充分高效**（近期会进行源码分析）。当前微调了2500步的效果：[Firefly-ChatGLM2-6B生成样例](https://docs.qq.com/sheet/DU0NCbFp6UFpWb3pE?tab=d8ashk)
