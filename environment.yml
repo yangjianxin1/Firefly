@@ -138,7 +138,6 @@ dependencies:
   - pip:
     - absl-py==1.2.0
     - accelerate==0.21.0
-    - aip-model-repo==2.0.0
     - alabaster==0.7.12
     - anyio==3.6.2
     - apex==0.1
