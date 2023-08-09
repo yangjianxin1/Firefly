@@ -81,6 +81,17 @@
 
 [//]: # (- [LLMPruner：大语言模型裁剪工具]&#40;https://mp.weixin.qq.com/s/leVtrwZc1zLput51Nr99lw&#41;)
 
+## 安装环境
+在requirements.txt下固定了几个主要的python包的版本，执行如下脚本即可：
+```bash
+pip install requirements.txt
+```
+
+若还是报错，我们也把我们的conda环境导出了，在environments.yml中。执行如下脚本，安装conda环境：
+```bash
+conda env create -f environment.yml
+```
+
 ## 模型下载
 
 🔔 使用本项目的训练代码，以及上述训练数据，我们训练并开源了以下模型。
