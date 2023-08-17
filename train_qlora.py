@@ -99,14 +99,18 @@ def init_components(args, training_args):
     """
     logger.info('Initializing components...')
     # 下面的设置至关重要，否则无法多卡训练
-    world_size = int(os.environ.get("WORLD_SIZE", 1))
-    ddp = world_size != 1
+    # world_size = int(os.environ.get("WORLD_SIZE", 1))
+    # ddp = world_size != 1
+    # device_map = "auto"
+    # # if we are in a distributed setting, we need to set the device map and max memory per device
+    # if os.environ.get('LOCAL_RANK') is not None:
+    #     local_rank = int(os.environ.get('LOCAL_RANK', '0'))
+    #     device_map = {'': local_rank}
+
     training_args.ddp_find_unused_parameters = False
-    device_map = "auto"
-    # if we are in a distributed setting, we need to set the device map and max memory per device
-    if os.environ.get('LOCAL_RANK') is not None:
-        local_rank = int(os.environ.get('LOCAL_RANK', '0'))
-        device_map = {'': local_rank}
+    local_rank = int(os.environ.get('LOCAL_RANK', '0'))
+    device_map = {'': local_rank}
+
     # 加载模型
     model = AutoModelForCausalLM.from_pretrained(
         args.model_name_or_path,
