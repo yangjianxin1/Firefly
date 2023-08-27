@@ -18,6 +18,8 @@
 
 
 ## News
+- 🔥 支持微调codellama模型，可用训练数据：[Open-Platypus](https://huggingface.co/datasets/garage-bAInd/Open-Platypus)、[computer_zh_26k](https://huggingface.co/datasets/shareAI/ShareGPT-Chinese-English-90k/blob/main/sharegpt_jsonl/computer_zh_26k.jsonl)、[computer_en_26k](https://huggingface.co/datasets/shareAI/ShareGPT-Chinese-English-90k/blob/main/sharegpt_jsonl/computer_en_26k.jsonl)
+- 🔥 开源Firefly项目多轮对话微调的[firefly-internlm-7b](https://huggingface.co/YeungNLP/firefly-internlm-7b)，[Firefly-InternLM-7B生成样例](https://docs.qq.com/sheet/DU3JIcHJlSVZHS2Zl?tab=c5vlid)。
 - 🔥 开源[firefly-llama-30b](https://huggingface.co/YeungNLP/firefly-llama-30b),在[🤗Open LLM排行榜](https://huggingface.co/spaces/HuggingFaceH4/open_llm_leaderboard)上以64.83分，同量级模型**排名第10**。
 - 🔥 开源Firefly项目多轮对话微调的[firefly-qwen-7b](https://huggingface.co/YeungNLP/firefly-qwen-7b)。
 - 🔥 支持微调[XVERSE-13B](https://huggingface.co/xverse/XVERSE-13B)。
