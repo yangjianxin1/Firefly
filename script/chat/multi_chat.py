@@ -1,30 +1,40 @@
-from transformers import AutoModelForCausalLM, AutoTokenizer
+from transformers import AutoTokenizer
 import torch
+
+import sys
+sys.path.append("../../")
+from component.utils import ModelUtils
 
 
 def main():
-    model_name = 'YeungNLP/firefly-baichuan-13b'
-    # model_name = 'YeungNLP/firefly-baichuan-7b'
-    # model_name = 'YeungNLP/firefly-ziya-13b'
-    # model_name = 'YeungNLP/firefly-bloom-7b1'
+    # 使用合并后的模型进行推理
+    model_name_or_path = 'YeungNLP/firefly-baichuan-13b'
+    adapter_name_or_path = None
 
+    # 使用base model和adapter进行推理
+    # model_name_or_path = 'baichuan-inc/Baichuan-7B'
+    # adapter_name_or_path = 'YeungNLP/firefly-baichuan-7b-qlora-sft'
+
+    # 是否使用4bit进行推理，能够节省很多显存，但效果可能会有一定的下降
+    load_in_4bit = False
     device = 'cuda'
-    max_new_tokens = 500    # 每轮对话最多生成多少个token
+
+    # 生成超参配置
+    max_new_tokens = 500  # 每轮对话最多生成多少个token
     history_max_len = 1000  # 模型记忆的最大token长度
     top_p = 0.9
     temperature = 0.35
     repetition_penalty = 1.0
 
     # 加载模型
-    model = AutoModelForCausalLM.from_pretrained(
-        model_name,
-        trust_remote_code=True,
-        low_cpu_mem_usage=True,
-        torch_dtype=torch.float16,
-        device_map='auto'
-    ).to(device).eval()
+    model = ModelUtils.load_model(
+        model_name_or_path,
+        load_in_4bit=load_in_4bit,
+        adapter_name_or_path=adapter_name_or_path
+    ).eval()
+    # 加载tokenizer
     tokenizer = AutoTokenizer.from_pretrained(
-        model_name,
+        model_name_or_path,
         trust_remote_code=True,
         # llama不支持fast
         use_fast=False if model.config.model_type == 'llama' else True
