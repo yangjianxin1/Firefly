@@ -89,7 +89,7 @@
 ## 安装环境
 在requirements.txt下固定了几个主要的python包的版本，执行如下脚本即可：
 ```bash
-pip install requirements.txt
+pip install -r requirements.txt
 ```
 
 若还是报错，我们也把我们的conda环境导出了，在environments.yml中。执行如下脚本，安装conda环境：
