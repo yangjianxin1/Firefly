@@ -23,6 +23,7 @@
 - 🔥 支持微调codellama模型，可用训练数据：[Open-Platypus](https://huggingface.co/datasets/garage-bAInd/Open-Platypus)、[computer_zh_26k](https://huggingface.co/datasets/shareAI/ShareGPT-Chinese-English-90k/blob/main/sharegpt_jsonl/computer_zh_26k.jsonl)、[computer_en_26k](https://huggingface.co/datasets/shareAI/ShareGPT-Chinese-English-90k/blob/main/sharegpt_jsonl/computer_en_26k.jsonl)
 
 <details><summary><b>往期News</b></summary>
+
 - 🔥 开源Firefly项目多轮对话微调的[firefly-internlm-7b](https://huggingface.co/YeungNLP/firefly-internlm-7b)，[Firefly-InternLM-7B生成样例](https://docs.qq.com/sheet/DU3JIcHJlSVZHS2Zl?tab=c5vlid)。
 - 🔥 开源[firefly-llama-30b](https://huggingface.co/YeungNLP/firefly-llama-30b),在[🤗Open LLM排行榜](https://huggingface.co/spaces/HuggingFaceH4/open_llm_leaderboard)上以64.83分，同量级模型**排名第10**。
 - 🔥 开源Firefly项目多轮对话微调的[firefly-qwen-7b](https://huggingface.co/YeungNLP/firefly-qwen-7b)。
@@ -38,6 +39,7 @@
 - 🔥 发布项目首个百亿参数规模的模型：[firefly-ziya-13b](https://huggingface.co/YeungNLP/firefly-ziya-13b) ，该模型使用百万指令数据进行微调。
 - 发布经过QLoRA微调的百川baichuan-7b模型。
 - 发布经过QLoRA微调的bloom-7b1模型。
+
 </details>
 
 ## 文章链接
@@ -83,10 +85,6 @@
 - 📗 开源[Firefly系列指令微调模型权重](https://huggingface.co/YeungNLP) 。
 - 📗 在Open LLM Leaderboard上验证了QLoRA训练流程的有效性。
 
-🔔 下图是firefly-bloom-7b1的多轮对话的生成效果。
-
-<img src="pics/demo.jpeg" width="600"> 
-
 
 ## 模型评测
 **Open LLM Leaderboard和C-Eval榜单，倾向于评测大模型的做题能力，榜单成绩仅供参考，不具有全面评价各个模型的作用。**
@@ -94,10 +92,6 @@
 ### Open LLM Leaderboard评测
 评测结果来源于Hugging Face的[Open LLM Leaderboard](https://huggingface.co/spaces/HuggingFaceH4/open_llm_leaderboard)。
 
-Result：
-- 对于30B模型而言，firefly-llama-30b击败了falcon-40b-instruct、guanaco-33b等模型，比vicuna-33b-v1.3 略低0.16分。
-- 对于13B模型而言，firefly-llama2-13b-v1.2领先于vicuna-13b-v1.5、mpt-30b-chat、wizardlm-13b-v1.2、llama-2-13b-chat、guanaco-13b等模型。
-- 值得注意的是，firefly模型使用项目中的QLoRA训练流程，所使用的训练资源比榜单上的其他模型少得多，使用2~4张V100。
 
 | 模型                          | Average | ARC   | HellaSwag | MMLU  | TruthfulQA |
 |-----------------------------|---------|-------|-----------|-------|------------|
@@ -117,19 +111,13 @@ Result：
 | vicuna-13b-v1.1             | 59.21   | 52.73 | 80.14     | 51.9  | 52.08      |
 | guanaco-13b                 | 59.18   | 57.85 | 83.84     | 48.28 | 46.73      |
 
+Result：
+- 对于30B模型而言，firefly-llama-30b击败了falcon-40b-instruct、guanaco-33b等模型，比vicuna-33b-v1.3 略低0.16分。
+- 对于13B模型而言，firefly-llama2-13b-v1.2领先于vicuna-13b-v1.5、mpt-30b-chat、wizardlm-13b-v1.2、llama-2-13b-chat、guanaco-13b等模型。
+- 值得注意的是，firefly模型使用项目中的QLoRA训练流程，所使用的训练资源比榜单上的其他模型少得多，使用2~4张V100。
 
 ### C-Eval评测
 
-评测说明：
-- C-Eval最终得分为所有数据集的平均分，而非各个学科的平均分。
-- 下表所有模型的得分，均由我们使用[OpenCompass](https://github.com/open-compass/opencompass)工具评测得出，所有模型一视同仁，均使用ppl的方式进行评测。其中ziya-llama-13b的分数来源于OpenCompass榜单。
-- 评测脚本位于script/evaluate目录下，需要结合OpenCompass工具一起使用。
-
-部分结论：
-- 在firefly系列模型中，firefly-baichuan-13b表现最佳，51.36分，超过了很多开源模型。
-- firefly-baichuan-13b、firefly-chatglm2-6b与其对应的官方的chat模型表现比较接近，差距在1分左右。
-- 即使使用同一份数据微调的模型，各模型的差距也比较大，例如firefly-internlm-7b与firefly-baichuan-7b相差了6.85分。
-- 出现了很多不太符合直觉的现象。qwen-7b-chat和internlm-7b-chat等7b模型碾压大多数13b模型，openbuddy的分数与其社区评价不相符，等等。
 
 | Model                            | C-Eval | STEM  | Social Science | Humanities | Other |
 |----------------------------------|--------|-------|----------------|------------|-------|
@@ -158,6 +146,16 @@ Result：
 | linly-llama2-13b                 | 27.86  | 27.67 | 26.95          | 27.93      | 28.95 |
 
 
+评测说明：
+- C-Eval最终得分为所有数据集的平均分，而非各个学科的平均分。
+- 下表所有模型的得分，均由我们使用[OpenCompass](https://github.com/open-compass/opencompass)工具评测得出，所有模型一视同仁，均使用ppl的方式进行评测。其中ziya-llama-13b的分数来源于OpenCompass榜单。
+- 评测脚本位于script/evaluate目录下，需要结合OpenCompass工具一起使用。
+
+部分结论：
+- 在firefly系列模型中，firefly-baichuan-13b表现最佳，51.36分，超过了很多开源模型。
+- firefly-baichuan-13b、firefly-chatglm2-6b与其对应的官方的chat模型表现比较接近，差距在1分左右。
+- 即使使用同一份数据微调的模型，各模型的差距也比较大，例如firefly-internlm-7b与firefly-baichuan-7b相差了6.85分。
+- 出现了很多不太符合直觉的现象。qwen-7b-chat和internlm-7b-chat等7b模型碾压大多数13b模型，openbuddy的分数与其社区评价不相符，等等。
 
 
 ## 安装环境
