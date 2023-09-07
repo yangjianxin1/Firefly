@@ -18,7 +18,11 @@
 
 
 ## News
+- 🔥 支持微调百川Baichuan2模型。
+- 🔥 新增模型评测结果 & 4bit量化推理脚本 & 模型部署成http服务
 - 🔥 支持微调codellama模型，可用训练数据：[Open-Platypus](https://huggingface.co/datasets/garage-bAInd/Open-Platypus)、[computer_zh_26k](https://huggingface.co/datasets/shareAI/ShareGPT-Chinese-English-90k/blob/main/sharegpt_jsonl/computer_zh_26k.jsonl)、[computer_en_26k](https://huggingface.co/datasets/shareAI/ShareGPT-Chinese-English-90k/blob/main/sharegpt_jsonl/computer_en_26k.jsonl)
+
+<details><summary><b>往期News</b></summary>
 - 🔥 开源Firefly项目多轮对话微调的[firefly-internlm-7b](https://huggingface.co/YeungNLP/firefly-internlm-7b)，[Firefly-InternLM-7B生成样例](https://docs.qq.com/sheet/DU3JIcHJlSVZHS2Zl?tab=c5vlid)。
 - 🔥 开源[firefly-llama-30b](https://huggingface.co/YeungNLP/firefly-llama-30b),在[🤗Open LLM排行榜](https://huggingface.co/spaces/HuggingFaceH4/open_llm_leaderboard)上以64.83分，同量级模型**排名第10**。
 - 🔥 开源Firefly项目多轮对话微调的[firefly-qwen-7b](https://huggingface.co/YeungNLP/firefly-qwen-7b)。
@@ -34,8 +38,10 @@
 - 🔥 发布项目首个百亿参数规模的模型：[firefly-ziya-13b](https://huggingface.co/YeungNLP/firefly-ziya-13b) ，该模型使用百万指令数据进行微调。
 - 发布经过QLoRA微调的百川baichuan-7b模型。
 - 发布经过QLoRA微调的bloom-7b1模型。
+</details>
 
 ## 文章链接
+- [Firefly多轮对话微调书生·浦语InternLM-7B实践](https://mp.weixin.qq.com/s/98OLdkHjoGDHNDbYL7RerA)
 - [🤗Firefly微调LLaMA-30B，Open LLM榜单同量级第10名](https://mp.weixin.qq.com/s/fFT0Pxfecma4n_fXQYb2Mw)
 - [通义千问Qwen-7B效果如何？Firefly微调实践，效果出色](https://mp.weixin.qq.com/s/5OAx83j6Op299XAfa496ww)
 - [源码解析ChatGLM2多轮对话训练方法的不足，以及改进方法](https://mp.weixin.qq.com/s/nhogoWnzl3nrs_77r38_UA)
@@ -52,7 +58,11 @@
 - [LLMPruner：大语言模型裁剪工具](https://mp.weixin.qq.com/s/leVtrwZc1zLput51Nr99lw)
 
 ## 项目简介
-**Firefly(流萤)** 是一个开源的中文大语言模型项目，正如我们的项目名称一样，希望本项目能够像流萤一般发出淡淡微光，为中文大语言模型社区尽绵薄之力，促进中文大语言模型社区的发展。
+**Firefly(流萤)** 是一个开源的中文大语言模型项目，支持QLoRA和全量参数微调Baichuan2、CodeLLaMA、LLaMA2、LLaMA、Qwen、Baichuan、ChatGLM2、InternLM、Ziya、Bloom、XVERSE等开源模型。
+正如我们的项目名称一样，希望本项目能够像流萤一般发出淡淡微光，为中文大语言模型社区尽绵薄之力，促进中文大语言模型社区的发展。
+
+如果你的训练资源有限，我们极力推荐使用QLoRA的指令微调方式，因为我们在Open LLM Leaderboard上验证了该方法的有效性，详情见模型评测章节。
+
 
 **流萤**（萤火虫的别称）是中华传统文化的一个符号，虽说腐草为萤，带有悲悯意味，但萤火虽小，也能凭借其淡淡荧光，照亮夜空。本项目的名称取自杜牧的《秋夕》：**银烛秋光冷画屏，轻罗小扇扑流萤**。
 ```text
@@ -65,50 +75,128 @@
 ```
 
 🔔 本项目主要内容如下：
-- 📗 支持全量参数指令微调、QLoRA低成本高效指令微调、LoRA指令微调(后续将会提供支持)。
-- 📗 支持绝大部分主流的开源大模型，如百川baichuan、Ziya、Bloom、LLaMA等。
+- 📗 支持全量参数指令微调、QLoRA低成本高效指令微调、其中QLoRA是我们主推的一种高效的训练方式。
+- 📗 支持绝大部分主流的开源大模型，如Baichuan2、CodeLLaMA、LLaMA2、LLaMA、Qwen、Baichuan、ChatGLM2、InternLM、Ziya、Bloom、XVERSE等。
 - 📗 支持lora与base model进行权重合并，推理更便捷。
 - 📗️ 模型裁剪：通过[LLMPruner：大语言模型裁剪工具](https://github.com/yangjianxin1/LLMPruner) ，开源[裁剪后的Bloom模型权重](https://huggingface.co/YeungNLP) 。在保留预训练中文知识的前提下，有效减少模型参数量，降低训练成本，提高训练效率。
 - 📗 整理并开源指令微调数据集：firefly-train-1.1M 、moss-003-sft-data、ultrachat、 WizardLM_evol_instruct_V2_143k、school_math_0.25M。
 - 📗 开源[Firefly系列指令微调模型权重](https://huggingface.co/YeungNLP) 。
+- 📗 在Open LLM Leaderboard上验证了QLoRA训练流程的有效性。
 
 🔔 下图是firefly-bloom-7b1的多轮对话的生成效果。
 
 <img src="pics/demo.jpeg" width="600"> 
 
-[//]: # (相关资料：)
 
-[//]: # (- [【QLoRA实战】使用单卡高效微调bloom-7b1，效果惊艳]&#40;https://mp.weixin.qq.com/s/DED7yeiE0DibsVzTmMeDOw&#41;)
+## 模型评测
+**Open LLM Leaderboard和C-Eval榜单，倾向于评测大模型的做题能力，榜单成绩仅供参考，不具有全面评价各个模型的作用。**
 
-[//]: # (- [中文对话式大语言模型Firefly-2b6开源，使用210万训练数据]&#40;https://mp.weixin.qq.com/s/FeMyvQ4EHmseY3H7gY03hw&#41;)
+### Open LLM Leaderboard评测
+评测结果来源于Hugging Face的[Open LLM Leaderboard](https://huggingface.co/spaces/HuggingFaceH4/open_llm_leaderboard)。
 
-[//]: # (- [Firefly&#40;流萤&#41;: 中文对话式大语言模型]&#40;https://mp.weixin.qq.com/s/TX7wj8IzD_EaMTvk0bjRtA&#41;)
+Result：
+- 对于30B模型而言，firefly-llama-30b击败了falcon-40b-instruct、guanaco-33b等模型，比vicuna-33b-v1.3 略低0.16分。
+- 对于13B模型而言，firefly-llama2-13b-v1.2领先于vicuna-13b-v1.5、mpt-30b-chat、wizardlm-13b-v1.2、llama-2-13b-chat、guanaco-13b等模型。
+- 值得注意的是，firefly模型使用项目中的QLoRA训练流程，所使用的训练资源比榜单上的其他模型少得多，使用2~4张V100。
 
-[//]: # (- [LLMPruner：大语言模型裁剪工具]&#40;https://mp.weixin.qq.com/s/leVtrwZc1zLput51Nr99lw&#41;)
+| 模型                          | Average | ARC   | HellaSwag | MMLU  | TruthfulQA |
+|-----------------------------|---------|-------|-----------|-------|------------|
+| vicuna-33b-v1.3             | 64.99   | 61.6  | 83.06     | 59.21 | 56.09      |
+| **firefly-llama-30b**       | 64.83   | 64.25 | 83.64     | 58.23 | 53.2       |
+| falcon-40b-instruct         | 63.47   | 61.6  | 84.31     | 55.45 | 52.52      |
+| guanaco-33b                 | 62.98   | 62.46 | 84.48     | 53.78 | 51.22      |
+| **firefly-llama2-13b-v1.2** | 62.17   | 60.67 | 80.46     | 56.51 | 51.03      |
+| firefly-llama2-13b          | 62.04   | 59.13 | 81.99     | 55.49 | 51.57      |
+| vicuna-13b-v1.5             | 61.63   | 56.57 | 81.24     | 56.67 | 51.51      |
+| mpt-30b-chat                | 61.21   | 58.7  | 82.54     | 51.16 | 52.42      |
+| wizardlm-13b-v1.2           | 60.79   | 59.04 | 82.21     | 54.64 | 47.27      |
+| vicuna-13b-v1.3             | 60.01   | 54.61 | 80.41     | 52.88 | 52.14      |
+| llama-2-13b-chat            | 59.93   | 59.04 | 81.94     | 54.64 | 44.12      |
+| firefly-llama-13b           | 59.34   | 58.96 | 79.71     | 49.1  | 49.59      |
+| firefly-llama-13b-v1.2      | 59.25   | 56.74 | 80.34     | 48.9  | 51         |
+| vicuna-13b-v1.1             | 59.21   | 52.73 | 80.14     | 51.9  | 52.08      |
+| guanaco-13b                 | 59.18   | 57.85 | 83.84     | 48.28 | 46.73      |
+
+
+### C-Eval评测
+
+评测说明：
+- C-Eval最终得分为所有数据集的平均分，而非各个学科的平均分。
+- 下表所有模型的得分，均由我们使用[OpenCompass](https://github.com/open-compass/opencompass)工具评测得出，所有模型一视同仁，均使用ppl的方式进行评测。其中ziya-llama-13b的分数来源于OpenCompass榜单。
+- 评测脚本位于script/evaluate目录下，需要结合OpenCompass工具一起使用。
+
+部分结论：
+- 在firefly系列模型中，firefly-baichuan-13b表现最佳，51.36分，超过了很多开源模型。
+- firefly-baichuan-13b、firefly-chatglm2-6b与其对应的官方的chat模型表现比较接近，差距在1分左右。
+- 即使使用同一份数据微调的模型，各模型的差距也比较大，例如firefly-internlm-7b与firefly-baichuan-7b相差了6.85分。
+- 出现了很多不太符合直觉的现象。qwen-7b-chat和internlm-7b-chat等7b模型碾压大多数13b模型，openbuddy的分数与其社区评价不相符，等等。
+
+| Model                            | C-Eval | STEM  | Social Science | Humanities | Other |
+|----------------------------------|--------|-------|----------------|------------|-------|
+| qwen-7b-chat(官方)                 | 54.01  | 46.34 | 70.41          | 56.47      | 50.59 |
+| internlm-chat-7b(官方)             | 52.5   | 45.96 | 66.33          | 53.09      | 51.21 |
+| Baichuan-13B-Chat(官方)            | 52.05  | 42.23 | 65.27          | 58.61      | 51.32 |
+| firefly-baichuan-13b             | 51.36  | 44.24 | 61.65          | 54.63      | 51.68 |
+| chatglm2-6b(官方)                  | 50.45  | 41.91 | 60.73          | 59.24      | 47.82 |
+| firefly-chatglm2-6b              | 49.13  | 43.6  | 58.83          | 54.48      | 45.03 |
+| firefly-internlm-7b              | 47.3   | 41.42 | 56.72          | 50.94      | 45.79 |
+| openbuddy-llama2-13b-v11.1-bf16  | 43.36  | 39.79 | 50.28          | 44.78      | 42.13 |
+| chinese-alpaca-2-13b(哈工大)        | 41.86  | 36.52 | 49.7           | 47.97      | 38.33 |
+| openbuddy-llama2-13b-v8.1-fp16   | 41.62  | 38.82 | 44.66          | 40.28      | 45.32 |
+| chinese-alpaca-2-7b(哈工大)         | 41.48  | 35.01 | 50.08          | 43.02      | 43.87 |
+| belle-llama2-13B-chat-0.4M       | 41.11  | 40.04 | 44.71          | 42.09      | 38.82 |
+| firefly-baichuan-7b              | 40.45  | 33.23 | 47.54          | 44.7       | 42.88 |
+| ziya-llama-13b                   | 39.1   | -     | -              | -          | -     |
+| firefly-qwen-7b                  | 39.06  | 32.98 | 48.03          | 40.45      | 40.59 |
+| llama-2-13b-chat(官方)             | 36.38  | 33.68 | 46.38          | 34.47      | 34.1  |
+| lama-2-7b-chat(官方)               | 35.86  | 32.85 | 40.04          | 37.37      | 36.01 |
+| firefly-ziya-13b                 | 35.35  | 30.12 | 39.28          | 38.52      | 38.13 |
+| flagalpha/Llama2-Chinese-7b-Chat | 34.54  | 35.21 | 37.9           | 33.11      | 31.7  |
+| yayi-13b-llama2                  | 34.15  | 36.48 | 30.64          | 32.67      | 34.6  |
+| yayi-7b-llama2                   | 30.18  | 25.88 | 38.23          | 34.56      | 26.31 |
+| linly-llama2-7b                  | 28.35  | 26.06 | 33.47          | 29.71      | 26.53 |
+| linly-llama2-13b                 | 27.86  | 27.67 | 26.95          | 27.93      | 28.95 |
+
+
+
 
 ## 安装环境
-在requirements.txt下固定了几个主要的python包的版本，执行如下脚本即可：
+在requirements.txt下固定了几个主要的python包的版本，执行如下脚本即可。
+
+**注意：Baichuan2需要安装pytorch 2.0。除Baichuan2以外，其他模型的训练，我们均在torch==1.13上进行训练。**
 ```bash
 pip install requirements.txt
 ```
 
-若还是报错，我们也把我们的conda环境导出了，在environments.yml中。执行如下脚本，安装conda环境：
-```bash
-conda env create -f environment.yml
-```
-
-## 模型下载
+## 模型列表
 
 🔔 使用本项目的训练代码，以及上述训练数据，我们训练并开源了以下模型。
 
-| 模型                                                                             | 基座模型  | 训练数据                 | Batch Size | Max Length | LR   | Train Step |
-|--------------------------------------------------------------------------------|-------|----------------------|------------|------------|------|------------|
-| [firefly-bloom-1b4](https://huggingface.co/YeungNLP/firefly-bloom-1b4)         | YeungNLP/bloom-1b4-zh | 160万                 | 16         | 512        | 3e-5 | 90k        |
-| [firefly-bloom-2b6](https://huggingface.co/YeungNLP/firefly-bloom-2b6)         | YeungNLP/bloom-2b6-zh | 210万                 | 8          |    512        | 3e-5 | 260k       |
-| [firefly-bloom-2b6-v2](https://huggingface.co/YeungNLP/firefly-bloom-2b6-v2) ⭐ | YeungNLP/bloom-2b6-zh | 376万                 | 60         |   512         | 2e-5 | 62k        |
-| [firefly-bloom-7b1](https://huggingface.co/YeungNLP/firefly-bloom-7b1) ⭐       | bigscience/bloom-7b1 | 100万<br>（moss+ultrachat） | 64         |   1024         | 2e-4 | 16k        |
-| [firefly-baichuan-7b](https://huggingface.co/YeungNLP/firefly-baichuan-7b) ⭐   | baichuan-inc/baichuan-7B | 100万<br>（moss）           | 64         |1024     | 2e-4 | 16k        |           
-| [firefly-ziya-13b](https://huggingface.co/YeungNLP/firefly-ziya-13b) ⭐         | YeungNLP/Ziya-LLaMA-13B-Pretrain-v1      | 100万（moss）<br/>+ 5k math  | 64         |1024     | 1e-4 | 15k        |           
+中文模型：
+
+| 模型                                                                           | 基座模型                                | 训练数据            | Max Length |
+|------------------------------------------------------------------------------|-------------------------------------|-----------------|------------|
+| [firefly-baichuan-13b](https://huggingface.co/YeungNLP/firefly-baichuan-13b) | baichuan-inc/Baichuan-13B-Base      | moss + 20k math |1024     |  
+| [firefly-qwen-7b](https://huggingface.co/YeungNLP/firefly-qwen-7b)           | Qwen/Qwen-7B                        | moss + 20k math |1024     |  
+| [firefly-chatglm2-6b](https://huggingface.co/YeungNLP/firefly-chatglm2-6b)   | THUDM/chatglm2-6b                   | moss + 20k math |1024     |  
+| [firefly-internlm-7b](https://huggingface.co/YeungNLP/firefly-internlm-7b)   | internlm/internlm-7b                | moss            |1024     |  
+| [firefly-baichuan-7b](https://huggingface.co/YeungNLP/firefly-baichuan-7b)   | baichuan-inc/baichuan-7B            | moss            |1024     |           
+| [firefly-ziya-13b](https://huggingface.co/YeungNLP/firefly-ziya-13b)         | YeungNLP/Ziya-LLaMA-13B-Pretrain-v1 | moss + 5k math  |1024     |           
+| [firefly-bloom-7b1](https://huggingface.co/YeungNLP/firefly-bloom-7b1)       | bigscience/bloom-7b1                | moss            |   1024         |
+| [firefly-bloom-2b6-v2](https://huggingface.co/YeungNLP/firefly-bloom-2b6-v2) | YeungNLP/bloom-2b6-zh               | 376万            |   512         |
+| [firefly-bloom-2b6](https://huggingface.co/YeungNLP/firefly-bloom-2b6)       | YeungNLP/bloom-2b6-zh               | 210万            |    512        |
+| [firefly-bloom-1b4](https://huggingface.co/YeungNLP/firefly-bloom-1b4)       | YeungNLP/bloom-1b4-zh               | 160万            | 512        |
+
+
+英文模型：
+
+| 模型                                                                               | 基座模型                               | 训练数据               | Max Length |
+|----------------------------------------------------------------------------------|------------------------------------|--------------------|------------|
+| [firefly-llama-30b](https://huggingface.co/YeungNLP/firefly-llama-30b)           | huggyllama/llama-30b                  | wizradlm(cleaned)     |1024     |  
+| [firefly-llama-13-v1.2](https://huggingface.co/YeungNLP/firefly-llama2-13b-v1.2) | NousResearch/Llama-2-13b-hf              | ultrachat(cleaned) |1024     |  
+| [firefly-llama2-13b](https://huggingface.co/YeungNLP/firefly-llama2-13b)         | NousResearch/Llama-2-13b-hf           | wizradlm(cleaned)           |1024     |           
+| [firefly-llama-13b-v1.2](https://huggingface.co/YeungNLP/firefly-llama-13b-v1.2) | huggyllama/llama-13b | wizradlm           |1024     |           
+| [firefly-llama-13b](https://huggingface.co/YeungNLP/firefly-llama-13b)           | huggyllama/llama-13b              | ultrachat          |   1024         |
 
 
 
@@ -123,6 +211,7 @@ conda env create -f environment.yml
 | [WizardLM_evol_instruct_V2_143k](https://huggingface.co/datasets/YeungNLP/WizardLM_evol_instruct_V2_143k) | 由WizardLM项目开源的英文指令微调数据集，通过Evol-Instruct方法让指令进化，加强指令的复杂度，以提升模型对复杂指令的遵循能力。包含143k条数据。                      |
 | [school_math_0.25M](https://huggingface.co/datasets/YeungNLP/school_math_0.25M)      | 由BELLE项目组开源的数学运算指令数据，包含25万条数据。                                                                          |
 
+中文模型，建议使用moss数据进行微调，效果不错。
 
 训练数据为jsonl格式，每一行的数据格式如下，其中conversation字段是必需的，可以根据实际需求添加或删除其他字段。
 可以参考项目中的data/dummy_data.jsonl文件。
@@ -161,15 +250,7 @@ conda env create -f environment.yml
 
 
 ## 模型训练
-目前支持全量参数指令微调、QLoRA指令微调，后续会添加对LoRA的支持（经过实测，QLoRA的效率与效果优于LoRA）。
-
-我们将训练中使用的各种组件抽取出来，以便后续的扩展和优化，详见component目录下的实现。训练时的参数配置存储在train_args目录下，方便统一管理和更改。
-
-🔔 一些优秀的中文预训练模型权重，理论上，HuggingFace上开源的模型，均可使用本项目进行训练：
-- [词表裁剪后的bloom系列模型](https://github.com/yangjianxin1/LLMPruner) ：下游任务以中文为主，且训练资源紧缺时，建议使用，比原生的bloom权重更节省显存。
-- [原生bloom系列模型](https://huggingface.co/bigscience) ：适用于多语言任务，也适用中文任务。进行指令微调时，建议使用bloom模型，不要使用bloomz，该模型可商用。
-- [baichuan-7B](https://huggingface.co-inc/baichuan-7B) ：百川智能的中文预训练模型，相比bloom，预训练更充分，且可商用。
-- [Ziya-LLaMA-13B-Pretrain-v1](https://huggingface.co/YeungNLP/Ziya-LLaMA-13B-Pretrain-v1) : IDEA团队基于llama进行中文词表扩充，然后进行增量预训练的llama权重。由于IDEA只开源了delta权重，我们将其与原始llama权重合并，并分享最终的权重。该模型及其衍生模型，仅供学术交流，不可商业用途。
+目前支持全量参数指令微调、QLoRA指令微调。我们将训练中使用的各种组件抽取出来，以便后续的扩展和优化，详见component目录下的实现。训练时的参数配置存储在train_args目录下，方便统一管理和更改。大家可以在train_args目录下查看不同模型的训练配置。
 
 ### 数据格式
 训练时，我们将多轮对话拼接成如下格式，然后进行tokenize。其中<s\>表示bos_token，</s\> 表示eos_token。
@@ -241,9 +322,18 @@ firefly-ziya-13b的训练损失的变化趋势如下图所示：
 如果使用LoRA或者QLoRA进行训练，本项目仅保存adapter的权重和配置文件，需要将adapter权重与base model进行合并。脚本见script/merge_lora.py
 
 ### 模型推理
-我们提供了单轮对话和多轮对话的脚本，详见script/chat目录，该脚本可同时兼容firefly-bloom-1b4、firefly-bloom-2b46、firefly-bloom-7b1、firefly-baichuan-7b、firefly-ziya-13b。
+我们提供了单轮对话和多轮对话的脚本，详见script/chat目录，该脚本可同时兼容本项目训练的所有模型进行推理，不适用于非本项目训练的模型。
 
 生成脚本中的top_p、temperature、repetition_penalty、do_sample等参数对模型的生成效果影响较大，可按照自己的使用场景进行调试修改。
+
+推理脚本中支持使用base model和adapter进行推理，缺点是每次启动脚本都需要合并一次权重，等待时间较久。
+
+支持使用4bit进行推理，显存要求低，效果会略有下降。
+
+### 服务部署
+本项目支持将模型部署成HTTP服务，脚本在script/http下，使用flask进行开发。start_service.py为启动服务，post为发送请求，可按需进行修改。
+
+
 ## FAQ
 #### 问题1：OOM如何解决？
 如果发生OOM，可以缩小per_device_train_batch_size、max_seq_length等参数来缓解。也可以设gradient_checkpointing=true，可以大幅降低显存占用，但训练速度会变慢一些。
@@ -265,6 +355,9 @@ CUDA_VISIBLE_DEVICES=0,1 torchrun --nproc_per_node={num_gpus} train_qlora.py --t
 
 #### 问题5：QLoRA微调ChatGLM2，显示找不到插入adapter的层
 将transformers替换成4.30.2即可。
+
+#### 问题5：训练Baichuan2失败
+训练Baichuan2需要安装pytorch 2.0。
 
 
 ## 局限性和使用限制
@@ -294,6 +387,8 @@ CUDA_VISIBLE_DEVICES=0,1 torchrun --nproc_per_node={num_gpus} train_qlora.py --t
 [//]: # (<img src="pics/gongzhonghao.jpeg" width="250"> )
 
 ## 生成效果
+[Firefly-InternLM-7B生成样例](https://docs.qq.com/sheet/DU3JIcHJlSVZHS2Zl?tab=c5vlid)、[Firefly-ChatGLM2-6B生成样例](https://docs.qq.com/sheet/DU0NCbFp6UFpWb3pE?tab=d8ashk)、[Firefly-Baichuan-13B生成样例](https://docs.qq.com/sheet/DU0lXUEZISVVwc3FG?tab=c5vlid)
+
 下面的样例均为firefly-bloom-2b6-v2模型所生成，未经修改，部分生成内容可能存在事实性错误，仅供参考。
 
 <details><summary><b>医疗问答</b></summary>
