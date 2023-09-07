@@ -12,4 +12,8 @@ sentencepiece
 transformers_stream_generator
 tiktoken
 einops
-torch==1.13.0
+httpx
+scipy
+torch==1.13.1
+mmengine
+xformers
