@@ -172,29 +172,29 @@ pip install requirements.txt
 
 中文模型：
 
-| 模型                                                                           | 基座模型                                | 训练数据            | Max Length |
-|------------------------------------------------------------------------------|-------------------------------------|-----------------|------------|
-| [firefly-baichuan-13b](https://huggingface.co/YeungNLP/firefly-baichuan-13b) | baichuan-inc/Baichuan-13B-Base      | moss + 20k math |1024     |  
-| [firefly-qwen-7b](https://huggingface.co/YeungNLP/firefly-qwen-7b)           | Qwen/Qwen-7B                        | moss + 20k math |1024     |  
-| [firefly-chatglm2-6b](https://huggingface.co/YeungNLP/firefly-chatglm2-6b)   | THUDM/chatglm2-6b                   | moss + 20k math |1024     |  
-| [firefly-internlm-7b](https://huggingface.co/YeungNLP/firefly-internlm-7b)   | internlm/internlm-7b                | moss            |1024     |  
-| [firefly-baichuan-7b](https://huggingface.co/YeungNLP/firefly-baichuan-7b)   | baichuan-inc/baichuan-7B            | moss            |1024     |           
-| [firefly-ziya-13b](https://huggingface.co/YeungNLP/firefly-ziya-13b)         | YeungNLP/Ziya-LLaMA-13B-Pretrain-v1 | moss + 5k math  |1024     |           
-| [firefly-bloom-7b1](https://huggingface.co/YeungNLP/firefly-bloom-7b1)       | bigscience/bloom-7b1                | moss            |   1024         |
-| [firefly-bloom-2b6-v2](https://huggingface.co/YeungNLP/firefly-bloom-2b6-v2) | YeungNLP/bloom-2b6-zh               | 376万            |   512         |
-| [firefly-bloom-2b6](https://huggingface.co/YeungNLP/firefly-bloom-2b6)       | YeungNLP/bloom-2b6-zh               | 210万            |    512        |
-| [firefly-bloom-1b4](https://huggingface.co/YeungNLP/firefly-bloom-1b4)       | YeungNLP/bloom-1b4-zh               | 160万            | 512        |
+| 模型                                                                           | 基座模型                                | Max Length |
+|------------------------------------------------------------------------------|-------------------------------------|------------|
+| [firefly-baichuan-13b](https://huggingface.co/YeungNLP/firefly-baichuan-13b) | baichuan-inc/Baichuan-13B-Base      |1024     |  
+| [firefly-qwen-7b](https://huggingface.co/YeungNLP/firefly-qwen-7b)           | Qwen/Qwen-7B                        |1024     |  
+| [firefly-chatglm2-6b](https://huggingface.co/YeungNLP/firefly-chatglm2-6b)   | THUDM/chatglm2-6b                   |1024     |  
+| [firefly-internlm-7b](https://huggingface.co/YeungNLP/firefly-internlm-7b)   | internlm/internlm-7b                |1024     |  
+| [firefly-baichuan-7b](https://huggingface.co/YeungNLP/firefly-baichuan-7b)   | baichuan-inc/baichuan-7B            |1024     |           
+| [firefly-ziya-13b](https://huggingface.co/YeungNLP/firefly-ziya-13b)         | YeungNLP/Ziya-LLaMA-13B-Pretrain-v1 |1024     |           
+| [firefly-bloom-7b1](https://huggingface.co/YeungNLP/firefly-bloom-7b1)       | bigscience/bloom-7b1                |   1024         |
+| [firefly-bloom-2b6-v2](https://huggingface.co/YeungNLP/firefly-bloom-2b6-v2) | YeungNLP/bloom-2b6-zh               |   512         |
+| [firefly-bloom-2b6](https://huggingface.co/YeungNLP/firefly-bloom-2b6)       | YeungNLP/bloom-2b6-zh               |    512        |
+| [firefly-bloom-1b4](https://huggingface.co/YeungNLP/firefly-bloom-1b4)       | YeungNLP/bloom-1b4-zh               | 512        |
 
 
 英文模型：
 
-| 模型                                                                               | 基座模型                               | 训练数据               | Max Length |
-|----------------------------------------------------------------------------------|------------------------------------|--------------------|------------|
-| [firefly-llama-30b](https://huggingface.co/YeungNLP/firefly-llama-30b)           | huggyllama/llama-30b                  | wizradlm(cleaned)     |1024     |  
-| [firefly-llama-13-v1.2](https://huggingface.co/YeungNLP/firefly-llama2-13b-v1.2) | NousResearch/Llama-2-13b-hf              | ultrachat(cleaned) |1024     |  
-| [firefly-llama2-13b](https://huggingface.co/YeungNLP/firefly-llama2-13b)         | NousResearch/Llama-2-13b-hf           | wizradlm(cleaned)           |1024     |           
-| [firefly-llama-13b-v1.2](https://huggingface.co/YeungNLP/firefly-llama-13b-v1.2) | huggyllama/llama-13b | wizradlm           |1024     |           
-| [firefly-llama-13b](https://huggingface.co/YeungNLP/firefly-llama-13b)           | huggyllama/llama-13b              | ultrachat          |   1024         |
+| 模型                                                                               | 基座模型                               | Max Length |
+|----------------------------------------------------------------------------------|------------------------------------|------------|
+| [firefly-llama-30b](https://huggingface.co/YeungNLP/firefly-llama-30b)           | huggyllama/llama-30b                  |1024     |  
+| [firefly-llama-13-v1.2](https://huggingface.co/YeungNLP/firefly-llama2-13b-v1.2) | NousResearch/Llama-2-13b-hf              |1024     |  
+| [firefly-llama2-13b](https://huggingface.co/YeungNLP/firefly-llama2-13b)         | NousResearch/Llama-2-13b-hf           |1024     |           
+| [firefly-llama-13b-v1.2](https://huggingface.co/YeungNLP/firefly-llama-13b-v1.2) | huggyllama/llama-13b |1024     |           
+| [firefly-llama-13b](https://huggingface.co/YeungNLP/firefly-llama-13b)           | huggyllama/llama-13b              |   1024         |
 
 
 
