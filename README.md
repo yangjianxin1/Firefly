@@ -321,6 +321,10 @@ firefly-ziya-13b的训练损失的变化趋势如下图所示：
 
 ### 模型推理
 我们提供了单轮对话和多轮对话的脚本，详见script/chat目录，该脚本可同时兼容本项目训练的所有模型进行推理，不适用于非本项目训练的模型。
+```bash
+cd script/chat
+python single_chat.py
+```
 
 生成脚本中的top_p、temperature、repetition_penalty、do_sample等参数对模型的生成效果影响较大，可按照自己的使用场景进行调试修改。
 
