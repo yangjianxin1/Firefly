@@ -18,6 +18,7 @@
 
 
 ## News
+- 🔥 支持微调书生.浦语InternLM-20B模型，可在一张V100上进行训练。
 - 🔥 支持微调百川Baichuan2模型。
 - 🔥 新增模型评测结果 & 4bit量化推理脚本 & 模型部署成http服务
 - 🔥 支持微调codellama模型，可用训练数据：[Open-Platypus](https://huggingface.co/datasets/garage-bAInd/Open-Platypus)、[computer_zh_26k](https://huggingface.co/datasets/shareAI/ShareGPT-Chinese-English-90k/blob/main/sharegpt_jsonl/computer_zh_26k.jsonl)、[computer_en_26k](https://huggingface.co/datasets/shareAI/ShareGPT-Chinese-English-90k/blob/main/sharegpt_jsonl/computer_en_26k.jsonl)
