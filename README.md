@@ -15,9 +15,12 @@
 
 <img src="pics/gongzhonghao.png" width="300">
 
+欢迎关注我们的知乎进行交流讨论：**[红雨瓢泼](https://www.zhihu.com/people/jian-xin-15-96)**
+
 
 
 ## News
+- 🔥 开源[Firefly-LLaMA2-Chinese项目](https://github.com/yangjianxin1/Firefly-LLaMA2-Chinese)，经过中文词表扩充、增量预训练、多轮指令微调等，与现有的开源工作相比，具有不错的竞争力，**并且整个流程我们仅使用4*V00进行训练**。该项目也对Baichuan、Qwen、InternLM、LLaMA、Falcon等模型进行高效增量预训练。
 - 🔥 支持微调书生.浦语InternLM-20B模型，可在一张V100上进行训练。
 - 🔥 支持微调百川Baichuan2模型。
 - 🔥 新增模型评测结果 & 4bit量化推理脚本 & 模型部署成http服务
@@ -284,7 +287,7 @@ deepspeed --num_gpus={num_gpus} train.py --train_args_file train_args/sft.json
 - optim：优化器。如果是全量参数微调，建议使用adamw_hf。
 - seed：随机种子，用于复现实验结果。
 - fp16：使用使用fp16混合精度。V100建议开启。
-- bf16：使用使用fp16混合精度。A100建议开启。
+- bf16：使用使用bf16混合精度。A100建议开启。
 
 firefly-bloom-2b6-v2的训练损失的变化趋势如下图所示：
 
