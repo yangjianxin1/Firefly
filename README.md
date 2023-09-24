@@ -21,6 +21,7 @@
 
 ## News
 - 🔥 开源[Firefly-LLaMA2-Chinese项目](https://github.com/yangjianxin1/Firefly-LLaMA2-Chinese)，经过中文词表扩充、增量预训练、多轮指令微调等，与现有的开源工作相比，具有不错的竞争力，**并且整个流程我们仅使用4*V00进行训练**。该项目也对Baichuan、Qwen、InternLM、LLaMA、Falcon等模型进行高效增量预训练。
+- 🔥 开源[firefly-baichuan2-13b](https://huggingface.co/YeungNLP/firefly-baichuan2-13b)，在OpenCompass的CMMLU榜单上以56.83的分数，位列第8，比百川官方Chat模型略低1.57分。
 - 🔥 支持微调书生.浦语InternLM-20B模型，可在一张V100上进行训练。
 - 🔥 支持微调百川Baichuan2模型。
 - 🔥 新增模型评测结果 & 4bit量化推理脚本 & 模型部署成http服务
@@ -176,18 +177,19 @@ pip install requirements.txt
 
 中文模型：
 
-| 模型                                                                           | 基座模型                                | Max Length |
-|------------------------------------------------------------------------------|-------------------------------------|------------|
-| [firefly-baichuan-13b](https://huggingface.co/YeungNLP/firefly-baichuan-13b) | baichuan-inc/Baichuan-13B-Base      |1024     |  
-| [firefly-qwen-7b](https://huggingface.co/YeungNLP/firefly-qwen-7b)           | Qwen/Qwen-7B                        |1024     |  
-| [firefly-chatglm2-6b](https://huggingface.co/YeungNLP/firefly-chatglm2-6b)   | THUDM/chatglm2-6b                   |1024     |  
-| [firefly-internlm-7b](https://huggingface.co/YeungNLP/firefly-internlm-7b)   | internlm/internlm-7b                |1024     |  
-| [firefly-baichuan-7b](https://huggingface.co/YeungNLP/firefly-baichuan-7b)   | baichuan-inc/baichuan-7B            |1024     |           
-| [firefly-ziya-13b](https://huggingface.co/YeungNLP/firefly-ziya-13b)         | YeungNLP/Ziya-LLaMA-13B-Pretrain-v1 |1024     |           
-| [firefly-bloom-7b1](https://huggingface.co/YeungNLP/firefly-bloom-7b1)       | bigscience/bloom-7b1                |   1024         |
-| [firefly-bloom-2b6-v2](https://huggingface.co/YeungNLP/firefly-bloom-2b6-v2) | YeungNLP/bloom-2b6-zh               |   512         |
-| [firefly-bloom-2b6](https://huggingface.co/YeungNLP/firefly-bloom-2b6)       | YeungNLP/bloom-2b6-zh               |    512        |
-| [firefly-bloom-1b4](https://huggingface.co/YeungNLP/firefly-bloom-1b4)       | YeungNLP/bloom-1b4-zh               | 512        |
+| 模型                                                                             | 基座模型                                | Max Length |
+|--------------------------------------------------------------------------------|-------------------------------------|------------|
+| [firefly-baichuan2-13b](https://huggingface.co/YeungNLP/firefly-baichuan2-13b) | baichuan-inc/Baichuan2-13B-Base     |1024     |  
+| [firefly-baichuan-13b](https://huggingface.co/YeungNLP/firefly-baichuan-13b)   | baichuan-inc/Baichuan-13B-Base      |1024     |  
+| [firefly-qwen-7b](https://huggingface.co/YeungNLP/firefly-qwen-7b)             | Qwen/Qwen-7B                        |1024     |  
+| [firefly-chatglm2-6b](https://huggingface.co/YeungNLP/firefly-chatglm2-6b)     | THUDM/chatglm2-6b                   |1024     |  
+| [firefly-internlm-7b](https://huggingface.co/YeungNLP/firefly-internlm-7b)     | internlm/internlm-7b                |1024     |  
+| [firefly-baichuan-7b](https://huggingface.co/YeungNLP/firefly-baichuan-7b)     | baichuan-inc/baichuan-7B            |1024     |           
+| [firefly-ziya-13b](https://huggingface.co/YeungNLP/firefly-ziya-13b)           | YeungNLP/Ziya-LLaMA-13B-Pretrain-v1 |1024     |           
+| [firefly-bloom-7b1](https://huggingface.co/YeungNLP/firefly-bloom-7b1)         | bigscience/bloom-7b1                |   1024         |
+| [firefly-bloom-2b6-v2](https://huggingface.co/YeungNLP/firefly-bloom-2b6-v2)   | YeungNLP/bloom-2b6-zh               |   512         |
+| [firefly-bloom-2b6](https://huggingface.co/YeungNLP/firefly-bloom-2b6)         | YeungNLP/bloom-2b6-zh               |    512        |
+| [firefly-bloom-1b4](https://huggingface.co/YeungNLP/firefly-bloom-1b4)         | YeungNLP/bloom-1b4-zh               | 512        |
 
 
 英文模型：
