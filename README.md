@@ -48,6 +48,7 @@
 </details>
 
 ## 文章链接
+- [QLoRA轻量级增量预训练方案，及汉化Llama2的实践](https://mp.weixin.qq.com/s/26-Qxma9M2wGoTQgOlKRmQ)
 - [Firefly多轮对话微调书生·浦语InternLM-7B实践](https://mp.weixin.qq.com/s/98OLdkHjoGDHNDbYL7RerA)
 - [🤗Firefly微调LLaMA-30B，Open LLM榜单同量级第10名](https://mp.weixin.qq.com/s/fFT0Pxfecma4n_fXQYb2Mw)
 - [通义千问Qwen-7B效果如何？Firefly微调实践，效果出色](https://mp.weixin.qq.com/s/5OAx83j6Op299XAfa496ww)
