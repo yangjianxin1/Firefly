@@ -20,15 +20,16 @@
 
 
 ## News
-- 🔥 开源[Firefly-LLaMA2-Chinese项目](https://github.com/yangjianxin1/Firefly-LLaMA2-Chinese)，经过中文词表扩充、增量预训练、多轮指令微调等，与现有的开源工作相比，具有不错的竞争力，**并且整个流程我们仅使用4*V00进行训练**。该项目也对Baichuan、Qwen、InternLM、LLaMA、Falcon等模型进行高效增量预训练。
+- 🔥 支持对悟道.天鹰Aquila2-34B进行指令微调。
+- 🔥 开源[Firefly-LLaMA2-Chinese项目](https://github.com/yangjianxin1/Firefly-LLaMA2-Chinese)，**在4*V00上进行训练**，经过中文词表扩充、增量预训练、多轮指令微调，在CMMLU上超越Linly、Yayi、FlagAlpha等，与Ziya、Chinese-Alpaca表现基本持平。该项目也支持对Baichuan、Qwen、InternLM、LLaMA、Falcon等模型进行高效增量预训练。
 - 🔥 开源[firefly-baichuan2-13b](https://huggingface.co/YeungNLP/firefly-baichuan2-13b)，在OpenCompass的CMMLU榜单上以56.83的分数，位列第8，比百川官方Chat模型略低1.57分。
+
+<details><summary><b>往期News</b></summary>
+
 - 🔥 支持微调书生.浦语InternLM-20B模型，可在一张V100上进行训练。
 - 🔥 支持微调百川Baichuan2模型。
 - 🔥 新增模型评测结果 & 4bit量化推理脚本 & 模型部署成http服务
 - 🔥 支持微调codellama模型，可用训练数据：[Open-Platypus](https://huggingface.co/datasets/garage-bAInd/Open-Platypus)、[computer_zh_26k](https://huggingface.co/datasets/shareAI/ShareGPT-Chinese-English-90k/blob/main/sharegpt_jsonl/computer_zh_26k.jsonl)、[computer_en_26k](https://huggingface.co/datasets/shareAI/ShareGPT-Chinese-English-90k/blob/main/sharegpt_jsonl/computer_en_26k.jsonl)
-
-<details><summary><b>往期News</b></summary>
-
 - 🔥 开源Firefly项目多轮对话微调的[firefly-internlm-7b](https://huggingface.co/YeungNLP/firefly-internlm-7b)，[Firefly-InternLM-7B生成样例](https://docs.qq.com/sheet/DU3JIcHJlSVZHS2Zl?tab=c5vlid)。
 - 🔥 开源[firefly-llama-30b](https://huggingface.co/YeungNLP/firefly-llama-30b),在[🤗Open LLM排行榜](https://huggingface.co/spaces/HuggingFaceH4/open_llm_leaderboard)上以64.83分，同量级模型**排名第10**。
 - 🔥 开源Firefly项目多轮对话微调的[firefly-qwen-7b](https://huggingface.co/YeungNLP/firefly-qwen-7b)。
