@@ -1,5 +1,5 @@
 from transformers import AutoTokenizer, BitsAndBytesConfig
-from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training
+from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training, PeftModel
 from transformers import (
     set_seed,
     HfArgumentParser,
@@ -72,6 +72,35 @@ def find_all_linear_names(model):
     if 'lm_head' in lora_module_names:  # needed for 16-bit
         lora_module_names.remove('lm_head')
     return list(lora_module_names)
+
+
+def get_last_checkpoint(output_dir):
+    """
+    找到最后一个checkpoint文件夹
+    """
+    if os.path.isdir(output_dir):
+        max_step = 0
+        for filename in os.listdir(output_dir):
+            if os.path.isdir(join(output_dir, filename)) and filename.startswith('checkpoint'):
+                max_step = max(max_step, int(filename.replace('checkpoint-', '')))
+        if max_step == 0:   # training started, but no checkpoint
+            return None
+        # else: found checkpoint
+        checkpoint_dir = join(output_dir, f'checkpoint-{max_step}')
+        print(f"Found a previous checkpoint at: {checkpoint_dir}")
+
+        # for peft's loading, copy adapter_model
+        import shutil
+        adaper_model_dir = os.path.join(checkpoint_dir, 'adapter_model')
+        os.makedirs(adaper_model_dir, exist_ok=True)
+        shutil.copy(os.path.join(checkpoint_dir, 'adapter_config.json'),
+                    os.path.join(adaper_model_dir, 'adapter_config.json'))
+        shutil.copy(os.path.join(checkpoint_dir, 'adapter_model.bin'),
+                    os.path.join(adaper_model_dir, 'adapter_model.bin'))
+        
+        return checkpoint_dir
+    # first training
+    return None
 
 
 def setup_everything():
@@ -158,18 +187,28 @@ def init_components(args, training_args):
     # casts all the non int8 modules to full precision (fp32) for stability
     model = prepare_model_for_kbit_training(model, use_gradient_checkpointing=training_args.gradient_checkpointing)
     print(f'memory footprint of model: {model.get_memory_footprint()/(1024*1024*1024)} GB')
-    # 找到所有需要插入adapter的全连接层
-    target_modules = find_all_linear_names(model)
-    # 初始化lora配置
-    config = LoraConfig(
-        r=args.lora_rank,
-        lora_alpha=args.lora_alpha,
-        target_modules=target_modules,
-        lora_dropout=args.lora_dropout,
-        bias="none",
-        task_type="CAUSAL_LM",
-    )
-    model = get_peft_model(model, config)
+
+    # 检查是否需要加载断点、继续训练
+    checkpoint_dir = get_last_checkpoint(training_args.output_dir)
+    if args.resume_training is True and checkpoint_dir is not None:
+        model = PeftModel.from_pretrained(
+            model,
+            join(checkpoint_dir, 'adapter_model'),
+            is_trainable=True
+        )
+    else:
+        # 找到所有需要插入adapter的全连接层
+        target_modules = find_all_linear_names(model)
+        # 初始化lora配置
+        config = LoraConfig(
+            r=args.lora_rank,
+            lora_alpha=args.lora_alpha,
+            target_modules=target_modules,
+            lora_dropout=args.lora_dropout,
+            bias="none",
+            task_type="CAUSAL_LM",
+        )
+        model = get_peft_model(model, config)
     model.print_trainable_parameters()
     model.config.torch_dtype = torch.float32
 
@@ -218,5 +257,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
