@@ -17,3 +17,4 @@ scipy
 torch==1.13.1
 mmengine
 xformers
+astunparse==1.6.2

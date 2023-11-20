@@ -15,7 +15,7 @@ import bitsandbytes as bnb
 from collections import defaultdict
 
 from component.collator import SFTDataCollator
-from component.dataset import SFTDataset, ChatGLM2SFTDataset
+from component.dataset import SFTDataset, ChatGLM2SFTDataset, ChatGLM3SFTDataset
 from component.argument import QLoRAArguments
 from component.trainer import LoRATrainer
 from component.loss import TargetLMLoss
@@ -127,6 +127,7 @@ def init_components(args, training_args):
             llm_int8_has_fp16_weight=False,
         ),
     )
+    model.config.use_cache = False
     # 加载tokenzier
     tokenizer = AutoTokenizer.from_pretrained(
         args.model_name_or_path,
@@ -143,17 +144,8 @@ def init_components(args, training_args):
     elif tokenizer.__class__.__name__ != 'ChatGLMTokenizer':
         assert tokenizer.eos_token_id is not None
         assert tokenizer.bos_token_id is not None
+        # 部分tokenizer的pad_token_id为None
         tokenizer.pad_token_id = tokenizer.eos_token_id if tokenizer.pad_token_id is None else tokenizer.pad_token_id
-
-    # # 部分tokenizer没有pad_token_id
-    # if tokenizer.pad_token_id is None:
-    #     tokenizer.pad_token_id = tokenizer.unk_token_id
-    # # 部分tokenizer的pad_token_id与eos_token_id相同，如InternLM，会导致无法计算eos_token_id的loss。将pad_token_id设为unk_token_id
-    # if tokenizer.pad_token_id == tokenizer.eos_token_id and tokenizer.unk_token_id is not None:
-    #     tokenizer.pad_token_id = tokenizer.unk_token_id
-    # # 如果两者相同，模型训练时不会计算eos_token_id的loss
-    # if tokenizer.pad_token_id == tokenizer.eos_token_id:
-    #     raise Exception('pad_token_id should not be equal to eos_token_id')
 
     # casts all the non int8 modules to full precision (fp32) for stability
     model = prepare_model_for_kbit_training(model, use_gradient_checkpointing=training_args.gradient_checkpointing)
@@ -179,9 +171,13 @@ def init_components(args, training_args):
     # 初始化损失函数
     loss_func = TargetLMLoss(ignore_index=-100)
 
-    # 指加载训练集
-    if model.config.model_type == 'chatglm':
+    # 加载ChatGLM2的训练集
+    if 'chatglm2' in args.model_name_or_path:
         train_dataset = ChatGLM2SFTDataset(args.train_file, tokenizer, args.max_seq_length)
+    # 加载ChatGLM3的训练集
+    elif 'chatglm3' in args.model_name_or_path:
+        train_dataset = ChatGLM3SFTDataset(args.train_file, tokenizer, args.max_seq_length)
+    # 按照firefly格式进行拼接
     else:
         train_dataset = SFTDataset(args.train_file, tokenizer, args.max_seq_length)
     data_collator = SFTDataCollator(tokenizer, args.max_seq_length)
@@ -205,6 +201,8 @@ def main():
     trainer = init_components(args, training_args)
     # 开始训练
     logger.info("*** starting training ***")
+    # todo resume from checkpoint
+    # https://github.com/huggingface/transformers/issues/24252
     train_result = trainer.train()
     # 保存最好的checkpoint
     final_save_path = join(training_args.output_dir, 'final')

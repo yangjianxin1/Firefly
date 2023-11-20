@@ -20,6 +20,8 @@
 
 
 ## News
+- 🔥 支持对ChatGLM3进行指令微调，格式与原生模型保持一致，并且支持对function call能力进行微调，使用详情见[ChatGLM3微调指南](https://github.com/yangjianxin1/Firefly/blob/master/ChatGLM3.md)。
+- 🔥 开源[LongQLoRA](https://github.com/yangjianxin1/LongQLoRA), [技术报告](https://arxiv.org/abs/2311.04879)。可高效扩展LLama上下文长度，在单张32GB V100上将Llama2长度扩展至8k（亦可扩展至12k），仅微调1000 step，在PG19和Proof-pile数据集上的perplexity优于LongLoRA，在PG19上略胜MPT-7B-8K。
 - 🔥 支持对悟道.天鹰Aquila2-34B进行指令微调。
 - 🔥 开源[Firefly-LLaMA2-Chinese项目](https://github.com/yangjianxin1/Firefly-LLaMA2-Chinese)，**在4*V00上进行训练**，经过中文词表扩充、增量预训练、多轮指令微调，在CMMLU上超越Linly、Yayi、FlagAlpha等，与Ziya、Chinese-Alpaca表现基本持平。该项目也支持对Baichuan、Qwen、InternLM、LLaMA、Falcon等模型进行高效增量预训练。
 - 🔥 开源[firefly-baichuan2-13b](https://huggingface.co/YeungNLP/firefly-baichuan2-13b)，在OpenCompass的CMMLU榜单上以56.83的分数，位列第8，比百川官方Chat模型略低1.57分。
@@ -306,7 +308,12 @@ QLoRA论文指出，该方法可以在一张V100上对33B的模型进行微调�
 
 我们在bloom-7b1上使用qlora，adapter的参数量约1.2亿，超过bert-base模型参数量，可以在V100上使用1024的长度进行训练。
 
-💻 执行如下命令即可进行QLoRA微调：
+💻 单卡时建议使用python命令启动脚本：
+```bash
+python train_qlora.py --train_args_file train_args/qlora/baichuan-7b-sft-qlora.json
+```
+
+💻 多卡时使用torchrun命令启动脚本：
 ```bash
 torchrun --nproc_per_node={num_gpus} train_qlora.py --train_args_file train_args/qlora/baichuan-7b-sft-qlora.json
 ```
