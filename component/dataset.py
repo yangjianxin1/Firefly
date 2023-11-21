@@ -155,18 +155,19 @@ class ChatGLM3SFTDataset(SFTDataset):
                 value = conv.get('observation', None)
                 if not isinstance(value, str):
                     value = json.dumps(value, ensure_ascii=False)
-                token_ids = self.tokenizer.build_single_message("observation", "", value) + [self.tokenizer.eos_token_id]
+                token_ids = self.tokenizer.build_single_message("observation", "", value)
                 input_ids += token_ids
                 target_mask += [0] * len(token_ids)
             else:
-                token_ids = self.tokenizer.build_single_message(role, "", conv["content"]) + [self.tokenizer.eos_token_id]
-                input_ids += token_ids
+                token_ids = self.tokenizer.build_single_message(role, "", conv["content"])
                 if role == 'system' or role == 'user':
+                    input_ids += token_ids
                     target_mask += [0] * len(token_ids)
                 # role=assistant
                 else:
-                    # 不计算<|assistant|>的loss
-                    target_mask += [0] + [1] * (len(token_ids)-1)
+                    input_ids += token_ids + [self.tokenizer.eos_token_id]
+                    # 不计算<|assistant|>的loss，需要计算eos_token_id的loss
+                    target_mask += [0] + [1] * (len(token_ids)-1) + [1]
 
         assert len(input_ids) == len(target_mask)
         # 对长度进行截断
