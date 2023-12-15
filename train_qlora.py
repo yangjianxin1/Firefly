@@ -15,7 +15,7 @@ import bitsandbytes as bnb
 from collections import defaultdict
 
 from component.collator import SFTDataCollator
-from component.dataset import SFTDataset, ChatGLM2SFTDataset, ChatGLM3SFTDataset
+from component.dataset import SFTDataset, ChatGLM2SFTDataset, ChatGLM3SFTDataset, MistralSFTDataset, ZephyrSFTDataset
 from component.argument import QLoRAArguments
 from component.trainer import LoRATrainer
 from component.loss import TargetLMLoss
@@ -171,12 +171,16 @@ def init_components(args, training_args):
     # 初始化损失函数
     loss_func = TargetLMLoss(ignore_index=-100)
 
-    # 加载ChatGLM2的训练集
-    if 'chatglm2' in args.model_name_or_path:
+    # 不同的模型，数据拼接格式不一样
+    if 'chatglm2' in args.model_name_or_path.lower():
         train_dataset = ChatGLM2SFTDataset(args.train_file, tokenizer, args.max_seq_length)
     # 加载ChatGLM3的训练集
-    elif 'chatglm3' in args.model_name_or_path:
+    elif 'chatglm3' in args.model_name_or_path.lower():
         train_dataset = ChatGLM3SFTDataset(args.train_file, tokenizer, args.max_seq_length)
+    elif 'mistral' in args.model_name_or_path.lower() or 'mixtral' in args.model_name_or_path.lower():
+        train_dataset = MistralSFTDataset(args.train_file, tokenizer, args.max_seq_length)
+    elif 'zephyr' in args.model_name_or_path.lower():
+        train_dataset = ZephyrSFTDataset(args.train_file, tokenizer, args.max_seq_length)
     # 按照firefly格式进行拼接
     else:
         train_dataset = SFTDataset(args.train_file, tokenizer, args.max_seq_length)

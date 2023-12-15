@@ -7,6 +7,9 @@ from torch.utils.data import Dataset
 
 
 class SFTDataset(Dataset):
+    """
+    Firefly项目默认的数据组织格式
+    """
     def __init__(self, file, tokenizer, max_seq_length):
         self.tokenizer = tokenizer
         self.bos_token_id = tokenizer.bos_token_id
@@ -168,6 +171,132 @@ class ChatGLM3SFTDataset(SFTDataset):
                     input_ids += token_ids + [self.tokenizer.eos_token_id]
                     # 不计算<|assistant|>的loss，需要计算eos_token_id的loss
                     target_mask += [0] + [1] * (len(token_ids)-1) + [1]
+
+        assert len(input_ids) == len(target_mask)
+        # 对长度进行截断
+        input_ids = input_ids[:self.max_seq_length]
+        target_mask = target_mask[:self.max_seq_length]
+        attention_mask = [1] * len(input_ids)
+        assert len(input_ids) == len(target_mask) == len(attention_mask)
+        inputs = {
+            'input_ids': input_ids,
+            'attention_mask': attention_mask,
+            'target_mask': target_mask
+        }
+        return inputs
+
+
+class ZephyrSFTDataset(Dataset):
+    def __init__(self, file, tokenizer, max_seq_length):
+        self.tokenizer = tokenizer
+        self.bos_token_id = tokenizer.bos_token_id
+        self.eos_token_id = tokenizer.eos_token_id
+        self.max_seq_length = max_seq_length
+        logger.info('Loading data: {}'.format(file))
+        with open(file, 'r', encoding='utf8') as f:
+            data_list = f.readlines()
+
+        logger.info("there are {} data in dataset".format(len(data_list)))
+        self.data_list = data_list
+
+    def __len__(self):
+        return len(self.data_list)
+
+    def __getitem__(self, index):
+        """
+        数据拼接格式如下
+        <|system|>
+        You are a friendly chatbot who always responds in the style of a pirate.</s>
+        <|user|>
+        How many helicopters can a human eat in one sitting?</s>
+        <|assistant|>
+        Ah, me hearty matey! But yer question be a puzzler! A human cannot eat a helicopter in one sitting, as helicopters are not edible. They be made of metal, plastic, and other materials, not food!</s>
+        """
+        data = self.data_list[index]
+        data = json.loads(data)
+        conversations = data['conversations']
+        system = data.get('system', None)
+
+        input_ids = []
+        target_mask = []
+
+        # 添加system信息
+        if system is not None:
+            conversations.insert(0, {"role": "system", "content": system})
+
+        # 拼接多轮对话
+        for i, conv in enumerate(conversations):
+            role = conv['role'].strip()
+            assert role in ['user', 'assistant', 'observation', 'system']
+            role_token = f'<|{role}|>'
+            content = conv['content'].strip()
+            token_ids = self.tokenizer.encode(f'{role_token}\n{content}', add_special_tokens=False) + [self.eos_token_id]
+            input_ids += token_ids
+
+            if role == 'assistant':
+                # 不计算<|assistant|>这个文本的loss
+                target_mask += [0] * 6 + [1] * (len(token_ids) - 6)
+            # system, user, observation
+            else:
+                target_mask += [0] * len(token_ids)
+
+        assert len(input_ids) == len(target_mask)
+        # 对长度进行截断
+        input_ids = input_ids[:self.max_seq_length]
+        target_mask = target_mask[:self.max_seq_length]
+        attention_mask = [1] * len(input_ids)
+        assert len(input_ids) == len(target_mask) == len(attention_mask)
+        inputs = {
+            'input_ids': input_ids,
+            'attention_mask': attention_mask,
+            'target_mask': target_mask
+        }
+        return inputs
+
+
+class MistralSFTDataset(Dataset):
+    def __init__(self, file, tokenizer, max_seq_length):
+        self.tokenizer = tokenizer
+        self.bos_token_id = tokenizer.bos_token_id
+        self.eos_token_id = tokenizer.eos_token_id
+        self.max_seq_length = max_seq_length
+        logger.info('Loading data: {}'.format(file))
+        with open(file, 'r', encoding='utf8') as f:
+            data_list = f.readlines()
+
+        logger.info("there are {} data in dataset".format(len(data_list)))
+        self.data_list = data_list
+        self.inst_begin_tokens = tokenizer.encode('[INST]', add_special_tokens=False)
+        self.inst_end_tokens = tokenizer.encode('[/INST]', add_special_tokens=False)
+
+    def __len__(self):
+        return len(self.data_list)
+
+    def __getitem__(self, index):
+        """
+        数据拼接格式如下：
+        <s>[INST]你是谁?[/INST]我是大模型</s>[INST]背诵李白的《静夜思》[/INST]窗前明月光...</s>
+        """
+        data = self.data_list[index]
+        data = json.loads(data)
+        conversations = data['conversation']
+
+        # 收集模型输入
+        input_ids = [self.bos_token_id]
+        target_mask = [0]
+
+        for conv in conversations:
+            human = conv['human'].strip()
+            assistant = conv['assistant'].strip()
+
+            human_tokens = self.tokenizer.encode(human, add_special_tokens=False)
+            assistant_tokens = self.tokenizer.encode(assistant, add_special_tokens=False)
+
+            input_tokens = self.inst_begin_tokens + human_tokens + self.inst_end_tokens
+            output_tokens = assistant_tokens + [self.eos_token_id]
+
+            input_ids += input_tokens + output_tokens
+            target_mask += [0] * len(input_tokens) + [1] * len(output_tokens)
 
         assert len(input_ids) == len(target_mask)
         # 对长度进行截断
