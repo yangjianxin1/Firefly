@@ -205,8 +205,6 @@ class ZephyrSFTDataset(Dataset):
     def __getitem__(self, index):
         """
         数据拼接格式如下
-        <|system|>
-        You are a friendly chatbot who always responds in the style of a pirate.</s>
         <|user|>
         How many helicopters can a human eat in one sitting?</s>
         <|assistant|>
@@ -214,31 +212,24 @@ class ZephyrSFTDataset(Dataset):
         """
         data = self.data_list[index]
         data = json.loads(data)
-        conversations = data['conversations']
-        system = data.get('system', None)
+        conversations = data['conversation']
 
+        # 收集模型输入
         input_ids = []
         target_mask = []
 
-        # 添加system信息
-        if system is not None:
-            conversations.insert(0, {"role": "system", "content": system})
-
         # 拼接多轮对话
         for i, conv in enumerate(conversations):
-            role = conv['role'].strip()
-            assert role in ['user', 'assistant', 'observation', 'system']
-            role_token = f'<|{role}|>'
-            content = conv['content'].strip()
-            token_ids = self.tokenizer.encode(f'{role_token}\n{content}', add_special_tokens=False) + [self.eos_token_id]
-            input_ids += token_ids
+            human = conv['human'].strip()
+            assistant = conv['assistant'].strip()
 
-            if role == 'assistant':
-                # 不计算<|assistant|>这个文本的loss
-                target_mask += [0] * 6 + [1] * (len(token_ids) - 6)
-            # system, user, observation
-            else:
-                target_mask += [0] * len(token_ids)
+            input_tokens = self.tokenizer.encode(f'<|user|>\n{human}', add_special_tokens=False) + [self.eos_token_id]
+            output_tokens = self.tokenizer.encode(f'<|assistant|>\n{assistant}', add_special_tokens=False) + [self.eos_token_id]
+
+            input_ids += input_tokens + output_tokens
+            target_mask += [0] * len(input_tokens)
+            # <|assistant|>占6个token，不计算<|assistant|>这个文本的loss
+            target_mask += [0] * 6 + [1] * (len(output_tokens) - 6)
 
         assert len(input_ids) == len(target_mask)
         # 对长度进行截断
