@@ -20,6 +20,7 @@ from component.loss import TargetLMLoss
 def setup_everything():
     parser = argparse.ArgumentParser()
     parser.add_argument("--train_args_file", type=str, default='train_args/sft.json', help="")
+    parser.add_argument("--local_rank", type=int, help="")
     args = parser.parse_args()
     train_args_file = args.train_args_file
     # train_args_file = 'train_args/finetune.json'
