@@ -69,7 +69,11 @@ class Trainer(transformers.Trainer):
 
         Subclass and override for custom behavior.
         """
-        return self.loss_func(model, inputs, self.args, return_outputs)
+        if self.loss_func is None:
+            loss = super().compute_loss(model, inputs, return_outputs)
+        else:
+            loss = self.loss_func(model, inputs, self.args, return_outputs)
+        return loss
 
 
 class LoRATrainer(Trainer):

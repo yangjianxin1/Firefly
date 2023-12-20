@@ -18,7 +18,7 @@ from component.collator import SFTDataCollator
 from component.dataset import SFTDataset, ChatGLM2SFTDataset, ChatGLM3SFTDataset, MistralSFTDataset, ZephyrSFTDataset
 from component.argument import QLoRAArguments
 from component.trainer import LoRATrainer
-from component.loss import TargetLMLoss
+# from component.loss import TargetLMLoss
 
 
 def verify_model_dtype(model):
@@ -128,6 +128,10 @@ def init_components(args, training_args):
         ),
     )
     model.config.use_cache = False
+    # mixtral-8x7b-moe计算loss时，考虑负载平衡的loss
+    if 'mixtral' in args.model_name_or_path.lower():
+        model.config.output_router_logits = True
+
     # 加载tokenzier
     tokenizer = AutoTokenizer.from_pretrained(
         args.model_name_or_path,
@@ -169,7 +173,7 @@ def init_components(args, training_args):
     verify_model_dtype(model)
 
     # 初始化损失函数
-    loss_func = TargetLMLoss(ignore_index=-100)
+    # loss_func = TargetLMLoss(ignore_index=-100)
 
     # 不同的模型，数据拼接格式不一样
     if 'chatglm2' in args.model_name_or_path.lower():
@@ -193,7 +197,7 @@ def init_components(args, training_args):
         train_dataset=train_dataset,
         # tokenizer=tokenizer,
         data_collator=data_collator,
-        compute_loss=loss_func
+        # compute_loss=loss_func
     )
     return trainer
 
