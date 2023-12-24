@@ -20,7 +20,7 @@
 
 
 ## News
-- 🔥 支持QLoRA微调Mistral-8x7B，开源模型权重[firefly-mixtral-8x7b](https://huggingface.co/YeungNLP/firefly-mixtral-8x7b)
+- 🔥 支持QLoRA微调Mistral-8x7B，开源模型权重[firefly-mixtral-8x7b](https://huggingface.co/YeungNLP/firefly-mixtral-8x7b) ，在[🤗Open LLM排行榜](https://huggingface.co/spaces/HuggingFaceH4/open_llm_leaderboard)分数为70.34，超越Yi-34B、Llama2-65B-Chat、Qwen-14B、Vicuna-33B-v1.3等模型。
 - 🔥 支持QLoRA微调Mistral-7B、Zephyr-7B。数据的拼接格式与其官方一致，推理时请使用对应的官方的推理脚本，以防生成不符合预期的结果。
 - 🔥 支持对ChatGLM3进行指令微调，格式与原生模型保持一致，并且支持对function call能力进行微调，使用详情见[ChatGLM3微调指南](https://github.com/yangjianxin1/Firefly/blob/master/ChatGLM3.md)。
 - 🔥 开源[LongQLoRA](https://github.com/yangjianxin1/LongQLoRA), [技术报告](https://arxiv.org/abs/2311.04879)。可高效扩展LLama上下文长度，在单张32GB V100上将Llama2长度扩展至8k（亦可扩展至12k），仅微调1000 step，在PG19和Proof-pile数据集上的perplexity优于LongLoRA，在PG19上略胜MPT-7B-8K。
