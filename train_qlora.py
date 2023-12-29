@@ -15,7 +15,14 @@ import bitsandbytes as bnb
 from collections import defaultdict
 
 from component.collator import SFTDataCollator
-from component.dataset import SFTDataset, ChatGLM2SFTDataset, ChatGLM3SFTDataset, MistralSFTDataset, ZephyrSFTDataset
+from component.dataset import (
+    SFTDataset,
+    ChatGLM2SFTDataset,
+    ChatGLM3SFTDataset,
+    MistralSFTDataset,
+    ZephyrSFTDataset,
+    QwenSFTDataset
+)
 from component.argument import QLoRAArguments
 from component.trainer import LoRATrainer
 # from component.loss import TargetLMLoss
@@ -128,8 +135,9 @@ def init_components(args, training_args):
         ),
     )
     model.config.use_cache = False
-    # mixtral-8x7b-moe计算loss时，考虑负载平衡的loss
-    if 'mixtral' in args.model_name_or_path.lower():
+    # moe模型，需要考虑负载均衡的loss
+    if 'output_router_logits' in model.config.to_dict():
+        logger.info('set output_router_logits as True')
         model.config.output_router_logits = True
 
     # 加载tokenzier
@@ -185,6 +193,8 @@ def init_components(args, training_args):
         train_dataset = MistralSFTDataset(args.train_file, tokenizer, args.max_seq_length)
     elif 'zephyr' in args.model_name_or_path.lower():
         train_dataset = ZephyrSFTDataset(args.train_file, tokenizer, args.max_seq_length)
+    elif 'qwen' in args.model_name_or_path.lower():
+        train_dataset = QwenSFTDataset(args.train_file, tokenizer, args.max_seq_length)
     # 按照firefly格式进行拼接
     else:
         train_dataset = SFTDataset(args.train_file, tokenizer, args.max_seq_length)
@@ -212,9 +222,8 @@ def main():
     # todo resume from checkpoint
     # https://github.com/huggingface/transformers/issues/24252
     train_result = trainer.train()
-    # 保存最好的checkpoint
-    final_save_path = join(training_args.output_dir, 'final')
-    trainer.save_model(final_save_path)  # Saves the tokenizer too
+    # 保存最后的checkpoint
+    trainer.save_model(training_args.output_dir)  # Saves the tokenizer too
     # 保存训练指标
     metrics = train_result.metrics
     trainer.log_metrics("train", metrics)

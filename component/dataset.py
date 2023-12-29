@@ -303,3 +303,65 @@ class MistralSFTDataset(Dataset):
         return inputs
 
 
+class QwenSFTDataset(Dataset):
+    def __init__(self, file, tokenizer, max_seq_length):
+        self.tokenizer = tokenizer
+        self.im_start_id = tokenizer.im_start_id
+        self.im_end_id = tokenizer.im_end_id
+        self.enter_token_ids = tokenizer.encode('\n')   # 回车键
+        self.max_seq_length = max_seq_length
+        logger.info('Loading data: {}'.format(file))
+        with open(file, 'r', encoding='utf8') as f:
+            data_list = f.readlines()
+
+        logger.info("there are {} data in dataset".format(len(data_list)))
+        self.data_list = data_list
+
+    def __len__(self):
+        return len(self.data_list)
+
+    def __getitem__(self, index):
+        """
+        数据拼接格式如下：
+        <|im_start|>system
+        You are a helpful assistant.<|im_end|>
+        <|im_start|>user
+        你好呀<|im_end|>
+        <|im_start|>assistant
+        你好，我是xxx，很高兴为您服务<|im_end|>
+        """
+        data = self.data_list[index]
+        data = json.loads(data)
+        conversations = data['conversation']
+
+        # 收集模型输入
+        system_text = '<|im_start|>system\nYou are a helpful assistant.<|im_end|>\n'
+        input_ids = self.tokenizer.encode(system_text, add_special_tokens=False)
+        target_mask = [0] * len(input_ids)
+
+        # 拼接多轮对话
+        for i, conv in enumerate(conversations):
+            human = conv['human'].strip()
+            assistant = conv['assistant'].strip()
+
+            input_tokens = self.tokenizer.encode(f'<|im_start|>user\n{human}<|im_end|>\n', add_special_tokens=False)
+            output_tokens = self.tokenizer.encode(f'<|im_start|>assistant\n{assistant}<|im_end|>\n', add_special_tokens=False)
+
+            input_ids += input_tokens + output_tokens
+            # input_tokens部分不计算loss
+            target_mask += [0] * len(input_tokens)
+            # '<|im_start|>assistant\n'占3个token，结尾的'\n'占1个token，不计算它们的loss
+            target_mask += [0] * 3 + [1] * (len(output_tokens) - 4) + [0]
+
+        assert len(input_ids) == len(target_mask)
+        # 对长度进行截断
+        input_ids = input_ids[:self.max_seq_length]
+        target_mask = target_mask[:self.max_seq_length]
+        attention_mask = [1] * len(input_ids)
+        assert len(input_ids) == len(target_mask) == len(attention_mask)
+        inputs = {
+            'input_ids': input_ids,
+            'attention_mask': attention_mask,
+            'target_mask': target_mask
+        }
+        return inputs
