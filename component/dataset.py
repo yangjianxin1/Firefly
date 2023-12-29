@@ -332,10 +332,14 @@ class QwenSFTDataset(Dataset):
         """
         data = self.data_list[index]
         data = json.loads(data)
+        if 'system' in data.keys():
+            system = data['system'].strip()
+        else:
+            system = 'You are a helpful assistant.'
         conversations = data['conversation']
 
         # 收集模型输入
-        system_text = '<|im_start|>system\nYou are a helpful assistant.<|im_end|>\n'
+        system_text = f'<|im_start|>system\n{system}<|im_end|>\n'
         input_ids = self.tokenizer.encode(system_text, add_special_tokens=False)
         target_mask = [0] * len(input_ids)
 

@@ -20,6 +20,7 @@
 
 
 ## News
+-  支持微调Qwen-Chat模型，数据拼接格式与官方chat模型一致，请使用官方的推理脚本进行推理。
 - 🔥 支持QLoRA微调Mistral-8x7B，开源模型权重[firefly-mixtral-8x7b](https://huggingface.co/YeungNLP/firefly-mixtral-8x7b) ，在[🤗Open LLM排行榜](https://huggingface.co/spaces/HuggingFaceH4/open_llm_leaderboard)分数为70.34，超越Yi-34B、Llama2-65B-Chat、Qwen-14B、Vicuna-33B-v1.3等模型。
 - 🔥 支持QLoRA微调Mistral-7B、Zephyr-7B。数据的拼接格式与其官方一致，推理时请使用对应的官方的推理脚本，以防生成不符合预期的结果。
 - 🔥 支持对ChatGLM3进行指令微调，格式与原生模型保持一致，并且支持对function call能力进行微调，使用详情见[ChatGLM3微调指南](https://github.com/yangjianxin1/Firefly/blob/master/ChatGLM3.md)。
