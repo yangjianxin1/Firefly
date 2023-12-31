@@ -25,7 +25,7 @@
 - 🔥 支持对ChatGLM3进行指令微调，格式与原生模型保持一致，并且支持对function call能力进行微调，使用详情见[ChatGLM3微调指南](https://github.com/yangjianxin1/Firefly/blob/master/ChatGLM3.md)。
 - 🔥 开源[LongQLoRA](https://github.com/yangjianxin1/LongQLoRA), [技术报告](https://arxiv.org/abs/2311.04879)。可高效扩展LLama上下文长度，在单张32GB V100上将Llama2长度扩展至8k（亦可扩展至12k），仅微调1000 step，在PG19和Proof-pile数据集上的perplexity优于LongLoRA，在PG19上略胜MPT-7B-8K。
 - 🔥 支持对悟道.天鹰Aquila2-34B进行指令微调。
-- 🔥 开源[Firefly-LLaMA2-Chinese项目](https://github.com/yangjianxin1/Firefly-LLaMA2-Chinese)，**在4*V00上进行训练**，经过中文词表扩充、增量预训练、多轮指令微调，在CMMLU上超越Linly、Yayi、FlagAlpha等，与Ziya、Chinese-Alpaca表现基本持平。该项目也支持对Baichuan、Qwen、InternLM、LLaMA、Falcon等模型进行高效增量预训练。
+- 🔥 开源[Firefly-LLaMA2-Chinese项目](https://github.com/yangjianxin1/Firefly-LLaMA2-Chinese)，**在4*V100上进行训练**，经过中文词表扩充、增量预训练、多轮指令微调，在CMMLU上超越Linly、Yayi、FlagAlpha等，与Ziya、Chinese-Alpaca表现基本持平。该项目也支持对Baichuan、Qwen、InternLM、LLaMA、Falcon等模型进行高效增量预训练。
 - 🔥 开源[firefly-baichuan2-13b](https://huggingface.co/YeungNLP/firefly-baichuan2-13b)，在OpenCompass的CMMLU榜单上以56.83的分数，位列第8，比百川官方Chat模型略低1.57分。
 
 <details><summary><b>往期News</b></summary>
@@ -389,6 +389,27 @@ CUDA_VISIBLE_DEVICES=0,1 torchrun --nproc_per_node={num_gpus} train_qlora.py --t
 
 #### 问题6：训练Baichuan2失败
 训练Baichuan2需要安装pytorch 2.0。
+
+#### 问题7：QLoRA 微调，如何加载之前的 checkpoint 继续训练
+
+在对应的 `sft-qlora.json` 文件中，添加 `resume_training` 参数并设置为 `true`。
+
+例如，QLoRA 微调 BLOOM，想要加载之前的断点，在 `train_args\qlora\bloom-sft-qlora.json` 中添加参数：
+
+```json
+{
+    "output_dir": "output/firefly-bloom-7b1",
+    "model_name_or_path": "bigscience/bloom-7b1",
+    "train_file": "./data/dummy_data.jsonl",
+    "resume_training": true,	// 新增选项
+    "num_train_epochs": 1,
+    "per_device_train_batch_size": 1,
+    // ...
+```
+
+开启此选项后，会从 `output_dir` 中搜寻最新的一个 `checkpoint` 并加载，这个选项开启后将不会覆写 `output_dir`。
+
+**`resume_training` 选项默认关闭。**
 
 
 ## 局限性和使用限制
