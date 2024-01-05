@@ -429,6 +429,11 @@ class PretrainDataset(Dataset):
             data_list = train_windows
             logger.info(f'Total training data num: {len(data_list)}')
 
+            # 缓存dataset对象到磁盘
+            logger.info('Saving cache to disk ...')
+            with open(cache_file, 'wb') as f:
+                pickle.dump(data_list, f)
+
         # 计算数据集的token数量
         logger.info('Calculating number of training token...')
         self.data_list = data_list

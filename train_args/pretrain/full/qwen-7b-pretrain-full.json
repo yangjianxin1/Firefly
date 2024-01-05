@@ -19,6 +19,7 @@
     "warmup_steps": 1000,
 
     "gradient_checkpointing": true,
+    "logging_first_step": true,
     "disable_tqdm": false,
     "optim": "adamw_hf",
     "seed": 42,
