@@ -14,7 +14,7 @@
     "lr_scheduler_type": "cosine",
     "warmup_steps": 1000,
 
-    "gradient_checkpointing": false,
+    "gradient_checkpointing": true,
     "disable_tqdm": false,
     "optim": "adamw_hf",
     "seed": 42,

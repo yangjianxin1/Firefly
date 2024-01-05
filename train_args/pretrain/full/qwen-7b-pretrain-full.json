@@ -1,0 +1,32 @@
+{
+    "output_dir": "output/firefly-qwen-7b-pretrain-full",
+    "model_name_or_path": "Qwen/Qwen-7B",
+    "deepspeed": "./train_args/ds_z3_config.json",
+    "train_file": "./data/dummy_pretrain.jsonl",
+    "num_train_epochs": 1,
+    "per_device_train_batch_size": 4,
+    "gradient_accumulation_steps": 4,
+    "learning_rate": 1e-5,
+    "max_seq_length": 2048,
+    "min_seq_length": 1024,
+    "window_step_size":  1024,
+    "task_type": "pretrain",
+
+    "logging_steps": 200,
+    "save_steps": 500,
+    "save_total_limit": 1,
+    "lr_scheduler_type": "cosine",
+    "warmup_steps": 1000,
+
+    "gradient_checkpointing": true,
+    "disable_tqdm": false,
+    "optim": "adamw_hf",
+    "seed": 42,
+    "fp16": true,
+    "report_to": "tensorboard",
+    "dataloader_num_workers": 5,
+    "save_strategy": "steps",
+    "weight_decay": 0,
+    "max_grad_norm": 1.0,
+    "remove_unused_columns": false
+}

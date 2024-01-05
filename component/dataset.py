@@ -4,6 +4,11 @@ import ast
 import astunparse
 from typing import Dict
 from torch.utils.data import Dataset
+import os
+from os.path import join
+import pandas as pd
+from tqdm import tqdm
+import pickle
 
 
 class SFTDataset(Dataset):
@@ -369,3 +374,85 @@ class QwenSFTDataset(Dataset):
             'target_mask': target_mask
         }
         return inputs
+
+
+class PretrainDataset(Dataset):
+
+    def __init__(self, data_path, tokenizer, max_seq_length, min_seq_length, window_step_size):
+        self.tokenizer = tokenizer
+        self.max_seq_length = max_seq_length
+        self.min_seq_length = min_seq_length     # 小于min_seq_length的序列，会被抛弃
+        self.window_step_size = window_step_size    # 滑动窗口步长
+        self.tokenize_batch = 1024
+        logger.info('Loading pretraining data: {}'.format(data_path))
+
+        # 创建缓存路径
+        cache_dir = join(data_path, 'cache')
+        os.makedirs(cache_dir, exist_ok=True)
+
+        # 读取缓存
+        cache_file = join(cache_dir, 'train.pkl')
+        if os.path.exists(cache_file):
+            with open(cache_file, 'rb') as f:
+                data_list = pickle.load(f)
+            logger.info(f'Loading tokenized cache from: {cache_file}')
+        else:
+            # 扫描所有jsonl文件
+            logger.info('Scanning all the training file...')
+            files = []
+            for root, dir_names, file_names in os.walk(data_path):
+                for file_name in file_names:
+                    file = join(root, file_name)
+                    if file_name.endswith('.jsonl'):
+                        files.append(file)
+            logger.info(f'Total num of training file: {len(files)}')
+
+            # 加载训练数据
+            logger.info('Loading all training data')
+            train_texts = []
+            for file in files:
+                df = pd.read_json(file, lines=True)
+                text_list = [x.strip() for x in df['text'].tolist()]
+                train_texts += text_list
+            logger.info(f'Total num of training text: {len(train_texts)}')
+
+            # 对文本进行tokenize，并且使用窗口滑动进行截断
+            logger.info(f'Start tokenizing data...')
+            train_windows = []  # 窗口截断之后的input_ids
+            for i in tqdm(range(0, len(train_texts), self.tokenize_batch)):
+                text_list = train_texts[i: i + self.tokenize_batch]
+                input_ids = self.tokenizer(text_list).input_ids
+                # 使用滑动窗口进行窗口截断
+                for x in input_ids:
+                    windows = self.slice_window_truncate(x)
+                    train_windows += windows
+            data_list = train_windows
+            logger.info(f'Total training data num: {len(data_list)}')
+
+        # 计算数据集的token数量
+        logger.info('Calculating number of training token...')
+        self.data_list = data_list
+        total_token_num = 0
+        for x in tqdm(data_list):
+            total_token_num += len(x)
+        logger.info(f'Total training token num: {total_token_num}')
+
+    def slice_window_truncate(self, input_ids):
+        """
+        对input_ids，按照窗口大小，进行滑动截断。返回所有截断窗口。
+        """
+        windows = []
+        for i in range(0, len(input_ids), self.window_step_size):
+            window = input_ids[i: i+self.max_seq_length]
+            # 小于min_seq_length的序列，则将其抛弃。
+            if len(window) < self.min_seq_length and i > 0:
+                continue
+            windows.append(window)
+        return windows
+
+    def __len__(self):
+        return len(self.data_list)
+
+    def __getitem__(self, index):
+        data = self.data_list[index]
+        return data

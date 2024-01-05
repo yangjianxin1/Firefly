@@ -10,14 +10,15 @@ from os.path import join
 import torch
 from transformers import AutoTokenizer
 from transformers import AutoModelForCausalLM
-from component.collator import SFTDataCollator
+from component.collator import SFTDataCollator, PretrainCollator
 from component.dataset import (
     SFTDataset,
     ChatGLM2SFTDataset,
     ChatGLM3SFTDataset,
     MistralSFTDataset,
     ZephyrSFTDataset,
-    QwenSFTDataset
+    QwenSFTDataset,
+    PretrainDataset
 )
 from component.argument import CustomizedArguments
 from component.trainer import Trainer
@@ -91,22 +92,34 @@ def init_components(args, training_args):
 
     # 初始化损失函数
     # loss_func = TargetLMLoss(ignore_index=-100)
-    # 不同的模型，数据拼接格式不一样
-    if 'chatglm2' in args.model_name_or_path.lower():
-        train_dataset = ChatGLM2SFTDataset(args.train_file, tokenizer, args.max_seq_length)
-    # 加载ChatGLM3的训练集
-    elif 'chatglm3' in args.model_name_or_path.lower():
-        train_dataset = ChatGLM3SFTDataset(args.train_file, tokenizer, args.max_seq_length)
-    elif 'mistral' in args.model_name_or_path.lower() or 'mixtral' in args.model_name_or_path.lower():
-        train_dataset = MistralSFTDataset(args.train_file, tokenizer, args.max_seq_length)
-    elif 'zephyr' in args.model_name_or_path.lower():
-        train_dataset = ZephyrSFTDataset(args.train_file, tokenizer, args.max_seq_length)
-    elif 'qwen' in args.model_name_or_path.lower():
-        train_dataset = QwenSFTDataset(args.train_file, tokenizer, args.max_seq_length)
-    # 按照firefly格式进行拼接
+
+    assert args.task_type in ['sft', 'pretrain'], 'task_type should be in [sft, pretrain]'
+    # 初始化dataset和collator
+    # 预训练
+    if args.task_type == 'pretrain':
+        train_dataset = PretrainDataset(
+            args.train_file, tokenizer, args.max_seq_length,
+            args.min_seq_length, args.window_step_size
+        )
+        data_collator = PretrainCollator(tokenizer, args.max_seq_length)
     else:
-        train_dataset = SFTDataset(args.train_file, tokenizer, args.max_seq_length)
-    data_collator = SFTDataCollator(tokenizer, args.max_seq_length)
+        # 指令微调，不同的模型，数据拼接格式不一样
+        if 'chatglm2' in args.model_name_or_path.lower():
+            train_dataset = ChatGLM2SFTDataset(args.train_file, tokenizer, args.max_seq_length)
+        # 加载ChatGLM3的训练集
+        elif 'chatglm3' in args.model_name_or_path.lower():
+            train_dataset = ChatGLM3SFTDataset(args.train_file, tokenizer, args.max_seq_length)
+        elif 'mistral' in args.model_name_or_path.lower() or 'mixtral' in args.model_name_or_path.lower():
+            train_dataset = MistralSFTDataset(args.train_file, tokenizer, args.max_seq_length)
+        elif 'zephyr' in args.model_name_or_path.lower():
+            train_dataset = ZephyrSFTDataset(args.train_file, tokenizer, args.max_seq_length)
+        elif 'qwen' in args.model_name_or_path.lower():
+            train_dataset = QwenSFTDataset(args.train_file, tokenizer, args.max_seq_length)
+        # 按照firefly格式进行拼接
+        else:
+            train_dataset = SFTDataset(args.train_file, tokenizer, args.max_seq_length)
+        # 加载collator
+        data_collator = SFTDataCollator(tokenizer, args.max_seq_length)
 
     # 初始化Trainer
     trainer = Trainer(
