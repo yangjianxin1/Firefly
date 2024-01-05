@@ -12,8 +12,8 @@
     "window_step_size":  1024,
     "task_type": "pretrain",
 
-    "logging_steps": 200,
-    "save_steps": 500,
+    "logging_steps": 500,
+    "save_steps": 5000,
     "save_total_limit": 1,
     "lr_scheduler_type": "cosine",
     "warmup_steps": 1000,
