@@ -2,7 +2,7 @@
     "output_dir": "output/firefly-qwen-7b-pretrain-full",
     "model_name_or_path": "Qwen/Qwen-7B",
     "deepspeed": "./train_args/ds_z3_config.json",
-    "train_file": "./data/dummy_pretrain.jsonl",
+    "train_file": "./data/pretrain",
     "num_train_epochs": 1,
     "per_device_train_batch_size": 4,
     "gradient_accumulation_steps": 4,
