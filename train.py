@@ -18,7 +18,8 @@ from component.dataset import (
     MistralSFTDataset,
     ZephyrSFTDataset,
     QwenSFTDataset,
-    PretrainDataset
+    PretrainDataset,
+    LazyPretrainDataset
 )
 from component.argument import CustomizedArguments
 from component.trainer import Trainer
@@ -97,7 +98,7 @@ def init_components(args, training_args):
     # 初始化dataset和collator
     # 预训练
     if args.task_type == 'pretrain':
-        train_dataset = PretrainDataset(
+        train_dataset = LazyPretrainDataset(
             args.train_file, tokenizer, args.max_seq_length,
             args.min_seq_length, args.window_step_size
         )
