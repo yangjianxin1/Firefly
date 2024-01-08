@@ -502,7 +502,7 @@ class LazyPretrainDataset(IterableDataset):
                 load_from_cache_file=True,
                 keep_in_memory=False,
                 cache_file_names={k: os.path.join(self.cache_dir, file_name, 'tokenized.arrow') for k in raw_dataset},
-                desc=f"Tokenizing data: {file}",
+                desc=f"Tokenizing data",
             )
 
             # 拼接所有token
