@@ -99,8 +99,7 @@ def init_components(args, training_args):
     # 预训练
     if args.task_type == 'pretrain':
         train_dataset = LazyPretrainDataset(
-            args.train_file, tokenizer, args.max_seq_length,
-            args.min_seq_length, args.window_step_size
+            args.train_file, tokenizer, args.max_seq_length,args.tokenize_num_workers
         )
         data_collator = PretrainCollator(tokenizer, args.max_seq_length)
     else:

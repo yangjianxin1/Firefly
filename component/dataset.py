@@ -10,6 +10,7 @@ import pandas as pd
 from tqdm import tqdm
 import pickle
 from torch.utils.data import IterableDataset
+from datasets import load_dataset
 
 
 class SFTDataset(Dataset):
@@ -465,13 +466,14 @@ class PretrainDataset(Dataset):
 
 
 class LazyPretrainDataset(IterableDataset):
-    def __init__(self, data_path, tokenizer, max_seq_length, min_seq_length, window_step_size):
+    def __init__(self, data_path, tokenizer, max_seq_length, tokenize_num_workers=10):
         self.tokenizer = tokenizer
         self.max_seq_length = max_seq_length
-        self.min_seq_length = min_seq_length  # 小于min_seq_length的序列，会被抛弃
-        self.window_step_size = window_step_size  # 滑动窗口步长
-        self.tokenize_batch = 2048
+        self.tokenize_num_workers = tokenize_num_workers
         self.space_token_ids = tokenizer.encode('\n', add_special_tokens=False)
+        # 创建缓存路径
+        self.cache_dir = join(data_path, 'cache')
+        os.makedirs(self.cache_dir, exist_ok=True)
         logger.info('Pretraining data path: {}'.format(data_path))
 
         # 扫描所有jsonl文件
@@ -485,63 +487,33 @@ class LazyPretrainDataset(IterableDataset):
         logger.info(f'Total num of training file: {len(files)}')
         self.files = files
 
-    def slice_window_truncate(self, input_ids):
-        """
-        对input_ids，按照窗口大小，进行滑动截断。返回所有截断窗口。
-        """
-        windows = []
-        for i in range(0, len(input_ids), self.window_step_size):
-            window = input_ids[i: i + self.max_seq_length]
-            # 小于min_seq_length的序列，则将其抛弃。
-            if len(window) < self.min_seq_length and i > 0:
-                continue
-            # if len(window) < 200:
-            #     continue
-            windows.append(window)
-        return windows
-
     def __iter__(self):
         for file in self.files:
             logger.info(f'Loading file: {file}')
-            with open(file) as f:
-                rows = f.readlines()
-                # rows = rows[:10000]  # todo
-            train_texts = [json.loads(x)['text'].strip() for x in rows if json.loads(x)['text'].strip() != '']
-            logger.info(f'Total num of training text: {len(train_texts)}')
+            file_name = os.path.basename(file)
+            file_name = file_name.replace('.jsonl', '')
 
-            # 对文本进行tokenize
-            logger.info(f'Tokenizing datas: {file}...')
-            data_list = []  # 窗口截断之后的input_ids
-            for i in tqdm(range(0, len(train_texts), self.tokenize_batch)):
-                text_list = train_texts[i: i + self.tokenize_batch]
-                input_ids = self.tokenizer(text_list).input_ids
-                data_list += input_ids
-            logger.info(f'Finish tokenizing datas')
+            raw_dataset = load_dataset("json", data_files=file, cache_dir=os.path.join(self.cache_dir, file_name), keep_in_memory=False)
+            tokenized_dataset = raw_dataset.map(
+                lambda x: self.tokenizer(x["text"]),
+                batched=True,
+                num_proc=self.tokenize_num_workers,
+                remove_columns="text",
+                load_from_cache_file=True,
+                keep_in_memory=False,
+                cache_file_names={k: os.path.join(self.cache_dir, file_name, 'tokenized.arrow') for k in raw_dataset},
+                desc=f"Tokenizing data: {file}",
+            )
 
-            # 按照长度降序排序
-            sorted_list = sorted(data_list, key=lambda x: len(x), reverse=True)
-
-            # 进行packing，并且使用窗口滑动进行截断
-            while len(sorted_list) > 0:
-                data = sorted_list.pop(0)   # 取出当前最长的文本
-                truncates = self.slice_window_truncate(data)    # 使用滑动窗口截取数据
-                if len(truncates) > 1:
-                    for x in truncates:
-                        yield x
-                else:
-                    data = truncates[0]
-                    # 将data使用短文本padding到max_seq_length
-                    shortest_data = []
-                    while len(sorted_list) > 0 and len(data) < self.max_seq_length:
-                        shortest_data = sorted_list.pop(-1)  # 取出当前最短的文本
-                        if len(shortest_data) < 3000:
-                            data += self.space_token_ids * 3 + shortest_data
-
-                    if len(shortest_data) >= 3000:
-                        yield data
-                        yield shortest_data
-                    else:
-                        yield data
+            # 拼接所有token
+            input_ids = []
+            for x in tokenized_dataset['train']:
+                input_ids += x['input_ids'] + self.space_token_ids * 3
+                if len(input_ids) >= self.max_seq_length:
+                    chunk = input_ids[: self.max_seq_length]
+                    assert len(chunk) == self.max_seq_length
+                    yield chunk
+                    input_ids = input_ids[self.max_seq_length:]
 
 
 class LazyPretrainDatasetV2(IterableDataset):
