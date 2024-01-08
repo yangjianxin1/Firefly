@@ -10,8 +10,6 @@
     "gradient_accumulation_steps": 4,
     "learning_rate": 1e-5,
     "max_seq_length": 4096,
-    "min_seq_length": 300,
-    "window_step_size": 4096,
     "task_type": "pretrain",
 
     "logging_steps": 500,
