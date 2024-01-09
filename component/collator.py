@@ -59,7 +59,8 @@ class PretrainCollator(object):
         self.max_seq_length = max_seq_length
         self.pad_token_id = tokenizer.pad_token_id
 
-    def __call__(self, batch: List[Any]) -> Dict[str, Any]:
+    def __call__(self, batch: List[Dict[str, Any]]) -> Dict[str, Any]:
+        batch = [x['input_ids'] for x in batch if x['input_ids'] is not None]
         # 找出batch中的最大长度
         lengths = [len(x) for x in batch]
         # 取出batch中的最大长度，如果超过max_seq_length，则取max_seq_length
