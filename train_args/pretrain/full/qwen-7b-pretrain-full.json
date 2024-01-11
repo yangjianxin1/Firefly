@@ -4,7 +4,6 @@
     "deepspeed": "./train_args/ds_z3_config.json",
     "train_file": "./data/pretrain",
     "num_train_epochs": 1,
-    "max_steps": 1000000,
     "tokenize_num_workers": 10,
     "per_device_train_batch_size": 4,
     "gradient_accumulation_steps": 4,
@@ -13,10 +12,9 @@
     "task_type": "pretrain",
 
     "logging_steps": 500,
-    "save_steps": 10000,
-    "save_total_limit": 1,
+    "save_steps": 500,
     "lr_scheduler_type": "cosine",
-    "warmup_steps": 1000,
+    "warmup_ratio": 0.01,
 
     "gradient_checkpointing": true,
     "logging_first_step": false,

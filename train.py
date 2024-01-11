@@ -103,7 +103,7 @@ def load_pretrain_dataset(training_args, args, tokenizer):
             try:
                 processed_dataset = datasets.load_from_disk(cache_path, keep_in_memory=False)
                 logger.info(f'Finished loading datasets-{file_name} from cache')
-            except:
+            except Exception:
                 tmp_cache_path = join(cache_path, 'tmp')    # 临时缓存目录，会被自动删除
                 logger.info(f'There is no cache of file {file_name}, start preprocessing...')
                 raw_dataset = load_dataset("json", data_files=file, cache_dir=tmp_cache_path, keep_in_memory=False)
@@ -129,7 +129,7 @@ def load_pretrain_dataset(training_args, args, tokenizer):
                 processed_dataset = grouped_datasets
                 processed_dataset.save_to_disk(cache_path)
                 # 删除临时目录
-                shutil.rmtree(tmp_cache_path)
+                # shutil.rmtree(tmp_cache_path)
 
             logger.info(f"Training number of {file_name}: {len(processed_dataset['train'])}")
             if idx == 0:
