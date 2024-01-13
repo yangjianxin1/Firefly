@@ -187,7 +187,7 @@ Result：
 
 **注意：Baichuan2需要安装pytorch 2.0。除Baichuan2以外，其他模型的训练，我们均在torch==1.13上进行训练。**
 ```bash
-pip install requirements.txt
+pip install -r requirements.txt
 ```
 
 ## 模型列表
