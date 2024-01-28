@@ -1,6 +1,7 @@
 from transformers import AutoTokenizer, AutoConfig, AddedToken
 import torch
 from loguru import logger
+import copy
 
 import sys
 sys.path.append("../../")
@@ -98,20 +99,15 @@ def load_tokenizer(model_name_or_path):
 
 def main():
     # 使用合并后的模型进行推理
-    # model_name_or_path = '/Users/jianxin.yang/Desktop/pretrain_models/chatglm2-6b'
-    # template_name = 'chatglm2'
+    # model_name_or_path = 'Qwen/Qwen-7B-Chat'
+    # template_name = 'qwen'
+    #  adapter_name_or_path = None
 
-    model_name_or_path = '/Users/jianxin.yang/Desktop/pretrain_models/chatglm3-6b'
-    template_name = 'chatglm3'
-
-    model_name_or_path = '/Users/jianxin.yang/Desktop/pretrain_models/internlm-7b'
-    template_name = 'internlm'
-
-    # model_name_or_path = ''
+    model_name_or_path = '01-ai/Yi-6B-Chat'
+    template_name = 'yi'
     adapter_name_or_path = None
-    # template_name = ''
-    template = template_dict[template_name]
 
+    template = template_dict[template_name]
     # 是否使用4bit进行推理，能够节省很多显存，但效果可能会有一定的下降
     load_in_4bit = False
     # 生成超参配置
@@ -142,7 +138,7 @@ def main():
     query = input('User：')
     while True:
         query = query.strip()
-        input_ids = build_prompt(tokenizer, template, query, history, system=None).to(model.device)
+        input_ids = build_prompt(tokenizer, template, query, copy.deepcopy(history), system=None).to(model.device)
         outputs = model.generate(
             input_ids=input_ids, max_new_tokens=max_new_tokens, do_sample=True,
             top_p=top_p, temperature=temperature, repetition_penalty=repetition_penalty,
