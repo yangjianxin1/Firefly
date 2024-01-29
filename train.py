@@ -173,7 +173,7 @@ def load_tokenizer(args):
         args.model_name_or_path,
         trust_remote_code=True,
         # llama不支持fast
-        use_fast=False if config.model_type == 'llama' else True
+        use_fast=False if config.model_type == 'llama' or config.model_type == 'internlm2' else True
     )
 
     # 部分模型的base与chat版本的tokenizer存在差异

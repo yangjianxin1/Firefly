@@ -75,18 +75,6 @@ def load_tokenizer(model_name_or_path):
         use_fast=False if config.model_type == 'llama' else True
     )
 
-    # 部分模型的base与chat版本的tokenizer存在差异
-    if 'internlm2' in model_name_or_path.lower():
-        tokenizer._added_tokens_encoder.update({'<|im_start|>': 92543})
-        tokenizer._added_tokens_encoder.update({'<|im_end|>': 92542})
-        tokenizer._added_tokens_decoder.update({92543: AddedToken('<|im_start|>')})
-        tokenizer._added_tokens_decoder.update({92542: AddedToken('<|im_end|>')})
-        tokenizer.add_special_tokens({'additional_special_tokens': ['<|im_start|>', '<|im_end|>']})
-    elif 'yi' in model_name_or_path.lower():
-        tokenizer.add_special_tokens({'additional_special_tokens': ['<|im_start|>', '<|im_end|>']})
-    elif 'orion' in model_name_or_path.lower():
-        tokenizer.add_special_tokens({'bos_token': '<s>', 'eos_token': '</s>'})
-
     if tokenizer.__class__.__name__ == 'QWenTokenizer':
         tokenizer.pad_token_id = tokenizer.eod_id
         tokenizer.bos_token_id = tokenizer.eod_id
