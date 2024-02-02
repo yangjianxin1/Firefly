@@ -29,11 +29,10 @@ def register_template(template_name, system_format, user_format, assistant_forma
 
 
 # 注册template
-# todo 部分模型没有</s>
 register_template(
     template_name='default',
-    system_format='<|im_start|>system\n{content}<|im_end|>\n',
-    user_format='<|im_start|>user\n{content}<|im_end|>\n<|im_start|>assistant\n',
+    system_format='System: {content}\n\n',
+    user_format='Human: {content}\nAssistant: ',
     assistant_format='{content}{stop_token}\n',
     system=None,
     stop_word=None
@@ -132,6 +131,15 @@ register_template(
     assistant_format='{content}<|endoftext|>',
     system=None,
     stop_word='<|endoftext|>',
+)
+
+register_template(
+    template_name='minicpm',
+    system_format=None,
+    user_format='<|im_start|>user\n{content}<|im_end|>\n<|im_start|>assistant\n',
+    assistant_format='{content}<|im_end|>\n',
+    system=None,
+    stop_word='<|im_end|>'
 )
 
 register_template(
