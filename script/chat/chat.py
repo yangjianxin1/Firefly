@@ -66,13 +66,13 @@ def build_prompt(tokenizer, template, query, history, system=None):
 
 
 def load_tokenizer(model_name_or_path):
-    config = AutoConfig.from_pretrained(model_name_or_path, trust_remote_code=True)
+    # config = AutoConfig.from_pretrained(model_name_or_path, trust_remote_code=True)
     # 加载tokenzier
     tokenizer = AutoTokenizer.from_pretrained(
         model_name_or_path,
         trust_remote_code=True,
         # llama不支持fast
-        use_fast=False if config.model_type == 'llama' else True
+        # use_fast=False if config.model_type == 'llama' else True
     )
 
     if tokenizer.__class__.__name__ == 'QWenTokenizer':
@@ -106,17 +106,20 @@ def main():
 
     # 加载模型
     logger.info(f'Loading model from: {model_name_or_path}')
+    logger.info(f'adapter_name_or_path: {adapter_name_or_path}')
     model = ModelUtils.load_model(
         model_name_or_path,
         load_in_4bit=load_in_4bit,
         adapter_name_or_path=adapter_name_or_path
     ).eval()
-    tokenizer = load_tokenizer(model_name_or_path)
+    tokenizer = load_tokenizer(model_name_or_path if adapter_name_or_path is None else adapter_name_or_path)
     if template_name == 'chatglm2':
         stop_token_id = tokenizer.eos_token_id
     elif template_name == 'chatglm3':
         stop_token_id = [tokenizer.eos_token_id, tokenizer.get_command("<|user|>"), tokenizer.get_command("<|observation|>")]
     else:
+        if template.stop_word is None:
+            template.stop_word = tokenizer.eos_token
         stop_token_id = tokenizer.encode(template.stop_word, add_special_tokens=False)
         assert len(stop_token_id) == 1
         stop_token_id = stop_token_id[0]

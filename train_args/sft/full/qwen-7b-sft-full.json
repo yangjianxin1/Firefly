@@ -22,7 +22,7 @@
     "seed": 42,
     "fp16": true,
     "report_to": "tensorboard",
-    "dataloader_num_workers": 5,
+    "dataloader_num_workers": 0,
     "save_strategy": "steps",
     "weight_decay": 0,
     "max_grad_norm": 1.0,

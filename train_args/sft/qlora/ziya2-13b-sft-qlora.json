@@ -1,5 +1,5 @@
 {
-    "output_dir": "output/firefly-ziyas-13b-sft-qlora",
+    "output_dir": "output/firefly-ziya2-13b-sft-qlora",
     "model_name_or_path": "IDEA-CCNL/Ziya2-13B-Chat",
     "train_file": "./data/dummy_data.jsonl",
     "template_name": "ziya2",
