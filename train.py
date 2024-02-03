@@ -1,43 +1,43 @@
-from transformers import (
-    set_seed,
-    HfArgumentParser,
-    TrainingArguments,
-)
 import argparse
 from loguru import logger
 import os
 from os.path import join
 import torch
-from transformers import AutoTokenizer
-from transformers import AutoModelForCausalLM
-from component.collator import SFTDataCollator, PretrainCollator
+from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training
+import bitsandbytes as bnb
+from component.collator import PretrainCollator, SFTDataCollator
+from component.argument import CustomizedArguments
+from component.template import template_dict
 from component.dataset import (
-    SFTDataset,
+    UnifiedSFTDataset,
     ChatGLM2SFTDataset,
     ChatGLM3SFTDataset,
-    MistralSFTDataset,
-    ZephyrSFTDataset,
-    QwenSFTDataset,
-    PretrainDataset,
-    LazyPretrainDataset
 )
-from component.argument import CustomizedArguments
-from component.trainer import Trainer
+from transformers import (
+    set_seed,
+    HfArgumentParser,
+    TrainingArguments,
+    AutoTokenizer,
+    AutoModelForCausalLM,
+    AutoConfig,
+    BitsAndBytesConfig,
+    Trainer,
+    AddedToken
+)
 from datasets import load_dataset, concatenate_datasets
 import datasets
 from itertools import chain
 from tqdm import tqdm
-import shutil
-# from component.loss import TargetLMLoss
+import json
 
 
 def setup_everything():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--train_args_file", type=str, default='train_args/full/qwen-7b-sft-full.json', help="")
+    # parser.add_argument("--train_args_file", type=str, default='train_args/pretrain/full/bloom-1b1-pretrain-full.json', help="")
+    parser.add_argument("--train_args_file", type=str, default='train_args/sft/qlora/qwen-7b-sft-qlora.json', help="")
     parser.add_argument("--local_rank", type=int, help="")
     args = parser.parse_args()
     train_args_file = args.train_args_file
-    # train_args_file = 'train_args/finetune.json'
     # 读取训练的参数配置
     parser = HfArgumentParser((CustomizedArguments, TrainingArguments))
     # 解析得到自定义参数，以及自带参数
@@ -47,12 +47,37 @@ def setup_everything():
         os.makedirs(training_args.output_dir)
     logger.add(join(training_args.output_dir, 'train.log'))
     logger.info("train_args:{}".format(training_args))
+    # 加载训练配置文件
+    with open(train_args_file, "r") as f:
+        train_args = json.load(f)
+    # 保存训练参数到输出目录
+    with open(join(training_args.output_dir, 'train_args.json'), "w") as f:
+        json.dump(train_args, f, indent=4)
     # 设置随机种子
     set_seed(training_args.seed)
     return args, training_args
 
 
+def find_all_linear_names(model):
+    """
+    找出所有全连接层，为所有全连接添加adapter
+    """
+    cls = bnb.nn.Linear4bit
+    lora_module_names = set()
+    for name, module in model.named_modules():
+        if isinstance(module, cls):
+            names = name.split('.')
+            lora_module_names.add(names[0] if len(names) == 1 else names[-1])
+
+    if 'lm_head' in lora_module_names:  # needed for 16-bit
+        lora_module_names.remove('lm_head')
+    return list(lora_module_names)
+
+
 def load_pretrain_dataset(training_args, args, tokenizer):
+    """
+    多线程预处理预训练数据
+    """
     def tokenize_function(examples):
         output = tokenizer(examples["text"])
         output = {'input_ids': output.input_ids}
@@ -68,7 +93,7 @@ def load_pretrain_dataset(training_args, args, tokenizer):
             total_length = (total_length // max_seq_length) * max_seq_length
         # Split by chunks of max_len.
         result = {
-            k: [t[i : i + max_seq_length] for i in range(0, total_length, max_seq_length)]
+            k: [t[i: i + max_seq_length] for i in range(0, total_length, max_seq_length)]
             for k, t in concatenated_examples.items()
         }
         return result
@@ -141,76 +166,153 @@ def load_pretrain_dataset(training_args, args, tokenizer):
     return pretrain_dataset
 
 
-def init_components(args, training_args):
-    """
-    初始化各个组件
-    """
-    logger.info('Initializing components...')
-    world_size = int(os.environ.get("WORLD_SIZE", 1))
-    ddp = world_size != 1
-    if ddp:
-        device_map = {"": int(os.environ.get("LOCAL_RANK") or 0)}
-    training_args.ddp_find_unused_parameters = False if ddp else None
-
-    # 初始化model
-    model = AutoModelForCausalLM.from_pretrained(
-        args.model_name_or_path,
-        torch_dtype=torch.float16,
-        trust_remote_code=True
-    )
-    # moe模型，需要考虑负载均衡的loss
-    if 'output_router_logits' in model.config.to_dict():
-        logger.info('set output_router_logits as True')
-        model.config.output_router_logits = True
-
+def load_tokenizer(args):
+    config = AutoConfig.from_pretrained(args.model_name_or_path, trust_remote_code=True)
     # 加载tokenzier
     tokenizer = AutoTokenizer.from_pretrained(
         args.model_name_or_path,
         trust_remote_code=True,
         # llama不支持fast
-        use_fast=False if model.config.model_type == 'llama' else True
+        use_fast=False if config.model_type == 'llama' or config.model_type == 'internlm2' else True
     )
-    # QWenTokenizer比较特殊，pad_token_id、bos_token_id、eos_token_id均为None。eod_id对应的token为<|endoftext|>
+
+    # 部分模型的base与chat版本的tokenizer存在差异
+    if 'internlm2' in args.model_name_or_path.lower():
+        tokenizer._added_tokens_encoder.update({'<|im_start|>': 92543})
+        tokenizer._added_tokens_encoder.update({'<|im_end|>': 92542})
+        tokenizer._added_tokens_decoder.update({92543: AddedToken('<|im_start|>')})
+        tokenizer._added_tokens_decoder.update({92542: AddedToken('<|im_end|>')})
+        tokenizer.add_special_tokens({'additional_special_tokens': ['<|im_start|>', '<|im_end|>']})
+    elif 'orion' in args.model_name_or_path.lower():
+        tokenizer.add_special_tokens({'bos_token': '<s>', 'eos_token': '</s>'})
+
     if tokenizer.__class__.__name__ == 'QWenTokenizer':
         tokenizer.pad_token_id = tokenizer.eod_id
         tokenizer.bos_token_id = tokenizer.eod_id
         tokenizer.eos_token_id = tokenizer.eod_id
-    # ChatGLMTokenizer不需要设置，仅设置其他tokenizer
-    elif tokenizer.__class__.__name__ != 'ChatGLMTokenizer':
-        assert tokenizer.eos_token_id is not None
-        assert tokenizer.bos_token_id is not None
-        tokenizer.pad_token_id = tokenizer.eos_token_id if tokenizer.pad_token_id is None else tokenizer.pad_token_id
+    if tokenizer.pad_token is None:
+        tokenizer.pad_token = tokenizer.eos_token
+    assert tokenizer.pad_token_id is not None, "pad_token_id should not be None"
+    assert tokenizer.eos_token_id is not None, "eos_token_id should not be None"
+    logger.info(f'vocab_size of tokenizer: {tokenizer.vocab_size}')
+    return tokenizer
 
+
+def load_model(args, training_args):
+    """
+    加载模型
+    """
+    assert training_args.bf16 or training_args.fp16, 'bf16 or fp16 should be True'
+    # 加载模型
+    logger.info(f'Loading model from base model: {args.model_name_or_path}')
+
+    # 全量训练
+    if args.train_mode == 'full':
+        logger.info('Training model with full parameters')
+        # world_size = int(os.environ.get("WORLD_SIZE", 1))
+        # ddp = world_size != 1
+        # training_args.ddp_find_unused_parameters = False if ddp else None
+        model = AutoModelForCausalLM.from_pretrained(
+            args.model_name_or_path,
+            # attn_implementation='flash_attention_2',
+            torch_dtype=torch.float16 if training_args.fp16 else torch.bfloat16,
+            trust_remote_code=True,
+        )
+    # 使用LoRA或者QLoRA训练模型
+    else:
+        # training_args.ddp_find_unused_parameters = False
+        # 设置device_map，以适配多卡训练
+        local_rank = int(os.environ.get('LOCAL_RANK', '0'))
+        device_map = {'': local_rank}
+        # todo 适配lora
+        # if args.train_mode == 'lora':
+        #     logger.info('Training model with LoRA')
+        #     quantization_config = None
+        if args.train_mode == 'qlora':
+            logger.info('Training model with QLoRA')
+            quantization_config = BitsAndBytesConfig(
+                load_in_4bit=True,
+                bnb_4bit_compute_dtype=torch.float16 if training_args.fp16 else torch.bfloat16,
+                bnb_4bit_use_double_quant=True,
+                bnb_4bit_quant_type="nf4",
+                llm_int8_threshold=6.0,
+                llm_int8_has_fp16_weight=False,
+            )
+        else:
+            raise Exception('train_mode should be in [full, qlora]')
+
+        model = AutoModelForCausalLM.from_pretrained(
+            args.model_name_or_path,
+            device_map=device_map,
+            load_in_4bit=True,
+            torch_dtype=torch.float16 if training_args.fp16 else torch.bfloat16,
+            trust_remote_code=True,
+            quantization_config=quantization_config
+        )
+        model.config.use_cache = False
+        # casts all the non int8 modules to full precision (fp32) for stability
+        if args.train_mode == 'qlora':
+            model = prepare_model_for_kbit_training(model, use_gradient_checkpointing=training_args.gradient_checkpointing)
+        # 找到所有需要插入adapter的全连接层
+        target_modules = find_all_linear_names(model)
+        # 初始化lora配置
+        config = LoraConfig(
+            r=args.lora_rank,
+            lora_alpha=args.lora_alpha,
+            target_modules=target_modules,
+            lora_dropout=args.lora_dropout,
+            bias="none",
+            task_type="CAUSAL_LM",
+        )
+        model = get_peft_model(model, config)
+        model.print_trainable_parameters()
+        model.config.torch_dtype = torch.float32
+
+    # moe模型，需要考虑负载均衡的loss
+    if 'output_router_logits' in model.config.to_dict():
+        logger.info('set output_router_logits as True')
+        model.config.output_router_logits = True
+    logger.info(f'memory footprint of model: {model.get_memory_footprint() / (1024 * 1024 * 1024)} GB')
     # 计算模型参数量
     total = sum(p.numel() for p in model.parameters())
     logger.info("Total model params: %.2fM" % (total / 1e6))
 
-    # 初始化损失函数
-    # loss_func = TargetLMLoss(ignore_index=-100)
+    return model
 
-    assert args.task_type in ['sft', 'pretrain'], 'task_type should be in [sft, pretrain]'
+
+def load_sft_dataset(args, tokenizer):
+    template = template_dict[args.template_name]
+    if 'chatglm2' in args.model_name_or_path.lower():
+        logger.info('Loading data with ChatGLM2SFTDataset')
+        train_dataset = ChatGLM2SFTDataset(args.train_file, tokenizer, args.max_seq_length, template)
+    elif 'chatglm3' in args.model_name_or_path.lower():
+        logger.info('Loading data with ChatGLM3SFTDataset')
+        train_dataset = ChatGLM3SFTDataset(args.train_file, tokenizer, args.max_seq_length, template)
+    else:
+        logger.info('Loading data with UnifiedSFTDataset')
+        train_dataset = UnifiedSFTDataset(args.train_file, tokenizer, args.max_seq_length, template)
+    return train_dataset
+
+
+def init_components(args, training_args):
+    """
+    初始化各个组件
+    """
+    training_args.ddp_find_unused_parameters = False
+    logger.info('Initializing components...')
+
+    # 加载tokenizer
+    tokenizer = load_tokenizer(args)
+    # 加载model
+    model = load_model(args, training_args)
     # 初始化dataset和collator
-    # 预训练
     if args.task_type == 'pretrain':
+        logger.info('Train model with pretrain task')
         train_dataset = load_pretrain_dataset(training_args, args, tokenizer)
         data_collator = PretrainCollator(tokenizer, args.max_seq_length)
     else:
-        # 指令微调，不同的模型，数据拼接格式不一样
-        if 'chatglm2' in args.model_name_or_path.lower():
-            train_dataset = ChatGLM2SFTDataset(args.train_file, tokenizer, args.max_seq_length)
-        # 加载ChatGLM3的训练集
-        elif 'chatglm3' in args.model_name_or_path.lower():
-            train_dataset = ChatGLM3SFTDataset(args.train_file, tokenizer, args.max_seq_length)
-        elif 'mistral' in args.model_name_or_path.lower() or 'mixtral' in args.model_name_or_path.lower():
-            train_dataset = MistralSFTDataset(args.train_file, tokenizer, args.max_seq_length)
-        elif 'zephyr' in args.model_name_or_path.lower():
-            train_dataset = ZephyrSFTDataset(args.train_file, tokenizer, args.max_seq_length)
-        elif 'qwen' in args.model_name_or_path.lower():
-            train_dataset = QwenSFTDataset(args.train_file, tokenizer, args.max_seq_length)
-        # 按照firefly格式进行拼接
-        else:
-            train_dataset = SFTDataset(args.train_file, tokenizer, args.max_seq_length)
-        # 加载collator
+        logger.info('Train model with sft task')
+        train_dataset = load_sft_dataset(args, tokenizer)
         data_collator = SFTDataCollator(tokenizer, args.max_seq_length)
 
     # 初始化Trainer
@@ -218,9 +320,8 @@ def init_components(args, training_args):
         model=model,
         args=training_args,
         train_dataset=train_dataset,
-        # tokenizer=tokenizer,
+        tokenizer=tokenizer,
         data_collator=data_collator,
-        # compute_loss=loss_func
     )
     return trainer
 

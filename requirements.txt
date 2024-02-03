@@ -1,5 +1,5 @@
 accelerate==0.21.0
-transformers==4.36
+transformers==4.34
 peft==0.4.0
 bitsandbytes==0.39.0
 loguru==0.7.0
@@ -18,3 +18,5 @@ torch==1.13.1
 mmengine
 xformers
 astunparse==1.6.2
+dataset
+flash_attn

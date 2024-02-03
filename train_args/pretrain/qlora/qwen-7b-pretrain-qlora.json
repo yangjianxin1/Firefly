@@ -3,7 +3,7 @@
     "model_name_or_path": "Qwen/Qwen-7B",
     "deepspeed": "./train_args/ds_z3_config.json",
     "train_file": "./data/pretrain",
-    "train_mode": "full",
+    "train_mode": "qlora",
     "task_type": "pretrain",
     "num_train_epochs": 1,
     "tokenize_num_workers": 10,
@@ -14,7 +14,6 @@
 
     "logging_steps": 100,
     "save_steps": 100,
-    "save_total_limit": 1,
     "lr_scheduler_type": "cosine",
     "warmup_ratio": 0.01,
 

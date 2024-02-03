@@ -13,7 +13,7 @@ def merge_lora_to_base_model():
 
     config = AutoConfig.from_pretrained(model_name_or_path)
     tokenizer = AutoTokenizer.from_pretrained(
-        model_name_or_path,
+        adapter_name_or_path,
         trust_remote_code=True,
         # llama不支持fast
         use_fast=False if config.model_type == 'llama' else True
