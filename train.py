@@ -52,7 +52,7 @@ def setup_everything():
         train_args = json.load(f)
     # 保存训练参数到输出目录
     with open(join(training_args.output_dir, 'train_args.json'), "w") as f:
-        json.dump(train_args, f)
+        json.dump(train_args, f, indent=4)
     # 设置随机种子
     set_seed(training_args.seed)
     return args, training_args
@@ -183,8 +183,6 @@ def load_tokenizer(args):
         tokenizer._added_tokens_decoder.update({92543: AddedToken('<|im_start|>')})
         tokenizer._added_tokens_decoder.update({92542: AddedToken('<|im_end|>')})
         tokenizer.add_special_tokens({'additional_special_tokens': ['<|im_start|>', '<|im_end|>']})
-    elif 'yi' in args.model_name_or_path.lower():
-        tokenizer.add_special_tokens({'additional_special_tokens': ['<|im_start|>', '<|im_end|>']})
     elif 'orion' in args.model_name_or_path.lower():
         tokenizer.add_special_tokens({'bos_token': '<s>', 'eos_token': '</s>'})
 
@@ -195,6 +193,7 @@ def load_tokenizer(args):
     if tokenizer.pad_token is None:
         tokenizer.pad_token = tokenizer.eos_token
     assert tokenizer.pad_token_id is not None, "pad_token_id should not be None"
+    assert tokenizer.eos_token_id is not None, "eos_token_id should not be None"
     logger.info(f'vocab_size of tokenizer: {tokenizer.vocab_size}')
     return tokenizer
 
@@ -210,9 +209,9 @@ def load_model(args, training_args):
     # 全量训练
     if args.train_mode == 'full':
         logger.info('Training model with full parameters')
-        world_size = int(os.environ.get("WORLD_SIZE", 1))
-        ddp = world_size != 1
-        training_args.ddp_find_unused_parameters = False if ddp else None
+        # world_size = int(os.environ.get("WORLD_SIZE", 1))
+        # ddp = world_size != 1
+        # training_args.ddp_find_unused_parameters = False if ddp else None
         model = AutoModelForCausalLM.from_pretrained(
             args.model_name_or_path,
             # attn_implementation='flash_attention_2',
@@ -221,7 +220,7 @@ def load_model(args, training_args):
         )
     # 使用LoRA或者QLoRA训练模型
     else:
-        training_args.ddp_find_unused_parameters = False
+        # training_args.ddp_find_unused_parameters = False
         # 设置device_map，以适配多卡训练
         local_rank = int(os.environ.get('LOCAL_RANK', '0'))
         device_map = {'': local_rank}
@@ -250,6 +249,7 @@ def load_model(args, training_args):
             trust_remote_code=True,
             quantization_config=quantization_config
         )
+        model.config.use_cache = False
         # casts all the non int8 modules to full precision (fp32) for stability
         if args.train_mode == 'qlora':
             model = prepare_model_for_kbit_training(model, use_gradient_checkpointing=training_args.gradient_checkpointing)
@@ -268,7 +268,6 @@ def load_model(args, training_args):
         model.print_trainable_parameters()
         model.config.torch_dtype = torch.float32
 
-    model.config.use_cache = False
     # moe模型，需要考虑负载均衡的loss
     if 'output_router_logits' in model.config.to_dict():
         logger.info('set output_router_logits as True')
@@ -290,6 +289,7 @@ def load_sft_dataset(args, tokenizer):
         logger.info('Loading data with ChatGLM3SFTDataset')
         train_dataset = ChatGLM3SFTDataset(args.train_file, tokenizer, args.max_seq_length, template)
     else:
+        logger.info('Loading data with UnifiedSFTDataset')
         train_dataset = UnifiedSFTDataset(args.train_file, tokenizer, args.max_seq_length, template)
     return train_dataset
 
@@ -298,6 +298,7 @@ def init_components(args, training_args):
     """
     初始化各个组件
     """
+    training_args.ddp_find_unused_parameters = False
     logger.info('Initializing components...')
 
     # 加载tokenizer
