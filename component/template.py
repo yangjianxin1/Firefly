@@ -32,8 +32,8 @@ def register_template(template_name, system_format, user_format, assistant_forma
 register_template(
     template_name='default',
     system_format='System: {content}\n\n',
-    user_format='Human: {content}\nAssistant: ',
-    assistant_format='{content}{stop_token}\n',
+    user_format='User: {content}\nAssistant: ',
+    assistant_format='{content} {stop_token}',
     system=None,
     stop_word=None
 )
@@ -136,10 +136,10 @@ register_template(
 register_template(
     template_name='minicpm',
     system_format=None,
-    user_format='<|im_start|>user\n{content}<|im_end|>\n<|im_start|>assistant\n',
-    assistant_format='{content}<|im_end|>\n',
+    user_format='<用户>{content}<AI>',
+    assistant_format='{content}</s>',
     system=None,
-    stop_word='<|im_end|>'
+    stop_word='</s>'
 )
 
 register_template(
