@@ -1,4 +1,4 @@
-# Firefly(流萤): 中文对话式大语言模型
+# Firefly: 大模型训练工具
 
 <div align="left">
 
@@ -17,15 +17,26 @@
 
 欢迎关注我们的知乎进行交流讨论：**[红雨瓢泼](https://www.zhihu.com/people/jian-xin-15-96)**
 
+## 项目简介
+**Firefly** 是一个开源的大模型训练项目，支持对主流的大模型进行预训练和指令微调，包括但不限于MiniCPM、Llama、InternLM、Baichuan、ChatGLM、Yi、Deepseek、Qwen、Orion、Ziya、Xverse、Mistral、Mixtral-8x7B、Zephyr、Vicuna、Bloom等。
+本项目支持全量参数训练和QLoRA高效训练，支持预训练和指令微调。 如果你的训练资源有限，我们极力推荐使用QLoRA进行指令微调，因为我们在Open LLM Leaderboard上验证了该方法的有效性，并且取得了非常不错的成绩。
 
+🔔 本项目主要内容如下：
+- 📗 支持预训练和指令微调，支持全量参数训练和QLoRA高效训练。通过配置文件的方式训练不同的模型，小白亦可快速上手训练模型。
+- 📗 支持绝大部分主流的开源大模型，如MiniCPM、Llama、InternLM、Baichuan、ChatGLM、Yi、Deepseek、Qwen、Orion、Ziya、Xverse、Mistral、Mixtral-8x7B、Zephyr、Vicuna、Bloom，训练时与各个官方的chat模型的template对齐。
+- 📗 整理并开源指令微调数据集：firefly-train-1.1M 、moss-003-sft-data、ultrachat、 WizardLM_evol_instruct_V2_143k、school_math_0.25M。
+- 📗 开源[Firefly系列指令微调模型权重](https://huggingface.co/YeungNLP) 。
+- 📗 在Open LLM Leaderboard上验证了QLoRA训练流程的有效性。
+
+当前版本针对不同的chat模型的template进行了适配，代码存在较大的更新。若你更喜欢此前的版本，可下载代码[v0.0.1-alpha](https://github.com/yangjianxin1/Firefly/releases/tag/v0.0.1-alpha)
 
 ## News
-- 🔥 优化训练流程，支持全量训练和QLoRA高效训练，支持预训练和指令微调。指令微调的template与原有的chat模型对齐，支持绝大多数开源模型。
+- 🔥 优化训练流程，支持全量训练和QLoRA高效训练，支持预训练和指令微调。指令微调的template与原有的chat模型对齐，支持绝大多数开源模型，包括MiniCPM、Llama、InternLM、Baichuan、ChatGLM、Yi、Deepseek、Qwen、Orion、Ziya、Xverse、Mistral、Mixtral-8x7B、Zephyr、Vicuna、Bloom等。
 - 🔥 开源模型权重[firefly-mixtral-8x7b](https://huggingface.co/YeungNLP/firefly-mixtral-8x7b) ，在[🤗Open LLM排行榜](https://huggingface.co/spaces/HuggingFaceH4/open_llm_leaderboard)分数为70.34，超越Yi-34B、Llama2-65B-Chat、Qwen-14B、Vicuna-33B-v1.3等模型。
-- 🔥 开源[LongQLoRA](https://github.com/yangjianxin1/LongQLoRA), [技术报告](https://arxiv.org/abs/2311.04879)。可高效扩展LLama上下文长度，在单张32GB V100上将Llama2长度扩展至8k（亦可扩展至12k），仅微调1000 step，在PG19和Proof-pile数据集上的perplexity优于LongLoRA，在PG19上略胜MPT-7B-8K。
+- 🔥 开源[LongQLoRA](https://github.com/yangjianxin1/LongQLoRA)， 【[技术报告](https://arxiv.org/abs/2311.04879)】。可高效扩展LLama上下文长度，在单张32GB V100上将Llama2长度扩展至8k（亦可扩展至12k），仅微调1000 step，在PG19和Proof-pile数据集上的perplexity优于LongLoRA，在PG19上略胜MPT-7B-8K。
 - 🔥 开源[Firefly-LLaMA2-Chinese项目](https://github.com/yangjianxin1/Firefly-LLaMA2-Chinese)，**在4*V00上进行高效训练**，经过中文词表扩充、增量预训练、多轮指令微调，在CMMLU上超越Linly、Yayi、FlagAlpha等，与Ziya、Chinese-Alpaca表现基本持平。
 - 🔥 开源[firefly-baichuan2-13b](https://huggingface.co/YeungNLP/firefly-baichuan2-13b)，在OpenCompass的CMMLU榜单上以56.83的分数，位列第8，比百川官方Chat模型略低1.57分。
-- 🔥 开源[firefly-llama-30b](https://huggingface.co/YeungNLP/firefly-llama-30b),在[🤗Open LLM排行榜](https://huggingface.co/spaces/HuggingFaceH4/open_llm_leaderboard)上以64.83分，同量级模型**排名第10**。
+- 🔥 开源[firefly-llama-30b](https://huggingface.co/YeungNLP/firefly-llama-30b)，在[🤗Open LLM排行榜](https://huggingface.co/spaces/HuggingFaceH4/open_llm_leaderboard)上以64.83分，同量级模型**排名第10**。
 - 🔥 开源[firefly-llama2-13b](https://huggingface.co/YeungNLP/firefly-llama2-13b)，在[🤗Open LLM排行榜](https://huggingface.co/spaces/HuggingFaceH4/open_llm_leaderboard)上以62分，同量级模型**排名第3**，比榜首略低0.5分。
 - 🔥 开源[firefly-llama-13b](https://huggingface.co/YeungNLP/firefly-llama-13b)，在[Hugging Face的Open LLM排行榜](https://huggingface.co/spaces/HuggingFaceH4/open_llm_leaderboard)上复刻Vicuna-13B，比Vicuna-13b-1.1略高0.2分，比llams-2-13b-chat略低0.5分。
 - [LLMPruner：大语言模型裁剪工具](https://github.com/yangjianxin1/LLMPruner) ，开源[裁剪后的Bloom模型权重](https://huggingface.co/YeungNLP) 。
@@ -66,17 +77,6 @@
 
 </details>
 
-## 项目简介
-**Firefly** 是一个开源的大模型训练项目，支持对主流的大模型进行预训练和指令微调，包括但不限于MiniCPM、Llama、InternLM、Baichuan、ChatGLM、Yi、Deepseek、Qwen、Orion、Ziya、Xverse、Mistral、Mixtral-8x7B、Zephyr、Vicuna、Bloom等。
-本项目支持全量参数训练和QLoRA高效训练，支持预训练和指令微调。 如果你的训练资源有限，我们极力推荐使用QLoRA进行指令微调，因为我们在Open LLM Leaderboard上验证了该方法的有效性，并且取得了非常不错的成绩。
-
-🔔 本项目主要内容如下：
-- 📗 支持预训练和指令微调，支持全量参数训练和QLoRA高效训练。通过配置文件的方式训练不同的模型，小白亦可快速上手训练模型。
-- 📗 支持绝大部分主流的开源大模型，如MiniCPM、Llama、InternLM、Baichuan、ChatGLM、Yi、Deepseek、Qwen、Orion、Ziya、Xverse、Mistral、Mixtral-8x7B、Zephyr、Vicuna、Bloom，训练时与各个官方的chat模型的template对齐。
-- 📗 整理并开源指令微调数据集：firefly-train-1.1M 、moss-003-sft-data、ultrachat、 WizardLM_evol_instruct_V2_143k、school_math_0.25M。
-- 📗 开源[Firefly系列指令微调模型权重](https://huggingface.co/YeungNLP) 。
-- 📗 在Open LLM Leaderboard上验证了QLoRA训练流程的有效性。
-
 
 ## 模型评测
 
@@ -86,7 +86,8 @@
 
 | 模型                          | Average | ARC   | HellaSwag | MMLU  | TruthfulQA |
 |-----------------------------|---------|-------|-----------|-------|------------|
-| **firefly-mixtral-8x7b**    | 70.34   | 60.09 | 85.76     | 71.49 | 55.31       |
+| **firefly-mixtral-8x7b**    | 70.16   | 68.09 | 85.76     | 71.49 | 55.31      |
+| Yi-34B-Chat                 | 69.97   | 65.44 | 84.16     | 74.9  | 55.37      |
 | **firefly-llama-30b**       | 64.83   | 64.25 | 83.64     | 58.23 | 53.2       |
 | falcon-40b-instruct         | 63.47   | 61.6  | 84.31     | 55.45 | 52.52      |
 | guanaco-33b                 | 62.98   | 62.46 | 84.48     | 53.78 | 51.22      |
@@ -194,7 +195,7 @@
 
 ### 安装环境
 在requirements.txt下固定了几个主要的python包的版本，执行如下脚本即可。注意：
-- 训练Baichuan2时，需要安装torch==2.0，并且卸载xformers。对于其他模型，我们均在torch==1.13上进行训练。
+- 使用QLoRA训练Baichuan2时，需要安装torch==2.0，并且卸载xformers。对于其他模型，我们均在torch==1.13上进行训练。
 - 使用QLoRA训练Qwen时，需将flash-attn卸载，否则会报错。
 ```bash
 pip install requirements.txt
@@ -253,22 +254,22 @@ deepspeed --num_gpus={num_gpus} train.py --train_args_file train_args/sft/full/b
 
 💻 单卡QLoRA预训练：
 ```bash
-python train_qlora.py --train_args_file train_args/pretrain/qlora/yi-6b-pretrain-qlora.json
+python train.py --train_args_file train_args/pretrain/qlora/yi-6b-pretrain-qlora.json
 ```
 
 💻 单卡QLoRA指令微调：
 ```bash
-python train_qlora.py --train_args_file train_args/sft/qlora/yi-6b-sft-qlora.json
+python train.py --train_args_file train_args/sft/qlora/yi-6b-sft-qlora.json
 ```
 
 💻 多卡QLoRA预训练：
 ```bash
-torchrun --nproc_per_node={num_gpus} train_qlora.py --train_args_file train_args/pretrain/qlora/yi-6b-pretrain-qlora.json
+torchrun --nproc_per_node={num_gpus} train.py --train_args_file train_args/pretrain/qlora/yi-6b-pretrain-qlora.json
 ```
 
 💻 多卡QLoRA指令微调：
 ```bash
-torchrun --nproc_per_node={num_gpus} train_qlora.py --train_args_file train_args/sft/qlora/yi-6b-sft-qlora.json
+torchrun --nproc_per_node={num_gpus} train.py --train_args_file train_args/sft/qlora/yi-6b-sft-qlora.json
 ```
 
 ## 模型使用

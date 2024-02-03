@@ -1,5 +1,5 @@
 {
-    "output_dir": "output/firefly-bloom-1b1-sft-full",
+    "output_dir": "output/firefly-bloom-1b1-pretrain-full",
     "model_name_or_path": "bigscience/bloom-1b1",
     "deepspeed": "./train_args/ds_z3_config.json",
     "train_file": "./data/pretrain",

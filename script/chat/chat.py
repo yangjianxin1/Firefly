@@ -71,6 +71,7 @@ def load_tokenizer(model_name_or_path):
     tokenizer = AutoTokenizer.from_pretrained(
         model_name_or_path,
         trust_remote_code=True,
+        use_fast=False
         # llama不支持fast
         # use_fast=False if config.model_type == 'llama' else True
     )
