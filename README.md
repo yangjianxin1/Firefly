@@ -147,8 +147,10 @@
 | [ultrachat](https://huggingface.co/datasets/YeungNLP/ultrachat)                                               | 由清华大学开源的英文多轮对话数据，包含140万+数据                                                                              |
 | [WizardLM_evol_instruct_V2_143k](https://huggingface.co/datasets/YeungNLP/WizardLM_evol_instruct_V2_143k) | 由WizardLM项目开源的英文指令微调数据集，通过Evol-Instruct方法让指令进化，加强指令的复杂度，以提升模型对复杂指令的遵循能力。包含143k条数据。                      |
 | [school_math_0.25M](https://huggingface.co/datasets/YeungNLP/school_math_0.25M)      | 由BELLE项目组开源的数学运算指令数据，包含25万条数据。                                                                          |
+| [shareAI/CodeChat](https://huggingface.co/datasets/shareAI/CodeChat)      | 主要包含逻辑推理、代码问答、代码生成相关语料样本。                                                                          |
+| [shareAI/ShareGPT-Chinese-English-90k](https://huggingface.co/datasets/shareAI/ShareGPT-Chinese-English-90k)      | 中英文平行双语优质人机问答数据集，覆盖真实复杂场景下的用户提问。                                                                          |
 
-若是训练中文模型，建议优先尝试使用moss数据进行微调。
+可按需选择、采样或组合上述数据。若是训练中文模型，建议尝试使用moss数据，英文可尝试ultrachat和WizardLM数据。
 
 训练数据为jsonl格式，每一行的数据格式如下，其中conversation字段是必需的，可以根据实际需求添加或删除其他字段。
 可以参考项目中的data/dummy_data.jsonl文件。
@@ -210,7 +212,7 @@ pip install requirements.txt
 📝 train_args目录下存储了不同模型使用不同训练方式的配置文件，主要参数说明如下：
 - output_dir：训练输出目录，存储checkpoint、tokenizer、tensorboard等
 - model_name_or_path：预训练模型的本地目录，或者在huggingface上的模型名称。
-- train_file：训练数据集路径。可以使用data/dummy_data.jsonl进行debug。
+- train_file：训练数据集路径。sft时，需要设置为文件，可以使用data/dummy_data.jsonl进行debug。pretrain时，需要设置为目录。脚本会自动扫描目录下的所有jsonl文件。
 - template_name：指令微调时，使用的模板名称。
 - num_train_epochs：训练的轮次。如果数据量足够大，一般建议只训一个epoch。
 - tokenize_num_workers：预训练时，tokenize的线程数，默认为10。
