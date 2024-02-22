@@ -34,7 +34,7 @@
 - 🔥 优化训练流程，支持全量训练和QLoRA高效训练，支持预训练和指令微调。指令微调的template与原有的chat模型对齐，支持绝大多数开源模型，包括MiniCPM、Llama、InternLM、Baichuan、ChatGLM、Yi、Deepseek、Qwen、Orion、Ziya、Xverse、Mistral、Mixtral-8x7B、Zephyr、Vicuna、Bloom等。
 - 🔥 开源模型权重[firefly-mixtral-8x7b](https://huggingface.co/YeungNLP/firefly-mixtral-8x7b) ，在[🤗Open LLM排行榜](https://huggingface.co/spaces/HuggingFaceH4/open_llm_leaderboard)分数为70.34，超越Yi-34B、Llama2-65B-Chat、Qwen-14B、Vicuna-33B-v1.3等模型。
 - 🔥 开源[LongQLoRA](https://github.com/yangjianxin1/LongQLoRA)， 【[技术报告](https://arxiv.org/abs/2311.04879)】。可高效扩展LLama上下文长度，在单张32GB V100上将Llama2长度扩展至8k（亦可扩展至12k），仅微调1000 step，在PG19和Proof-pile数据集上的perplexity优于LongLoRA，在PG19上略胜MPT-7B-8K。
-- 🔥 开源[Firefly-LLaMA2-Chinese项目](https://github.com/yangjianxin1/Firefly-LLaMA2-Chinese)，**在4*V00上进行高效训练**，经过中文词表扩充、增量预训练、多轮指令微调，在CMMLU上超越Linly、Yayi、FlagAlpha等，与Ziya、Chinese-Alpaca表现基本持平。
+- 🔥 开源[Firefly-LLaMA2-Chinese项目](https://github.com/yangjianxin1/Firefly-LLaMA2-Chinese)，**在4*V100上进行高效训练**，经过中文词表扩充、增量预训练、多轮指令微调，在CMMLU上超越Linly、Yayi、FlagAlpha等，与Ziya、Chinese-Alpaca表现基本持平。
 - 🔥 开源[firefly-baichuan2-13b](https://huggingface.co/YeungNLP/firefly-baichuan2-13b)，在OpenCompass的CMMLU榜单上以56.83的分数，位列第8，比百川官方Chat模型略低1.57分。
 - 🔥 开源[firefly-llama-30b](https://huggingface.co/YeungNLP/firefly-llama-30b)，在[🤗Open LLM排行榜](https://huggingface.co/spaces/HuggingFaceH4/open_llm_leaderboard)上以64.83分，同量级模型**排名第10**。
 - 🔥 开源[firefly-llama2-13b](https://huggingface.co/YeungNLP/firefly-llama2-13b)，在[🤗Open LLM排行榜](https://huggingface.co/spaces/HuggingFaceH4/open_llm_leaderboard)上以62分，同量级模型**排名第3**，比榜首略低0.5分。
@@ -197,7 +197,7 @@
 
 ### 安装环境
 在requirements.txt下固定了几个主要的python包的版本，执行如下脚本即可。注意：
-- 使用QLoRA训练Baichuan2时，需要安装torch==2.0，并且卸载xformers。对于其他模型，我们均在torch==1.13上进行训练。
+- 使用QLoRA训练Baichuan2时，需要安装torch==2.0，并且卸载xformers和apex。对于其他模型，我们均在torch==1.13上进行训练。
 - 使用QLoRA训练Qwen时，需将flash-attn卸载，否则会报错。
 ```bash
 pip install requirements.txt
@@ -313,7 +313,7 @@ CUDA_VISIBLE_DEVICES=0,1 torchrun --nproc_per_node={num_gpus} train_qlora.py --t
 ```
 
 #### 问题5：训练Baichuan2失败
-训练Baichuan2需要安装torch==2.0，并且卸载xformers，否则会报错
+训练Baichuan2需要安装torch==2.0，并且卸载xformers和apex，否则会报错
 ```
 RuntimeError: No such operator xformers::efficient_attention_forward_generic - did you forget to build xformers with `python setup.py develop`?
 ```

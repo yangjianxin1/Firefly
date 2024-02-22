@@ -20,3 +20,6 @@ xformers
 astunparse==1.6.2
 dataset
 flash_attn
+datasets
+trl==0.7.11
+typing_extensions==4.9.0
