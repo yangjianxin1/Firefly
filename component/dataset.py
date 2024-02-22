@@ -19,7 +19,7 @@ class UnifiedSFTDataset(Dataset):
         logger.info('Loading data: {}'.format(file))
         with open(file, 'r', encoding='utf8') as f:
             data_list = f.readlines()
-        logger.info(f'Use template: {self.template_name} for training')
+        logger.info(f'Use template "{self.template_name}" for training')
         logger.info("There are {} data in dataset".format(len(data_list)))
         self.data_list = data_list
 
@@ -166,7 +166,7 @@ class UnifiedDPODataset(Dataset):
         logger.info('Loading data: {}'.format(file))
         with open(file, 'r', encoding='utf8') as f:
             data_list = f.readlines()
-        logger.info(f'Use template: {self.template_name} for training')
+        logger.info(f'Use template "{self.template_name}" for training')
         logger.info("There are {} data in dataset".format(len(data_list)))
         self.data_list = data_list
 
@@ -288,4 +288,4 @@ class UnifiedDPODataset(Dataset):
 
     # 为了适配DPOTrainer的接口
     def map(self, func, **kwargs):
-        pass
+        return self

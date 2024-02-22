@@ -1,9 +1,9 @@
 {
-    "output_dir": "output/firefly-qwen1.5-7b-dpo-qlora",
+    "output_dir": "output/firefly-qwen1.5-7b-dpo-full",
     "model_name_or_path": "Qwen/Qwen1.5-7B-Chat",
     "train_file": "./data/dummy_dpo.jsonl",
     "template_name": "qwen",
-    "train_mode": "qlora",
+    "train_mode": "full",
     "task_type": "dpo",
     "beta": 0.1,
     "num_train_epochs": 1,

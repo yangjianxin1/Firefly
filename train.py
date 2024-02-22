@@ -348,11 +348,12 @@ def init_components(args, training_args):
         train_dataset = load_sft_dataset(args, tokenizer)
         data_collator = SFTDataCollator(tokenizer, args.max_seq_length)
     else:
+        logger.info('Train model with dpo task')
         train_dataset = load_dpo_dataset(args, tokenizer)
         data_collator = None
 
     # dpo
-    if args.train_mode == 'dpo':
+    if args.task_type == 'dpo':
         trainer = DPOTrainer(
             model,
             ref_model,
