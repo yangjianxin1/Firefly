@@ -197,6 +197,8 @@ def load_tokenizer(args):
         tokenizer.add_special_tokens({'additional_special_tokens': ['<|im_start|>', '<|im_end|>']})
     elif 'orion' in args.model_name_or_path.lower():
         tokenizer.add_special_tokens({'bos_token': '<s>', 'eos_token': '</s>'})
+    elif 'gemma' in args.model_name_or_path.lower():
+        tokenizer.add_special_tokens({'additional_special_tokens': ['<start_of_turn>', '<end_of_turn>']})
 
     if tokenizer.__class__.__name__ == 'QWenTokenizer':
         tokenizer.pad_token_id = tokenizer.eod_id
