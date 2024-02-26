@@ -12,6 +12,7 @@ from component.dataset import (
     UnifiedSFTDataset,
     ChatGLM2SFTDataset,
     ChatGLM3SFTDataset,
+    UnifiedDPODataset
 )
 from transformers import (
     set_seed,
@@ -29,6 +30,8 @@ import datasets
 from itertools import chain
 from tqdm import tqdm
 import json
+from trl import DPOTrainer, get_kbit_device_map
+import torch.nn as nn
 
 
 def setup_everything():
@@ -55,14 +58,21 @@ def setup_everything():
         json.dump(train_args, f, indent=4)
     # 设置随机种子
     set_seed(training_args.seed)
+
+    # check some setting
+    assert args.task_type in ['pretrain', 'sft', 'dpo'], "task_type should be in ['pretrain', 'sft', 'dpo']"
+    assert args.train_mode in ['full', 'lora', 'qlora'], "task_type should be in ['full', 'lora', 'qlora']"
+    assert sum([training_args.fp16, training_args.bf16]) == 1, "only one of fp16 and bf16 can be True"
+
     return args, training_args
 
 
-def find_all_linear_names(model):
+def find_all_linear_names(model, train_mode):
     """
     找出所有全连接层，为所有全连接添加adapter
     """
-    cls = bnb.nn.Linear4bit
+    assert train_mode in ['lora', 'qlora']
+    cls = bnb.nn.Linear4bit if train_mode == 'qlora' else nn.Linear
     lora_module_names = set()
     for name, module in model.named_modules():
         if isinstance(module, cls):
@@ -71,7 +81,9 @@ def find_all_linear_names(model):
 
     if 'lm_head' in lora_module_names:  # needed for 16-bit
         lora_module_names.remove('lm_head')
-    return list(lora_module_names)
+    lora_module_names = list(lora_module_names)
+    logger.info(f'LoRA target module names: {lora_module_names}')
+    return lora_module_names
 
 
 def load_pretrain_dataset(training_args, args, tokenizer):
@@ -185,6 +197,8 @@ def load_tokenizer(args):
         tokenizer.add_special_tokens({'additional_special_tokens': ['<|im_start|>', '<|im_end|>']})
     elif 'orion' in args.model_name_or_path.lower():
         tokenizer.add_special_tokens({'bos_token': '<s>', 'eos_token': '</s>'})
+    elif 'gemma' in args.model_name_or_path.lower():
+        tokenizer.add_special_tokens({'additional_special_tokens': ['<start_of_turn>', '<end_of_turn>']})
 
     if tokenizer.__class__.__name__ == 'QWenTokenizer':
         tokenizer.pad_token_id = tokenizer.eod_id
@@ -203,60 +217,58 @@ def load_model(args, training_args):
     加载模型
     """
     assert training_args.bf16 or training_args.fp16, 'bf16 or fp16 should be True'
-    # 加载模型
     logger.info(f'Loading model from base model: {args.model_name_or_path}')
+    logger.info(f'Train model with {args.train_mode}')
 
-    # 全量训练
-    if args.train_mode == 'full':
-        logger.info('Training model with full parameters')
-        # world_size = int(os.environ.get("WORLD_SIZE", 1))
-        # ddp = world_size != 1
-        # training_args.ddp_find_unused_parameters = False if ddp else None
-        model = AutoModelForCausalLM.from_pretrained(
-            args.model_name_or_path,
-            # attn_implementation='flash_attention_2',
-            torch_dtype=torch.float16 if training_args.fp16 else torch.bfloat16,
-            trust_remote_code=True,
-        )
-    # 使用LoRA或者QLoRA训练模型
-    else:
-        # training_args.ddp_find_unused_parameters = False
-        # 设置device_map，以适配多卡训练
-        local_rank = int(os.environ.get('LOCAL_RANK', '0'))
-        device_map = {'': local_rank}
-        # todo 适配lora
-        # if args.train_mode == 'lora':
-        #     logger.info('Training model with LoRA')
-        #     quantization_config = None
-        if args.train_mode == 'qlora':
-            logger.info('Training model with QLoRA')
-            quantization_config = BitsAndBytesConfig(
-                load_in_4bit=True,
-                bnb_4bit_compute_dtype=torch.float16 if training_args.fp16 else torch.bfloat16,
-                bnb_4bit_use_double_quant=True,
-                bnb_4bit_quant_type="nf4",
-                llm_int8_threshold=6.0,
-                llm_int8_has_fp16_weight=False,
-            )
-        else:
-            raise Exception('train_mode should be in [full, qlora]')
-
-        model = AutoModelForCausalLM.from_pretrained(
-            args.model_name_or_path,
-            device_map=device_map,
+    # init model kwargs
+    # todo add flash attention
+    # attn_implementation = None
+    torch_dtype = torch.float16 if training_args.fp16 else torch.bfloat16
+    if args.train_mode == 'qlora':
+        quantization_config = BitsAndBytesConfig(
             load_in_4bit=True,
-            torch_dtype=torch.float16 if training_args.fp16 else torch.bfloat16,
-            trust_remote_code=True,
-            quantization_config=quantization_config
+            bnb_4bit_compute_dtype=torch.float16 if training_args.fp16 else torch.bfloat16,
+            bnb_4bit_use_double_quant=True,
+            bnb_4bit_quant_type="nf4",
+            llm_int8_threshold=6.0,
+            llm_int8_has_fp16_weight=False,
         )
-        model.config.use_cache = False
-        # casts all the non int8 modules to full precision (fp32) for stability
-        if args.train_mode == 'qlora':
-            model = prepare_model_for_kbit_training(model, use_gradient_checkpointing=training_args.gradient_checkpointing)
+    else:
+        quantization_config = None
+    model_kwargs = dict(
+        trust_remote_code=True,
+        # attn_implementation=attn_implementation,
+        torch_dtype=torch_dtype,
+        use_cache=False if training_args.gradient_checkpointing else True,
+        device_map=get_kbit_device_map() if quantization_config is not None else None,
+        quantization_config=quantization_config,
+    )
+    model = AutoModelForCausalLM.from_pretrained(args.model_name_or_path, **model_kwargs)
+
+    # moe模型，需要考虑负载均衡的loss
+    if 'output_router_logits' in model.config.to_dict():
+        logger.info('set output_router_logits as True')
+        model.config.output_router_logits = True
+    # QLoRA: casts all the non int8 modules to full precision (fp32) for stability
+    if args.train_mode == 'qlora' and args.task_type in ['pretrain', 'sft']:
+        model = prepare_model_for_kbit_training(model, use_gradient_checkpointing=training_args.gradient_checkpointing)
+    # LoRA: Enables the gradients for the input embeddings
+    if args.train_mode == 'lora' and args.task_type in ['pretrain', 'sft']:
+        # For backward compatibility
+        if hasattr(model, "enable_input_require_grads"):
+            model.enable_input_require_grads()
+        else:
+            def make_inputs_require_grad(module, input, output):
+                output.requires_grad_(True)
+            model.get_input_embeddings().register_forward_hook(make_inputs_require_grad)
+
+    # init peft_config
+    if args.train_mode == 'full':
+        peft_config = None
+    else:
         # 找到所有需要插入adapter的全连接层
-        target_modules = find_all_linear_names(model)
-        # 初始化lora配置
-        config = LoraConfig(
+        target_modules = find_all_linear_names(model, args.train_mode)
+        peft_config = LoraConfig(
             r=args.lora_rank,
             lora_alpha=args.lora_alpha,
             target_modules=target_modules,
@@ -264,23 +276,34 @@ def load_model(args, training_args):
             bias="none",
             task_type="CAUSAL_LM",
         )
-        model = get_peft_model(model, config)
-        model.print_trainable_parameters()
-        model.config.torch_dtype = torch.float32
 
-    # moe模型，需要考虑负载均衡的loss
-    if 'output_router_logits' in model.config.to_dict():
-        logger.info('set output_router_logits as True')
-        model.config.output_router_logits = True
-    logger.info(f'memory footprint of model: {model.get_memory_footprint() / (1024 * 1024 * 1024)} GB')
+    # init peft model
+    if args.train_mode in ['lora', 'qlora'] and args.task_type in ['pretrain', 'sft']:
+        model = get_peft_model(model, peft_config)
+        logger.info(f'memory footprint of model: {model.get_memory_footprint() / (1024 * 1024 * 1024)} GB')
+        model.print_trainable_parameters()
+
+    # init ref_model
+    if args.task_type == 'dpo':
+        ref_model = AutoModelForCausalLM.from_pretrained(args.model_name_or_path, **model_kwargs) if args.train_mode == 'full' else None
+    # pretrain和sft，不需要ref_model
+    else:
+        ref_model = None
+
     # 计算模型参数量
     total = sum(p.numel() for p in model.parameters())
     logger.info("Total model params: %.2fM" % (total / 1e6))
 
-    return model
+    return {
+        'model': model,
+        'ref_model': ref_model,
+        'peft_config': peft_config
+    }
 
 
 def load_sft_dataset(args, tokenizer):
+    if args.template_name not in template_dict.keys():
+        raise Exception(f"template_name doesn't exist, all template_name: {template_dict.keys()}")
     template = template_dict[args.template_name]
     if 'chatglm2' in args.model_name_or_path.lower():
         logger.info('Loading data with ChatGLM2SFTDataset')
@@ -294,6 +317,14 @@ def load_sft_dataset(args, tokenizer):
     return train_dataset
 
 
+def load_dpo_dataset(args, tokenizer):
+    if args.template_name not in template_dict.keys():
+        raise Exception(f"template_name doesn't exist, all template_name: {template_dict.keys()}")
+    template = template_dict[args.template_name]
+    train_dataset = UnifiedDPODataset(args.train_file, tokenizer, args.max_seq_length, args.max_prompt_length, template)
+    return train_dataset
+
+
 def init_components(args, training_args):
     """
     初始化各个组件
@@ -304,25 +335,46 @@ def init_components(args, training_args):
     # 加载tokenizer
     tokenizer = load_tokenizer(args)
     # 加载model
-    model = load_model(args, training_args)
+    components = load_model(args, training_args)
+    model = components['model']
+    ref_model = components['ref_model']
+    peft_config = components['peft_config']
+
     # 初始化dataset和collator
     if args.task_type == 'pretrain':
         logger.info('Train model with pretrain task')
         train_dataset = load_pretrain_dataset(training_args, args, tokenizer)
         data_collator = PretrainCollator(tokenizer, args.max_seq_length)
-    else:
+    elif args.task_type == 'sft':
         logger.info('Train model with sft task')
         train_dataset = load_sft_dataset(args, tokenizer)
         data_collator = SFTDataCollator(tokenizer, args.max_seq_length)
+    else:
+        logger.info('Train model with dpo task')
+        train_dataset = load_dpo_dataset(args, tokenizer)
+        data_collator = None
 
-    # 初始化Trainer
-    trainer = Trainer(
-        model=model,
-        args=training_args,
-        train_dataset=train_dataset,
-        tokenizer=tokenizer,
-        data_collator=data_collator,
-    )
+    # dpo
+    if args.task_type == 'dpo':
+        trainer = DPOTrainer(
+            model,
+            ref_model,
+            args=training_args,
+            beta=args.beta,
+            train_dataset=train_dataset,
+            data_collator=data_collator,
+            tokenizer=tokenizer,
+            peft_config=peft_config
+        )
+    # pretrain or sft
+    else:
+        trainer = Trainer(
+            model=model,
+            args=training_args,
+            train_dataset=train_dataset,
+            tokenizer=tokenizer,
+            data_collator=data_collator,
+        )
     return trainer
 
 

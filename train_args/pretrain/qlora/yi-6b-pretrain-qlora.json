@@ -1,7 +1,6 @@
 {
-    "output_dir": "output/firefly-yi-6b-pretrain-full",
+    "output_dir": "output/firefly-yi-6b-pretrain-qlora",
     "model_name_or_path": "01-ai/Yi-6B",
-    "deepspeed": "./train_args/ds_z3_config.json",
     "train_file": "./data/pretrain",
     "train_mode": "qlora",
     "task_type": "pretrain",

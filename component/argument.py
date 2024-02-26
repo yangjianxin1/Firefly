@@ -12,6 +12,8 @@ class CustomizedArguments:
     model_name_or_path: str = field(metadata={"help": "预训练权重路径"})
     template_name: str = field(default="", metadata={"help": "sft时的数据格式"})
     eval_file: Optional[str] = field(default="", metadata={"help": "验证集"})
+    max_prompt_length: int = field(default=512, metadata={"help": "dpo时，prompt的最大长度"})
+    beta: float = field(default=0.1, metadata={"help": "The beta factor in DPO loss"})
     tokenize_num_workers: int = field(default=10, metadata={"help": "预训练时tokenize的线程数量"})
     task_type: str = field(default="sft", metadata={"help": "预训练任务：[pretrain, sft]"})
     train_mode: str = field(default="qlora", metadata={"help": "训练方式：[full, qlora]"})

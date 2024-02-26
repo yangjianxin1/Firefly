@@ -213,6 +213,15 @@ register_template(
     stop_word='</s>'
 )
 
+register_template(
+    template_name='gemma',
+    system_format='<bos>',
+    user_format='<start_of_turn>user\n{content}<end_of_turn>\n<start_of_turn>model\n',
+    assistant_format='{content}<eos>\n',
+    system='',
+    stop_word='<eos>'
+)
+
 
 # if __name__ == '__main__':
 #     model_name_or_path = ''

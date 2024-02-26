@@ -18,11 +18,11 @@
 欢迎关注我们的知乎进行交流讨论：**[红雨瓢泼](https://www.zhihu.com/people/jian-xin-15-96)**
 
 ## 项目简介
-**Firefly** 是一个开源的大模型训练项目，支持对主流的大模型进行预训练和指令微调，包括但不限于MiniCPM、Llama、InternLM、Baichuan、ChatGLM、Yi、Deepseek、Qwen、Orion、Ziya、Xverse、Mistral、Mixtral-8x7B、Zephyr、Vicuna、Bloom等。
-本项目支持全量参数训练和QLoRA高效训练，支持预训练和指令微调。 如果你的训练资源有限，我们极力推荐使用QLoRA进行指令微调，因为我们在Open LLM Leaderboard上验证了该方法的有效性，并且取得了非常不错的成绩。
+**Firefly** 是一个开源的大模型训练项目，支持对主流的大模型进行预训练和指令微调，包括但不限于Gemma、MiniCPM、Llama、InternLM、Baichuan、ChatGLM、Yi、Deepseek、Qwen、Orion、Ziya、Xverse、Mistral、Mixtral-8x7B、Zephyr、Vicuna、Bloom等。
+本项目支持全量参数训练、LoRA、QLoRA高效训练，支持预训练和指令微调。 如果你的训练资源有限，我们极力推荐使用QLoRA进行指令微调，因为我们在Open LLM Leaderboard上验证了该方法的有效性，并且取得了非常不错的成绩。
 
 🔔 本项目主要内容如下：
-- 📗 支持预训练和指令微调，支持全量参数训练和QLoRA高效训练。通过配置文件的方式训练不同的模型，小白亦可快速上手训练模型。
+- 📗 支持预训练和指令微调，支持全量参数训练、LoRA、QLoRA高效训练。通过配置文件的方式训练不同的模型，小白亦可快速上手训练模型。
 - 📗 支持绝大部分主流的开源大模型，如MiniCPM、Llama、InternLM、Baichuan、ChatGLM、Yi、Deepseek、Qwen、Orion、Ziya、Xverse、Mistral、Mixtral-8x7B、Zephyr、Vicuna、Bloom，训练时与各个官方的chat模型的template对齐。
 - 📗 整理并开源指令微调数据集：firefly-train-1.1M 、moss-003-sft-data、ultrachat、 WizardLM_evol_instruct_V2_143k、school_math_0.25M。
 - 📗 开源[Firefly系列指令微调模型权重](https://huggingface.co/YeungNLP) 。
@@ -31,10 +31,10 @@
 当前版本针对不同的chat模型的template进行了适配，代码存在较大的更新。若你更喜欢此前的版本，可下载代码[v0.0.1-alpha](https://github.com/yangjianxin1/Firefly/releases/tag/v0.0.1-alpha)
 
 ## News
-- 🔥 优化训练流程，支持全量训练和QLoRA高效训练，支持预训练和指令微调。指令微调的template与原有的chat模型对齐，支持绝大多数开源模型，包括MiniCPM、Llama、InternLM、Baichuan、ChatGLM、Yi、Deepseek、Qwen、Orion、Ziya、Xverse、Mistral、Mixtral-8x7B、Zephyr、Vicuna、Bloom等。
+- 🔥 优化训练流程，支持全量训练和QLoRA高效训练，支持预训练和指令微调。指令微调的template与原有的chat模型对齐，支持绝大多数开源模型，包括Gemma、MiniCPM、Llama、InternLM、Baichuan、ChatGLM、Yi、Deepseek、Qwen、Orion、Ziya、Xverse、Mistral、Mixtral-8x7B、Zephyr、Vicuna、Bloom等。
 - 🔥 开源模型权重[firefly-mixtral-8x7b](https://huggingface.co/YeungNLP/firefly-mixtral-8x7b) ，在[🤗Open LLM排行榜](https://huggingface.co/spaces/HuggingFaceH4/open_llm_leaderboard)分数为70.34，超越Yi-34B、Llama2-65B-Chat、Qwen-14B、Vicuna-33B-v1.3等模型。
 - 🔥 开源[LongQLoRA](https://github.com/yangjianxin1/LongQLoRA)， 【[技术报告](https://arxiv.org/abs/2311.04879)】。可高效扩展LLama上下文长度，在单张32GB V100上将Llama2长度扩展至8k（亦可扩展至12k），仅微调1000 step，在PG19和Proof-pile数据集上的perplexity优于LongLoRA，在PG19上略胜MPT-7B-8K。
-- 🔥 开源[Firefly-LLaMA2-Chinese项目](https://github.com/yangjianxin1/Firefly-LLaMA2-Chinese)，**在4*V00上进行高效训练**，经过中文词表扩充、增量预训练、多轮指令微调，在CMMLU上超越Linly、Yayi、FlagAlpha等，与Ziya、Chinese-Alpaca表现基本持平。
+- 🔥 开源[Firefly-LLaMA2-Chinese项目](https://github.com/yangjianxin1/Firefly-LLaMA2-Chinese)，**在4*V100上进行高效训练**，经过中文词表扩充、增量预训练、多轮指令微调，在CMMLU上超越Linly、Yayi、FlagAlpha等，与Ziya、Chinese-Alpaca表现基本持平。
 - 🔥 开源[firefly-baichuan2-13b](https://huggingface.co/YeungNLP/firefly-baichuan2-13b)，在OpenCompass的CMMLU榜单上以56.83的分数，位列第8，比百川官方Chat模型略低1.57分。
 - 🔥 开源[firefly-llama-30b](https://huggingface.co/YeungNLP/firefly-llama-30b)，在[🤗Open LLM排行榜](https://huggingface.co/spaces/HuggingFaceH4/open_llm_leaderboard)上以64.83分，同量级模型**排名第10**。
 - 🔥 开源[firefly-llama2-13b](https://huggingface.co/YeungNLP/firefly-llama2-13b)，在[🤗Open LLM排行榜](https://huggingface.co/spaces/HuggingFaceH4/open_llm_leaderboard)上以62分，同量级模型**排名第3**，比榜首略低0.5分。
@@ -147,8 +147,10 @@
 | [ultrachat](https://huggingface.co/datasets/YeungNLP/ultrachat)                                               | 由清华大学开源的英文多轮对话数据，包含140万+数据                                                                              |
 | [WizardLM_evol_instruct_V2_143k](https://huggingface.co/datasets/YeungNLP/WizardLM_evol_instruct_V2_143k) | 由WizardLM项目开源的英文指令微调数据集，通过Evol-Instruct方法让指令进化，加强指令的复杂度，以提升模型对复杂指令的遵循能力。包含143k条数据。                      |
 | [school_math_0.25M](https://huggingface.co/datasets/YeungNLP/school_math_0.25M)      | 由BELLE项目组开源的数学运算指令数据，包含25万条数据。                                                                          |
+| [shareAI/CodeChat](https://huggingface.co/datasets/shareAI/CodeChat)      | 主要包含逻辑推理、代码问答、代码生成相关语料样本。                                                                          |
+| [shareAI/ShareGPT-Chinese-English-90k](https://huggingface.co/datasets/shareAI/ShareGPT-Chinese-English-90k)      | 中英文平行双语优质人机问答数据集，覆盖真实复杂场景下的用户提问。                                                                          |
 
-若是训练中文模型，建议优先尝试使用moss数据进行微调。
+可按需选择、采样或组合上述数据。若是训练中文模型，建议尝试使用moss数据，英文可尝试ultrachat和WizardLM数据。
 
 训练数据为jsonl格式，每一行的数据格式如下，其中conversation字段是必需的，可以根据实际需求添加或删除其他字段。
 可以参考项目中的data/dummy_data.jsonl文件。
@@ -195,7 +197,7 @@
 
 ### 安装环境
 在requirements.txt下固定了几个主要的python包的版本，执行如下脚本即可。注意：
-- 使用QLoRA训练Baichuan2时，需要安装torch==2.0，并且卸载xformers。对于其他模型，我们均在torch==1.13上进行训练。
+- 使用QLoRA训练Baichuan2时，需要安装torch==2.0，并且卸载xformers和apex。对于其他模型，我们均在torch==1.13上进行训练。
 - 使用QLoRA训练Qwen时，需将flash-attn卸载，否则会报错。
 ```bash
 pip install requirements.txt
@@ -210,7 +212,7 @@ pip install requirements.txt
 📝 train_args目录下存储了不同模型使用不同训练方式的配置文件，主要参数说明如下：
 - output_dir：训练输出目录，存储checkpoint、tokenizer、tensorboard等
 - model_name_or_path：预训练模型的本地目录，或者在huggingface上的模型名称。
-- train_file：训练数据集路径。可以使用data/dummy_data.jsonl进行debug。
+- train_file：训练数据集路径。sft时，需要设置为文件，可以使用data/dummy_data.jsonl进行debug。pretrain时，需要设置为目录。脚本会自动扫描目录下的所有jsonl文件。
 - template_name：指令微调时，使用的模板名称。
 - num_train_epochs：训练的轮次。如果数据量足够大，一般建议只训一个epoch。
 - tokenize_num_workers：预训练时，tokenize的线程数，默认为10。
@@ -311,7 +313,7 @@ CUDA_VISIBLE_DEVICES=0,1 torchrun --nproc_per_node={num_gpus} train_qlora.py --t
 ```
 
 #### 问题5：训练Baichuan2失败
-训练Baichuan2需要安装torch==2.0，并且卸载xformers，否则会报错
+训练Baichuan2需要安装torch==2.0，并且卸载xformers和apex，否则会报错
 ```
 RuntimeError: No such operator xformers::efficient_attention_forward_generic - did you forget to build xformers with `python setup.py develop`?
 ```
