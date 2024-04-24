@@ -226,9 +226,9 @@ register_template(
     template_name='gemma',
     system_format='<bos>',
     user_format='<start_of_turn>user\n{content}<end_of_turn>\n<start_of_turn>model\n',
-    assistant_format='{content}<eos>\n',
+    assistant_format='{content}<end_of_turn>\n',
     system='',
-    stop_word='<eos>'
+    stop_word='<end_of_turn>'
 )
 
 
