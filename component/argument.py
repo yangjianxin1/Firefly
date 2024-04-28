@@ -20,3 +20,4 @@ class CustomizedArguments:
     lora_rank: Optional[int] = field(default=64, metadata={"help": "lora rank"})
     lora_alpha: Optional[int] = field(default=16, metadata={"help": "lora alpha"})
     lora_dropout: Optional[float] = field(default=0.05, metadata={"help": "lora dropout"})
+    use_sloth: Optional[bool] = field(default=False, metadata={"help": "use sloth or not"})
