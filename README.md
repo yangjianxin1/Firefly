@@ -31,6 +31,7 @@
 当前版本针对不同的chat模型的template进行了适配，代码存在较大的更新。若你更喜欢此前的版本，可下载代码[v0.0.1-alpha](https://github.com/yangjianxin1/Firefly/releases/tag/v0.0.1-alpha)
 
 ## News
+- 🔥 支持[Unsloth](https://github.com/unslothai/unsloth)，训练Llama3-8B仅需7.75GB显存，可减少42.58%显存占用，减少30.72%训练时间。
 - 🔥 优化训练流程，支持全量训练、LoRA、QLoRA高效训练，支持预训练、指令微调和DPO。指令微调与DPO的template与原有的chat模型对齐，支持绝大多数开源模型，包括Gemma、MiniCPM、Llama、InternLM、Baichuan、ChatGLM、Yi、Deepseek、Qwen、Orion、Ziya、Xverse、Mistral、Mixtral-8x7B、Zephyr、Vicuna、Bloom等。
 - 🔥 开源模型权重[firefly-mixtral-8x7b](https://huggingface.co/YeungNLP/firefly-mixtral-8x7b) ，在[🤗Open LLM排行榜](https://huggingface.co/spaces/HuggingFaceH4/open_llm_leaderboard)分数为70.34，超越Yi-34B、Llama2-65B-Chat、Qwen-14B、Vicuna-33B-v1.3等模型。
 - 🔥 开源[LongQLoRA](https://github.com/yangjianxin1/LongQLoRA)， 【[技术报告](https://arxiv.org/abs/2311.04879)】。可高效扩展LLama上下文长度，在单张32GB V100上将Llama2长度扩展至8k（亦可扩展至12k），仅微调1000 step，在PG19和Proof-pile数据集上的perplexity优于LongLoRA，在PG19上略胜MPT-7B-8K。
@@ -208,6 +209,15 @@
 pip install requirements.txt
 ```
 
+如果需要开启Unsloth，建议安装或者更新以下Python包：
+```bash
+pip install git+https://github.com/unslothai/unsloth.git
+pip install bitsandbytes==0.43.1
+pip install peft==0.10.0
+pip install torch==2.2.2
+pip install xformers==0.0.25.post1
+```
+
 ### 损失函数
 预训练时，我们采用经典的自回归损失，即每个位置的token都会参与loss计算。
 
@@ -239,6 +249,7 @@ pip install requirements.txt
 - seed：随机种子，用于复现实验结果。
 - fp16：使用使用fp16混合精度。V100建议开启。
 - bf16：使用使用bf16混合精度。A100建议开启。
+- use_unsloth：是否使用unsloth，目前unsloth仅支持部分模型，例如Llama3、Mistral、Gemma、TinyLlama等，详情见[Unsloth](https://github.com/unslothai/unsloth)。
 
 以下几个参数，当使用QLoRA训练的时候，需要设置：
 - lora_rank：qlora矩阵的秩。一般设置为8、16、32、64等，在qlora论文中作者设为64。越大则参与训练的参数量越大，一般来说效果会更好，但需要更多显存，。

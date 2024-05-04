@@ -16,6 +16,7 @@
     "lora_rank": 64,
     "lora_alpha": 16,
     "lora_dropout": 0.05,
+    "use_unsloth": true,
 
     "gradient_checkpointing": true,
     "disable_tqdm": false,

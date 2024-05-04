@@ -25,6 +25,9 @@ from transformers import (
     Trainer,
     AddedToken
 )
+import importlib
+if importlib.util.find_spec('unsloth') is not None:
+    from unsloth import FastLanguageModel
 from datasets import load_dataset, concatenate_datasets
 import datasets
 from itertools import chain
@@ -32,6 +35,8 @@ from tqdm import tqdm
 import json
 from trl import DPOTrainer, get_kbit_device_map
 import torch.nn as nn
+
+os.environ['TOKENIZERS_PARALLELISM'] = 'false'
 
 
 def setup_everything():
@@ -63,6 +68,7 @@ def setup_everything():
     assert args.task_type in ['pretrain', 'sft', 'dpo'], "task_type should be in ['pretrain', 'sft', 'dpo']"
     assert args.train_mode in ['full', 'lora', 'qlora'], "task_type should be in ['full', 'lora', 'qlora']"
     assert sum([training_args.fp16, training_args.bf16]) == 1, "only one of fp16 and bf16 can be True"
+    # assert not (args.task_type == 'dpo' and args.use_unsloth), 'We have not tested Unsloth during DPO yet. Please set use_unsloth=False when task_type=dpo'
 
     return args, training_args
 
@@ -212,6 +218,36 @@ def load_tokenizer(args):
     return tokenizer
 
 
+def load_unsloth_model(args, training_args):
+    model, tokenizer = FastLanguageModel.from_pretrained(
+        model_name=args.model_name_or_path,
+        max_seq_length=args.max_seq_length,
+        dtype=None,
+        trust_remote_code=True,
+        load_in_4bit=True if args.train_mode == 'qlora' else False,
+    )
+    if args.train_mode in ['lora', 'qlora']:
+        logger.info('Initializing PEFT Model...')
+        target_modules = find_all_linear_names(model, args.train_mode)
+        model = FastLanguageModel.get_peft_model(
+            model,
+            r=args.lora_rank,
+            target_modules=target_modules,
+            lora_alpha=args.lora_alpha,
+            lora_dropout=args.lora_dropout,
+            bias="none",
+            use_gradient_checkpointing=True,
+            random_state=training_args.seed,
+            max_seq_length=args.max_seq_length,
+        )
+        logger.info(f'target_modules: {target_modules}')
+    return {
+        'model': model,
+        'ref_model': None,
+        'peft_config': None
+    }
+
+
 def load_model(args, training_args):
     """
     加载模型
@@ -335,7 +371,10 @@ def init_components(args, training_args):
     # 加载tokenizer
     tokenizer = load_tokenizer(args)
     # 加载model
-    components = load_model(args, training_args)
+    if args.use_unsloth:
+        components = load_unsloth_model(args, training_args)
+    else:
+        components = load_model(args, training_args)
     model = components['model']
     ref_model = components['ref_model']
     peft_config = components['peft_config']
