@@ -25,8 +25,8 @@ from transformers import (
     Trainer,
     AddedToken
 )
-import sys
-if 'unsloth' in sys.modules:
+import importlib
+if importlib.util.find_spec('unsloth') is not None:
     from unsloth import FastLanguageModel
 from datasets import load_dataset, concatenate_datasets
 import datasets
