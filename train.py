@@ -36,6 +36,8 @@ import json
 from trl import DPOTrainer, get_kbit_device_map
 import torch.nn as nn
 
+os.environ['TOKENIZERS_PARALLELISM'] = 'false'
+
 
 def setup_everything():
     parser = argparse.ArgumentParser()
