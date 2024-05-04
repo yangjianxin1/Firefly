@@ -25,7 +25,9 @@ from transformers import (
     Trainer,
     AddedToken
 )
-from unsloth import FastLanguageModel
+import sys
+if 'unsloth' in sys.modules:
+    from unsloth import FastLanguageModel
 from datasets import load_dataset, concatenate_datasets
 import datasets
 from itertools import chain
@@ -64,7 +66,7 @@ def setup_everything():
     assert args.task_type in ['pretrain', 'sft', 'dpo'], "task_type should be in ['pretrain', 'sft', 'dpo']"
     assert args.train_mode in ['full', 'lora', 'qlora'], "task_type should be in ['full', 'lora', 'qlora']"
     assert sum([training_args.fp16, training_args.bf16]) == 1, "only one of fp16 and bf16 can be True"
-    assert not (args.task_type == 'dpo' and args.use_unsloth), 'We have not tested Unsloth during DPO yet. Please set use_unsloth=False when task_type=dpo'
+    # assert not (args.task_type == 'dpo' and args.use_unsloth), 'We have not tested Unsloth during DPO yet. Please set use_unsloth=False when task_type=dpo'
 
     return args, training_args
 
@@ -222,19 +224,21 @@ def load_unsloth_model(args, training_args):
         trust_remote_code=True,
         load_in_4bit=True if args.train_mode == 'qlora' else False,
     )
-    target_modules = find_all_linear_names(model, args.train_mode)
-    model = FastLanguageModel.get_peft_model(
-        model,
-        r=args.lora_rank,
-        target_modules=target_modules,
-        lora_alpha=args.lora_alpha,
-        lora_dropout=args.lora_dropout,
-        bias="none",
-        use_gradient_checkpointing=True,
-        random_state=training_args.seed,
-        max_seq_length=args.max_seq_length,
-    )
-    logger.info(f'target_modules: {target_modules}')
+    if args.train_mode in ['lora', 'qlora']:
+        logger.info('Initializing PEFT Model...')
+        target_modules = find_all_linear_names(model, args.train_mode)
+        model = FastLanguageModel.get_peft_model(
+            model,
+            r=args.lora_rank,
+            target_modules=target_modules,
+            lora_alpha=args.lora_alpha,
+            lora_dropout=args.lora_dropout,
+            bias="none",
+            use_gradient_checkpointing=True,
+            random_state=training_args.seed,
+            max_seq_length=args.max_seq_length,
+        )
+        logger.info(f'target_modules: {target_modules}')
     return {
         'model': model,
         'ref_model': None,
