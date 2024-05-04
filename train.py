@@ -369,7 +369,7 @@ def init_components(args, training_args):
     # 加载tokenizer
     tokenizer = load_tokenizer(args)
     # 加载model
-    if args.use_sloth:
+    if args.use_unsloth:
         components = load_unsloth_model(args, training_args)
     else:
         components = load_model(args, training_args)
