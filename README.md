@@ -31,7 +31,7 @@
 当前版本针对不同的chat模型的template进行了适配，代码存在较大的更新。若你更喜欢此前的版本，可下载代码[v0.0.1-alpha](https://github.com/yangjianxin1/Firefly/releases/tag/v0.0.1-alpha)
 
 ## News
-- 🔥 扩展Unsloth，支持Qwen2模型结构，包括Qwen1.5系列的Dense模型，代码库：[Unsloth](https://github.com/yangjianxin1/unsloth)。
+- 🔥 扩展Unsloth，支持Qwen2模型结构，包括Qwen1.5系列的Dense模型，代码库：[Unsloth](https://github.com/yangjianxin1/unsloth)。 [技术文章](https://mp.weixin.qq.com/s/x2N3p1qgJy_RyRsO2PHS_A)
 - 🔥 支持[Unsloth](https://github.com/unslothai/unsloth)，训练Llama3-8B仅需7.75GB显存，可减少42.58%显存占用，减少30.72%训练时间。 [训练增益评测](https://mp.weixin.qq.com/s/Zlp7GM37_bkvvQZedzNp0g)。
 - 🔥 优化训练流程，支持全量训练、LoRA、QLoRA高效训练，支持预训练、指令微调和DPO。指令微调与DPO的template与原有的chat模型对齐，支持绝大多数开源模型，包括Gemma、MiniCPM、Llama、InternLM、Baichuan、ChatGLM、Yi、Deepseek、Qwen、Orion、Ziya、Xverse、Mistral、Mixtral-8x7B、Zephyr、Vicuna、Bloom等。
 - 🔥 开源模型权重[firefly-mixtral-8x7b](https://huggingface.co/YeungNLP/firefly-mixtral-8x7b) ，在[🤗Open LLM排行榜](https://huggingface.co/spaces/HuggingFaceH4/open_llm_leaderboard)分数为70.34，超越Yi-34B、Llama2-65B-Chat、Qwen-14B、Vicuna-33B-v1.3等模型。
@@ -51,6 +51,7 @@
 ## 技术博客
 <details><summary><b>技术博客</b></summary>
 
+- [Unsloth x Qwen2，提速47.32%，节省39.13%显存，最少仅需8.43GB显存](https://mp.weixin.qq.com/s/x2N3p1qgJy_RyRsO2PHS_A)
 - [Unsloth微调Llama3-8B，提速44.35%，节省42.58%显存，最少仅需7.75GB显存](https://mp.weixin.qq.com/s/Zlp7GM37_bkvvQZedzNp0g)
 - [弱智吧祛魅，与强Baseline的对比实验，差距明显](https://mp.weixin.qq.com/s/LwGgMbPdC_UTCefqWSkXEQ)
 - [关于弱智吧数据封神的若干疑问和猜想，以及数据验证实验](https://mp.weixin.qq.com/s/PnJVA66QLp4-gZTss46PqQ)
