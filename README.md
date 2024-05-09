@@ -211,7 +211,7 @@
 - 使用QLoRA训练Baichuan2时，需要安装torch==2.0，并且卸载xformers和apex。
 - 使用QLoRA训练Qwen时，需将flash-attn卸载，否则会报错。
 ```bash
-pip install requirements.txt
+pip install -r requirements.txt
 ```
 
 如果需要开启Unsloth，建议安装或者更新以下Python包：
@@ -303,7 +303,7 @@ torchrun --nproc_per_node={num_gpus} train.py --train_args_file train_args/sft/q
 
 💻 单卡QLoRA进行DPO训练：
 ```bash
-python train.py --train_args_file train_args/sft/qlora/minicpm-2b-dpo-qlora.json
+python train.py --train_args_file train_args/dpo/qlora/minicpm-2b-dpo-qlora.json
 ```
 
 ## 模型使用
