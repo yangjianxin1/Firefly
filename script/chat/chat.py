@@ -121,9 +121,7 @@ def main():
     else:
         if template.stop_word is None:
             template.stop_word = tokenizer.eos_token
-        stop_token_id = tokenizer.encode(template.stop_word, add_special_tokens=False)
-        assert len(stop_token_id) == 1
-        stop_token_id = stop_token_id[0]
+        stop_token_id = tokenizer.convert_tokens_to_ids(template.stop_word)
 
     history = []
 
