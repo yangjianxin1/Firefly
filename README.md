@@ -18,7 +18,7 @@
 欢迎关注我们的知乎进行交流讨论：**[红雨瓢泼](https://www.zhihu.com/people/jian-xin-15-96)**
 
 ## 项目简介
-**Firefly** 是一个开源的大模型训练项目，支持对主流的大模型进行预训练、指令微调和DPO，包括但不限于Llama3、Gemma、Qwen1.5、MiniCPM、Llama、InternLM、Baichuan、ChatGLM、Yi、Deepseek、Qwen、Orion、Ziya、Xverse、Mistral、Mixtral-8x7B、Zephyr、Vicuna、Bloom等。
+**Firefly** 是一个开源的大模型训练项目，支持对主流的大模型进行预训练、指令微调和DPO，包括但不限于Yi-1.5、Llama3、Gemma、Qwen1.5、MiniCPM、Llama、InternLM、Baichuan、ChatGLM、Yi、Deepseek、Qwen、Orion、Ziya、Xverse、Mistral、Mixtral-8x7B、Zephyr、Vicuna、Bloom等。
 本项目支持**全量参数训练、LoRA、QLoRA高效训练**，支持**预训练、SFT、DPO**。 如果你的训练资源有限，我们极力推荐使用QLoRA进行指令微调，因为我们在Open LLM Leaderboard上验证了该方法的有效性，并且取得了非常不错的成绩。
 
 🔔 本项目主要内容如下：
@@ -31,6 +31,7 @@
 当前版本针对不同的chat模型的template进行了适配，代码存在较大的更新。若你更喜欢此前的版本，可下载代码[v0.0.1-alpha](https://github.com/yangjianxin1/Firefly/releases/tag/v0.0.1-alpha)
 
 ## News
+- 🔥 Unsloth x Qwen2模型结构的PR已merge到[Unsloth](https://github.com/unslothai/unsloth)的master分支。
 - 🔥 扩展Unsloth，支持Qwen2模型结构，包括Qwen1.5系列的Dense模型，代码库：[Unsloth](https://github.com/yangjianxin1/unsloth)。 [技术文章](https://mp.weixin.qq.com/s/x2N3p1qgJy_RyRsO2PHS_A)
 - 🔥 支持[Unsloth](https://github.com/unslothai/unsloth)，训练Llama3-8B仅需7.75GB显存，可减少42.58%显存占用，减少30.72%训练时间。 [训练增益评测](https://mp.weixin.qq.com/s/Zlp7GM37_bkvvQZedzNp0g)。
 - 🔥 优化训练流程，支持全量训练、LoRA、QLoRA高效训练，支持预训练、指令微调和DPO。指令微调与DPO的template与原有的chat模型对齐，支持绝大多数开源模型，包括Gemma、MiniCPM、Llama、InternLM、Baichuan、ChatGLM、Yi、Deepseek、Qwen、Orion、Ziya、Xverse、Mistral、Mixtral-8x7B、Zephyr、Vicuna、Bloom等。
