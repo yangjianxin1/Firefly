@@ -1,6 +1,7 @@
 import argparse
 from loguru import logger
 import os
+import time
 from os.path import join
 import torch
 from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training
@@ -140,7 +141,9 @@ def load_pretrain_dataset(training_args, args, tokenizer):
             logger.info(f'Loading file: {file}')
             file_name = os.path.basename(file)
             file_name = file_name.replace('.jsonl', '')
-            cache_path = os.path.join(cache_dir, file_name)
+
+            mtime=time.strftime("%Y%m%d%H%M%S", time.localtime(os.stat(file).st_mtime))
+            cache_path = os.path.join(cache_dir,tokenizer.name_or_path,file_name,mtime)
             os.makedirs(cache_path, exist_ok=True)
 
             try:
@@ -148,7 +151,7 @@ def load_pretrain_dataset(training_args, args, tokenizer):
                 logger.info(f'Finished loading datasets-{file_name} from cache')
             except Exception:
                 tmp_cache_path = join(cache_path, 'tmp')    # 临时缓存目录，会被自动删除
-                logger.info(f'There is no cache of file {file_name}, start preprocessing...')
+                logger.info(f'There is no cache of file {file_name} modified @ {mtime} for tokenizer {tokenizer.name_or_path}, start preprocessing...')
                 raw_dataset = load_dataset("json", data_files=file, cache_dir=tmp_cache_path, keep_in_memory=False)
                 tokenized_dataset = raw_dataset.map(
                     tokenize_function,
