@@ -341,10 +341,10 @@ def load_sft_dataset(args, tokenizer):
     if args.template_name not in template_dict.keys():
         raise Exception(f"template_name doesn't exist, all template_name: {template_dict.keys()}")
     template = template_dict[args.template_name]
-    if 'chatglm2' in args.model_name_or_path.lower():
+    if 'chatglm2' in args.template_name.lower():
         logger.info('Loading data with ChatGLM2SFTDataset')
         train_dataset = ChatGLM2SFTDataset(args.train_file, tokenizer, args.max_seq_length, template)
-    elif 'chatglm3' in args.model_name_or_path.lower():
+    elif 'chatglm3' in args.template_name.lower():
         logger.info('Loading data with ChatGLM3SFTDataset')
         train_dataset = ChatGLM3SFTDataset(args.train_file, tokenizer, args.max_seq_length, template)
     else:
