@@ -18,7 +18,7 @@
 欢迎关注我们的知乎进行交流讨论：**[红雨瓢泼](https://www.zhihu.com/people/jian-xin-15-96)**
 
 ## 项目简介
-**Firefly** 是一个开源的大模型训练项目，支持对主流的大模型进行预训练、指令微调和DPO，包括但不限于Qwen2、Yi-1.5、Llama3、Gemma、Qwen1.5、MiniCPM、Llama、InternLM、Baichuan、ChatGLM、Yi、Deepseek、Qwen、Orion、Ziya、Xverse、Mistral、Mixtral-8x7B、Zephyr、Vicuna、Bloom等。
+**Firefly** 是一个开源的大模型训练项目，支持对主流的大模型进行预训练、指令微调和DPO，包括但不限于Qwen2、Yi-1.5、Llama3、Gemma、Qwen1.5、MiniCPM、MiniCPM3、Llama、InternLM、Baichuan、ChatGLM、Yi、Deepseek、Qwen、Orion、Ziya、Xverse、Mistral、Mixtral-8x7B、Zephyr、Vicuna、Bloom等。
 本项目支持**全量参数训练、LoRA、QLoRA高效训练**，支持**预训练、SFT、DPO**。 如果你的训练资源有限，我们极力推荐使用QLoRA进行指令微调，因为我们在Open LLM Leaderboard上验证了该方法的有效性，并且取得了非常不错的成绩。
 
 🔔 本项目主要内容如下：
