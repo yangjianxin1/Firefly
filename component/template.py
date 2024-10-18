@@ -143,6 +143,15 @@ register_template(
 )
 
 register_template(
+    template_name='cpm3',
+    system_format='<|im_start|>system\n{content}<|im_end|>\n',
+    user_format='<|im_start|>user\n{content}<|im_end|>\n<|im_start|>assistant\n',
+    assistant_format='{content}<|im_end|>\n',
+    system="You are a helpful assistant.",
+    stop_word='<|im_end|>'
+)
+
+register_template(
     template_name='zephyr',
     system_format='<|system|>\n{content}</s>',
     user_format='<|user|>\n{content}</s>\n<|assistant|>\n',
