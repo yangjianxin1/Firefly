@@ -143,7 +143,7 @@ register_template(
 )
 
 register_template(
-    template_name='cpm3',
+    template_name='minicpm3',
     system_format='<|im_start|>system\n{content}<|im_end|>\n',
     user_format='<|im_start|>user\n{content}<|im_end|>\n<|im_start|>assistant\n',
     assistant_format='{content}<|im_end|>\n',
