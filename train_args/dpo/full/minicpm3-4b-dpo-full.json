@@ -2,7 +2,7 @@
     "output_dir": "output/firefly-minicpm-2b-dpo-full",
     "model_name_or_path": "openbmb/MiniCPM3-4B",
     "train_file": "./data/dummy_dpo.jsonl",
-    "template_name": "cpm3",
+    "template_name": "minicpm3",
     "train_mode": "full",
     "task_type": "dpo",
     "beta": 0.1,
